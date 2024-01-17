@@ -2,6 +2,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {routes} from "./routes/Routes";
 import {Fragment} from "react";
 import DefaultLayout from "./components/defaultLayout/DefaultLayout";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
