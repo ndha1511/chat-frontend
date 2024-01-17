@@ -1,0 +1,40 @@
+.wrapper {
+    display: flex;
+    background-color: aqua;
+    width: 75px;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    justify-content: space-between;
+
+}
+
+.items {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar {
+    width: 80%;
+    height: 60px;
+    border-radius: 50%;
+    background: none;
+    border: 0.5px solid #fff;
+    margin-bottom: 20px;
+}
+
+.item {
+    font-size: 20px;
+    background: none;
+    border: none;
+    width: 100%;
+    height: 60px;
+}
+
+.item:hover {
+    //background: fixed;
+    background-color: aquamarine;
+}
