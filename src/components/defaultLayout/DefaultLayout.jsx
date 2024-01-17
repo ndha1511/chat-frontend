@@ -4,10 +4,12 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-function DefaultLayout({children}) {
+function DefaultLayout({ children }) {
     return (
         <div className={cx("wrapper")}>
-            <Navigation/>
+            <div>
+                <Navigation />
+            </div>
             {children}
         </div>
     );
