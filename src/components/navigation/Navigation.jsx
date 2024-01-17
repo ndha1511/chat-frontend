@@ -24,13 +24,14 @@ function Navigation() {
                 navigate('/');
                 break;
             case 'Danh bạ':
-                navigate('/contact');
+                navigate('/content1');
                 break;
 
         }
 
     }
     return <div className={cx("wrapper")}>
+        
         <div className={cx("items")}>
             <button className={cx("avatar")}>
                 <img src='' alt='avatar' />
