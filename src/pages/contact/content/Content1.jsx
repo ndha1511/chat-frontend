@@ -1,3 +1,4 @@
+
 import styles from './Content1.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -39,6 +40,10 @@ function Content1() {
                     </div>
                 </div>
             </div>
+function Content1() {
+    return (  
+        <div>
+            aaaa
         </div>
     );
 }
