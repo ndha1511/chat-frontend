@@ -2,7 +2,7 @@ import styles from './Content1.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
-import { faArrowDown, faArrowDownUpLock, faArrowsUpDown, faFilter, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowDownUpLock, faArrowsUpDown, faChevronDown, faFilter, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 function Content1() {
@@ -22,20 +22,16 @@ function Content1() {
                         <FontAwesomeIcon className={cx('iconSearch')} icon={faMagnifyingGlass}/>
                         <input className={cx('input')} placeholder='tìm bạn' />
                         </div>
-                        <div className={cx('locName')}>
+                        <button className={cx('locName')}>
                         <FontAwesomeIcon className={cx('iconLocName')} icon={faArrowsUpDown}/>
-                        <select className={cx('optionName')} name="" id="">
-                            <option value="">Tên (A-Z)</option>
-                            <option value="">Tên (Z-A)</option>
-                        </select>
-                        </div>
-                       <div className={cx('locName')} >
+                        <div className={cx('optionName')}>Tên (A-Z)</div>
+                        <FontAwesomeIcon className={cx('iconLocName')} icon={faChevronDown}/>
+                        </button>
+                       <button className={cx('locName')} >
                        <FontAwesomeIcon className={cx('iconLocName')} icon={faFilter}/>
-                       <select className={cx('optionName')} name="" id="">
-                            <option value="">Tất cả</option>
-                            <option value="">Phân loại</option>
-                        </select>
-                       </div>
+                       <div className={cx('optionName')}>Tên (Z-A)</div>
+                        <FontAwesomeIcon className={cx('iconLocName')} icon={faChevronDown}/>
+                       </button>
                     </div>
                 </div>
             </div>

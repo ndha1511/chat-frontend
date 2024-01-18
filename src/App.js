@@ -3,6 +3,7 @@ import {routes} from "./routes/Routes";
 import {Fragment} from "react";
 import DefaultLayout from "./components/defaultLayout/DefaultLayout";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Menu from "./pages/contact/menu/Menu";
 
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
                     Layout = Fragment;
                 return (
                     <Route key={index} path={route.path} element={
-                        <Layout>
+                        <Layout  menu = {route.menu}>
                             <Page/>
                         </Layout>
                     }></Route>
