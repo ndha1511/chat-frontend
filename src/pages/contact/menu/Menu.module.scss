@@ -1,23 +1,67 @@
 .wrapper {
     display: flex;
-    flex-direction: row;
-    width: 17%;
-    height: 100vh;
-    border: 1px solid black;
-    
+    // flex-direction: row;
+    width: 28%;
+    height: auto;
+    border-right: 1px solid #BCAAA4;
+    margin-top: 70px;
+
 }
 
 .items {
     display: flex;
     width: 100%;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+
 }
+
 .item {
-    font-size: 20px;
+    display: flex;
+    // border: 1px solid black;
+
     background: none;
     border: none;
     width: 100%;
-    height: 60px;
+    height: 8%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5%;
+    overflow: hidden;
+    /* Giữ chữ trong giới hạn của button */
+    transition: background-color 0.1s;
+    /* Hiệu ứng chuyển động màu sắc */
+}
+
+.item:not(.item-selected):hover {
+    background-color: #ECEFF1;
+    /* Màu nền khi đưa chuột vào và không được chọn */
+}
+
+.item-selected {
+    background-color: #B2EBF2;
+        /* Thay đổi màu nền khi được chọn */
+}
+
+.item-selected svg {
+    // svg là chọn phần tử bên trong item-selected
+    /* Thay đổi màu của biểu tượng khi được chọn */
+}
+
+.icon {
+    padding: 5%;
+    font-size: 23px;
+}
+
+.text {
+    font-size: 17px;
+    flex-grow: 1;
+    white-space: nowrap;
+    /* Ngăn chữ xuống dòng */
+    width: 100%;
+    height: auto;
+    font-weight: 600;
+    color: #263238;
+
 }
