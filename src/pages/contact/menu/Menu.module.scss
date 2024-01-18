@@ -1,10 +1,13 @@
 .wrapper {
     display: flex;
     // flex-direction: row;
-    width: 25%;
+
+
+    width: 100%;
+
+
     height: auto;
     border-right: 1px solid #BCAAA4;
-    margin-top: 70px;
 
 }
 
@@ -13,13 +16,14 @@
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
+    margin-top: 20px;
 
 }
 
 .item {
     display: flex;
     // border: 1px solid black;
-
+ 
     background: none;
     border: none;
     width: 100%;
@@ -27,7 +31,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: 5%;
+    padding-right: 5%;
     overflow: hidden;
     /* Giữ chữ trong giới hạn của button */
     transition: background-color 0.1s;
