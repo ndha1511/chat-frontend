@@ -40,12 +40,8 @@ function Content1() {
                     </div>
                 </div>
             </div>
-function Content1() {
-    return (  
-        <div>
-            aaaa
         </div>
     );
 }
 
-export default Content1
+export default Content1;
