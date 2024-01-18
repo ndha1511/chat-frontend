@@ -1,11 +1,12 @@
 .search {
     display: flex;
     background-color: #eaedf0;
-    height: 117%;
+    height: auto;
     width: 80%;
     padding: 3px;
     padding-left: 15px;
     border-radius: 5px;
+    
   
     input {
         border: none;
@@ -29,4 +30,5 @@
    justify-content: space-evenly;
    align-items: center;
    margin-top: 15px;
+   
 }

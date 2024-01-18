@@ -8,8 +8,8 @@
 }
 .top{
     display: flex;
-    width: 99%;
-    height: 9%;
+    width: 100%;
+    height: 10%;
     border-left : 1px solid #BCAAA4;
     border-bottom : 1px solid #BCAAA4;
     flex-direction: row;
@@ -34,9 +34,11 @@
 .center{
     display: flex;
     background-color: #ECEFF1;
-    width: 99%;
+    border-left: 1px solid #BCAAA4;
+    width: 100%;
     height: 100%;
     flex-direction: column;
+    overflow: hidden;
     
     //  flex-grow: 1;
 //   overflow: auto;
@@ -54,19 +56,27 @@
 }
 .content{
     background-color: white;
+ 
     border-radius: 10px;
-    width: 98%;
+    width: 100%;
     height: 100%;
     margin-left: 15px;
     margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    max-height: 100%; // Set a fixed height for the content area
+    overflow-y: auto; // Enable vertical scrollbar when content overflows
+    scrollbar-width:5px;
+  
+    //   border : 1px solid black;
 }
 .top1{
   //  border : 1px solid black;
     display: flex;
     width: 80%;
     height: 7%;
-    margin-top: 15px;
-    margin-left: 15px;
+ 
     align-items: center;
     justify-content: space-between;
 }
@@ -86,6 +96,8 @@
     outline: none; /* Ẩn outline khi input được chọn */
     box-shadow: none; /* Ẩn box shadow khi input được chọn */
     width: 80%;
+    white-space: nowrap;
+    height: auto;
   }
 .iconSearch{
     margin-right: 10px;
@@ -100,24 +112,117 @@
     border-radius: 7px;
     width: 30%;
     height: 80%;
+    white-space: nowrap;
     background-color: #CFD8DC;
     border: none;
     padding: 7px;
+    // cursor: pointer; // Thêm điểm chạm để biểu thị có thể nhấp chuột
+
+    &:hover {
+      background-color: #90A4AE; // Màu khi hover
+      color: #FFFFFF; // Màu chữ khi hover
+  
+      .iconLocName, .optionName {
+        color: #FFFFFF; // Màu của icon và chữ khi hover
+        background-color: #90A4AE; // Màu khi hover
+      }
+    }
+  
+    &:active {
+      background-color: #607D8B; // Màu khi click
+      color: #FFFFFF; // Màu chữ khi click
+  
+      .iconLocName, .optionName {
+        color: #FFFFFF; // Màu của icon và chữ khi click
+        background-color: #607D8B; // Màu khi 
+      }
+    }
     
 }
+
 .iconLocName{
     margin-right: 10px;
     border-color: #ECEFF1;
 }
+
 .optionName{
     width: 89%;
-    height: 80%;
+    height: auto;
     border: none; /* Ẩn border của input */
     outline: none; /* Ẩn outline khi input được chọn */
     box-shadow: none; /* Ẩn box shadow khi input được chọn */
     background-color: #CFD8DC;
+    overflow: hidden;
+
     
 }
-
-
+.center1{
+    margin-top: 20px;
+    //  border : 1px solid black;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    //   overflow: hidden;
+  }
+.data{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    .a{
+        margin-bottom: 15px;
+    }
+}
+.data1{
+    // border : 1px solid black;
+    display: flex;
+    flex-direction: row;
+    // margin-top: 15px;
+    width: 100%;
+    height: 80px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    &:hover {
+      background-color: #90A4AE; // Màu khi hover
+      color: #FFFFFF; // Màu chữ khi hover
+  
+      .button {
+        color: grey; // Màu của icon và chữ khi hover
+        background-color:#90A4AE  ; // Màu khi hover
+      }
+    }
+  
+    &:active {
+      background-color: #607D8B; // Màu khi click
+      color: #FFFFFF; // Màu chữ khi click
+  
+      .button {
+        color: #FFFFFF; // Màu của icon và chữ khi click
+        background-color: #607D8B; // Màu khi 
+      }
+    }
+    .img{
+      width: 60px;
+      height: 60px;
+      border-radius: 50px;
+      
+    }
+    .aa{
+        // border : 1px solid black;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 80px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #BCAAA4;;
+       button{
+        background-color: #FFFFFF;
+       }
+    }
+    
+}
   

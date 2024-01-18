@@ -11,7 +11,7 @@ function DefaultLayout({ children, menu }) {
         <div className={cx("wrapper")}>
             <Navigation />
             <div className={cx("wrapper1")}>
-                <Search />
+                <div className={cx("search")}><Search /></div>
                 <div  className={cx("menu")}>
                 {menu}
                 </div>
