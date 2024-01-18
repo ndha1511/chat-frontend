@@ -1,14 +1,14 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
     height: auto;
     // border : 1px solid black;
    
 }
 .top{
     display: flex;
-    width: 100%;
+    width: 99%;
     height: 9%;
     border-left : 1px solid #BCAAA4;
     border-bottom : 1px solid #BCAAA4;
@@ -34,9 +34,10 @@
 .center{
     display: flex;
     background-color: #ECEFF1;
-    width: 97%;
+    width: 99%;
     height: 100%;
     flex-direction: column;
+    
     //  flex-grow: 1;
 //   overflow: auto;
 }
@@ -54,7 +55,7 @@
 .content{
     background-color: white;
     border-radius: 10px;
-    width: 100%;
+    width: 98%;
     height: 100%;
     margin-left: 15px;
     margin-top: 25px;
