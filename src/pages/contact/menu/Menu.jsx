@@ -6,6 +6,7 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressCard, faEnvelope, faLifeRing } from '@fortawesome/free-regular-svg-icons';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import Search from '../../../components/search/Search';
 
 
 
@@ -49,6 +50,7 @@ function Menu() {
 
   return (
     <div className={cx('wrapper')}>
+      <Search></Search>
       <div className={cx('items')}>
         {items_top.map((value, index) => (
           <button

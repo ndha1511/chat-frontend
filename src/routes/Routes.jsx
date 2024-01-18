@@ -7,12 +7,13 @@ import ContactLayout from "../components/contactLayout/ContactLayout";
 
 import Content2 from "../pages/contact/content/Content2";
 import Content3 from "../pages/contact/content/Content3";
+import Menu from "../pages/contact/menu/Menu";
 
 
 
 export const routes = [
     {path: '/', component: Home},
-    {path: '/content1', component: Content1,layout:ContactLayout},
+    {path: '/content1', component: Content1,menu:Menu},
 
     {path: '/content2', component: Content2,layout:ContactLayout},
     {path: '/content3', component: Content3,layout:ContactLayout},

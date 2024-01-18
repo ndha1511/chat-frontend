@@ -1,6 +1,5 @@
 .wrapper {
     display: flex;
-    flex-direction: row;
     width: 100vw;
     height: 100vh;
     div {
@@ -8,4 +7,16 @@
         
     }
     
+}
+.search {
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    margin-left: 80px;
+}
+
+.chat_rooms {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
