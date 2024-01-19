@@ -1,0 +1,90 @@
+.wrapper {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    margin-top: 20px;
+    padding-left: 15px;
+    border-bottom: 0.5px solid #BCAAA4;
+
+    button {
+        background: none;
+        margin-right: 20px;
+    }
+
+    button:hover {
+        color: blue;
+        border-bottom: 3px solid blue;
+    }
+}
+
+.chats {
+    flex-direction: column;
+    overflow-y: auto;
+
+    button {
+        display: flex;
+        align-items: center;
+        padding-left: 15px;
+        padding-right: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background: none;
+
+        img {
+            border-radius: 50%;
+        }
+
+    }
+
+    button:hover {
+        background-color: gainsboro;
+    }
+
+}
+
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.chat_info {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+        font-size: 18px;
+
+    }
+
+    p {
+        font-size: 14px;
+        color: gray;
+    }
+}
+
+.chat_text {
+    span {
+        font-size: 14px;
+        color: gray;
+    }
+}
+
+.chats::-webkit-scrollbar {
+    width: 10px;
+   
+  }
+  
+.chats::-webkit-scrollbar-thumb {
+    background-color: gainsboro;
+    border-radius: 6px;
+  }

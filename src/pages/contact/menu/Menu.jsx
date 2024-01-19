@@ -50,7 +50,6 @@ function Menu() {
 
   return (
     <div className={cx('wrapper')}>
-      <Search></Search>
       <div className={cx('items')}>
         {items_top.map((value, index) => (
           <button

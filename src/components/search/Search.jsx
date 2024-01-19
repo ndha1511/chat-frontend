@@ -12,8 +12,8 @@ function Search() {
                 <button><FontAwesomeIcon icon={faSearch} /></button>
                 <input placeholder='Tìm kiếm' />
             </div>
-            <button><FontAwesomeIcon icon={faUserPlus} /></button>
-            <button><FontAwesomeIcon icon={faUserGroup} /></button>
+            <button className={cx('btn-add')}><FontAwesomeIcon icon={faUserPlus} /></button>
+            <button className={cx('btn-add')}><FontAwesomeIcon icon={faUserGroup} /></button>
         </div>
     );
 }
