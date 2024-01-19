@@ -4,13 +4,14 @@
     width: 70%;
     height: auto;
     // border : 1px solid black;
+    
    
 }
 .top{
     display: flex;
     width: 100%;
     height: 10%;
-    border-left : 1px solid #BCAAA4;
+    // border-left : 1px solid #BCAAA4;
     border-bottom : 1px solid #BCAAA4;
     flex-direction: row;
     justify-content: flex-start;
@@ -34,7 +35,7 @@
 .center{
     display: flex;
     background-color: #ECEFF1;
-    border-left: 1px solid #BCAAA4;
+    // border-left: 1px solid #BCAAA4;
     width: 100%;
     height: 100%;
     flex-direction: column;
