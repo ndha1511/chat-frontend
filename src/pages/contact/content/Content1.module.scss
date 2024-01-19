@@ -1,4 +1,5 @@
 .wrapper {
+
   display: flex;
   flex-direction: column;
   width: 70%;
@@ -16,6 +17,25 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: auto;
+    // border : 1px solid black;
+    
+   
+}
+.top{
+    display: flex;
+    width: 100%;
+    height: 10%;
+    // border-left : 1px solid #BCAAA4;
+    border-bottom : 1px solid #BCAAA4;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
 }
 
 .icon {
@@ -33,6 +53,7 @@
   color: #263238;
 
 }
+
 
 .center {
   display: flex;
@@ -69,6 +90,30 @@
   &:hover {
     overflow-y: scroll; // Hiển thị thanh cuộn khi hover
   }
+
+
+.center{
+    display: flex;
+    background-color: #ECEFF1;
+    // border-left: 1px solid #BCAAA4;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    
+    //  flex-grow: 1;
+//   overflow: auto;
+}
+.text1{
+    font-size: 16px;
+    white-space: nowrap;
+    /* Ngăn chữ xuống dòng */
+    width: 100%;
+    height: auto;
+    font-weight: 600;
+    color: #263238;
+    margin-top: 20px;
+    margin-left: 15px;
 
 }
 

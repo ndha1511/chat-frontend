@@ -32,3 +32,10 @@
    margin-top: 15px;
    
 }
+.btn-add {
+    height: 30px;
+    width: 30px;
+    &:hover {
+        background-color: gainsboro;
+    }
+}
