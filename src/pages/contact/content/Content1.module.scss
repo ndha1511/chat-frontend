@@ -1,4 +1,23 @@
 .wrapper {
+
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: auto;
+  // border : 1px solid black;
+
+}
+
+.top {
+  display: flex;
+  width: 100%;
+  height: 10%;
+  border-left: 1px solid #BCAAA4;
+  border-bottom: 1px solid #BCAAA4;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
     display: flex;
     flex-direction: column;
     width: 70%;
@@ -16,22 +35,63 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+
 }
+
 .icon {
-    padding:10px;
-    font-size: 25px;
+  padding: 10px;
+  font-size: 25px;
 }
 
 .text {
-    font-size: 18px;
-    white-space: nowrap;
-    /* Ngăn chữ xuống dòng */
-    width: 100%;
-    height: auto;
-    font-weight: 600;
-    color: #263238;
+  font-size: 18px;
+  white-space: nowrap;
+  /* Ngăn chữ xuống dòng */
+  width: 100%;
+  height: auto;
+  font-weight: 600;
+  color: #263238;
 
 }
+
+
+.center {
+  display: flex;
+  background-color: #ECEFF1;
+  border-left: 1px solid #BCAAA4;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  overflow-y: scroll; // Điều này sẽ luôn hiển thị thanh cuộn dọc
+  max-height: 100%; // Điều chỉnh chiều cao tối đa theo thiết kế của bạn
+  position: relative;
+
+
+  /* Thêm kiểu dáng để làm cho nó hình tròn */
+  &::-webkit-scrollbar {
+    width: 8px;
+    /* Điều chỉnh kích thước chiều rộng của thanh cuộn */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Màu nền của thanh cuộn */
+    border-radius: 8px;
+    /* Làm cho thanh cuộn hình tròn */
+    // height: 50px; /* Điều chỉnh chiều cao của thanh cuộn */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    /* Màu nền của vùng chứa thanh cuộn */
+  }
+
+  &:hover {
+    overflow-y: scroll; // Hiển thị thanh cuộn khi hover
+  }
+
+
 .center{
     display: flex;
     background-color: #ECEFF1;
@@ -54,176 +114,259 @@
     color: #263238;
     margin-top: 20px;
     margin-left: 15px;
+
 }
-.content{
-    background-color: white;
- 
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-    margin-left: 15px;
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    max-height: 100%; // Set a fixed height for the content area
-    overflow-y: auto; // Enable vertical scrollbar when content overflows
-    scrollbar-width:5px;
-  
-    //   border : 1px solid black;
+
+.text1 {
+  font-size: 16px;
+  white-space: nowrap;
+  /* Ngăn chữ xuống dòng */
+  width: 100%;
+  height: auto;
+  font-weight: 600;
+  color: #263238;
+  margin-top: 20px;
+  margin-left: 15px;
 }
-.top1{
+
+.content {
+  background-color: white;
+
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  margin-left: 15px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  // max-height: 100%; // Set a fixed height for the content area
+  // overflow-y: auto; // Enable vertical scrollbar when content overflows
+  // scrollbar-width:5px;
+
+  //   border : 1px solid black;
+}
+
+.top1 {
   //  border : 1px solid black;
-    display: flex;
-    width: 80%;
-    height: 7%;
- 
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  width: 80%;
+  height: 7%;
+
+  align-items: center;
+  justify-content: space-between;
 }
-.search{
-    border : 1px solid #CFD8DC;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 7px;
-    width: 37%;
-    height: 80%;
-    padding: 7px;
+
+.search {
+  border: 1px solid #CFD8DC;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 7px;
+  width: 37%;
+  height: 80%;
+  padding: 7px;
 }
+
 .input {
-    border: none; /* Ẩn border của input */
-    outline: none; /* Ẩn outline khi input được chọn */
-    box-shadow: none; /* Ẩn box shadow khi input được chọn */
-    width: 80%;
-    white-space: nowrap;
-    height: auto;
+  border: none;
+  /* Ẩn border của input */
+  outline: none;
+  /* Ẩn outline khi input được chọn */
+  box-shadow: none;
+  /* Ẩn box shadow khi input được chọn */
+  width: 80%;
+  white-space: nowrap;
+  height: auto;
+}
+
+.iconSearch {
+  margin-right: 10px;
+  border-color: #ECEFF1;
+}
+.clearButton{
+  background-color: white;
+  margin-left: 17px;
+}
+
+.locName {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 7px;
+  width: 100%;
+  height: 80%;
+  white-space: nowrap;
+  background-color: #CFD8DC;
+  border: none;
+  padding: 7px;
+  // cursor: pointer; // Thêm điểm chạm để biểu thị có thể nhấp chuột
+
+
+
+}
+
+.iconLocName {
+  margin-right: 10px;
+  border-color: #ECEFF1;
+}
+
+.optionName {
+  width: 89%;
+  height: auto;
+  border: none;
+  /* Ẩn border của input */
+  outline: none;
+  /* Ẩn outline khi input được chọn */
+  box-shadow: none;
+  /* Ẩn box shadow khi input được chọn */
+  background-color: #CFD8DC;
+  overflow: hidden;
+
+
+}
+
+.center1 {
+  margin-top: 20px;
+  //  border : 1px solid black;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  //   overflow: hidden;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  .a {
+    margin-bottom: 15px;
   }
-.iconSearch{
-    margin-right: 10px;
-    border-color: #ECEFF1;
 }
-.locName{
-    border : 1px solid black;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 7px;
-    width: 30%;
-    height: 80%;
-    white-space: nowrap;
-    background-color: #CFD8DC;
-    border: none;
-    padding: 7px;
-    // cursor: pointer; // Thêm điểm chạm để biểu thị có thể nhấp chuột
 
-    &:hover {
-      background-color: #90A4AE; // Màu khi hover
-      color: #FFFFFF; // Màu chữ khi hover
-  
-      .iconLocName, .optionName {
-        color: #FFFFFF; // Màu của icon và chữ khi hover
-        background-color: #90A4AE; // Màu khi hover
-      }
+.data1 {
+  // border : 1px solid black;
+  display: flex;
+  flex-direction: row;
+  // margin-top: 15px;
+  width: 100%;
+  height: 80px;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+
+  &:hover {
+    background-color: #F5F5F5; // Màu khi hover
+    //color: #FFFFFF; // Màu chữ khi hover
+
+    .button {
+      color: grey; // Màu của icon và chữ khi hover
+      background-color: #F5F5F5; // Màu khi hover
     }
-  
-    &:active {
-      background-color: #607D8B; // Màu khi click
-      color: #FFFFFF; // Màu chữ khi click
-  
-      .iconLocName, .optionName {
-        color: #FFFFFF; // Màu của icon và chữ khi click
-        background-color: #607D8B; // Màu khi 
-      }
-    }
-    
-}
-
-.iconLocName{
-    margin-right: 10px;
-    border-color: #ECEFF1;
-}
-
-.optionName{
-    width: 89%;
-    height: auto;
-    border: none; /* Ẩn border của input */
-    outline: none; /* Ẩn outline khi input được chọn */
-    box-shadow: none; /* Ẩn box shadow khi input được chọn */
-    background-color: #CFD8DC;
-    overflow: hidden;
-
-    
-}
-.center1{
-    margin-top: 20px;
-    //  border : 1px solid black;
-      display: flex;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    //   overflow: hidden;
   }
-.data{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    .a{
-        margin-bottom: 15px;
+
+  &:active {
+    background-color: #F5F5F5; // Màu khi click
+    color: #FFFFFF; // Màu chữ khi click
+
+    .button {
+      color: #FFFFFF; // Màu của icon và chữ khi click
+      background-color: #F5F5F5; // Màu khi 
     }
-}
-.data1{
+  }
+
+  .img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50px;
+
+  }
+
+  .aa {
     // border : 1px solid black;
     display: flex;
     flex-direction: row;
-    // margin-top: 15px;
     width: 100%;
     height: 80px;
     align-items: center;
     justify-content: space-between;
-    background-color: white;
-    &:hover {
-      background-color: #90A4AE; // Màu khi hover
-      color: #FFFFFF; // Màu chữ khi hover
-  
-      .button {
-        color: grey; // Màu của icon và chữ khi hover
-        background-color:#90A4AE  ; // Màu khi hover
-      }
+    padding: 10px;
+    border-bottom: 1px solid #BCAAA4;
+    ;
+
+    button {
+      background-color: #FFFFFF;
     }
-  
-    &:active {
-      background-color: #607D8B; // Màu khi click
-      color: #FFFFFF; // Màu chữ khi click
-  
-      .button {
-        color: #FFFFFF; // Màu của icon và chữ khi click
-        background-color: #607D8B; // Màu khi 
-      }
-    }
-    .img{
-      width: 60px;
-      height: 60px;
-      border-radius: 50px;
-      
-    }
-    .aa{
-        // border : 1px solid black;
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        height: 80px;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px;
-        border-bottom: 1px solid #BCAAA4;;
-       button{
-        background-color: #FFFFFF;
-       }
-    }
-    
+  }
+
 }
-  
+
+.dropdown {
+  position: relative;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 7px;
+  width: 30%;
+  height: 80%;
+  white-space: nowrap;
+  background-color: #CFD8DC;
+  border: none;
+  padding: 7px;
+
+  &:hover {
+    background-color: #90A4AE; // Màu khi hover
+   // color: #FFFFFF; // Màu chữ khi hover
+
+    .locName,
+    .iconLocName,
+    .optionName {
+    //  color: #FFFFFF; // Màu của icon và chữ khi hover
+      background-color: #90A4AE; // Màu khi hover
+    }
+  }
+
+  &:active {
+    background-color: #607D8B; // Màu khi click
+   // color: #FFFFFF; // Màu chữ khi click
+
+    .locName,
+    .iconLocName,
+    .optionName {
+      // color: #FFFFFF; // Màu của icon và chữ khi click
+      background-color: #607D8B; // Màu khi 
+    }
+  }
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  /* Hiển thị menu bên dưới nút */
+  left: 0;
+  background-color: #fff;
+  /* Màu nền của menu */
+  border: 1px solid #ccc;
+  padding: 10px;
+  flex-direction: column;
+  button{
+    background-color: white;
+    display: flex;
+    justify-content: start;
+  }
+}
+
+/* Hiển thị menu khi trạng thái isMenuVisible là true */
+.dropdown-menu.visible {
+  display: flex;
+}
