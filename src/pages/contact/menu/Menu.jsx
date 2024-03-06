@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Menu.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAddressCard, faEnvelope, faLifeRing } from '@fortawesome/free-regular-svg-icons';
+import { faAddressCard, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
-import Search from '../../../components/search/Search';
 
 
 

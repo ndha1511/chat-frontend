@@ -20,7 +20,6 @@ function App() {
                     Layout = Fragment;
                 return (
                     <Route key={index} path={route.path} element={
-
                         <Layout  menu = {route.menu}>
                             <Page/>
                         </Layout>

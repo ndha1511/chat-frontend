@@ -5,29 +5,7 @@ import classNames from 'classnames/bind';
 
 
 const cx = classNames.bind(styles);
-const chat_rooms = [
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-    { name: 'test' },
-]
+
 
 function Home() {
     return (

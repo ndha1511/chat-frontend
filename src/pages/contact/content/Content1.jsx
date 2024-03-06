@@ -2,7 +2,7 @@ import styles from './Content1.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
-import { faArrowDown, faArrowDownUpLock, faArrowsUpDown, faChevronDown, faEllipsisH, faFilter, faMagnifyingGlass, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsUpDown, faChevronDown, faEllipsisH, faFilter, faMagnifyingGlass, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 
 const cx = classNames.bind(styles);
