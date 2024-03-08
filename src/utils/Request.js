@@ -1,20 +1,23 @@
 import axios from 'axios'
 
-export default function requestApi(endpoint, method, body, responseType = 'json', isInterceptors) {
+export default function requestApi(endpoint, method, body, isInterceptors) {
     const headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
     }
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('token');
     const instance = axios.create({ headers, baseURL: "http://localhost:8080/api/v1" });
 
     if (isInterceptors) {
         instance.interceptors.request.use(
             (config) => {
-                if (token) {
-                    const { token } = JSON.parse(token);
-                    config.headers['Authorization'] = `Bearer ${token}`
+                if(!config.url.includes("/refreshToken")) {
+                    if (token) {
+                        const tokenRequest = JSON.parse(token);
+                        config.headers['Authorization'] = `Bearer ${tokenRequest.token}`;
+                        console.log(config.headers['Authorization'])
+                    }
                 }
                 return config;
             },
@@ -32,12 +35,13 @@ export default function requestApi(endpoint, method, body, responseType = 'json'
                 console.log("Access token expired")
                 if (error.response && error.response.status === 403) {
                     try {
-                        console.log("call refresh token api")
+                        
                         if (token) {
-                            const { refreshToken } = JSON.parse(token);
-                            const result = await instance.post(`/auth/refreshToken`, { refreshToken })
+                            const tokenRequest = JSON.parse(token);
+                            const result = await instance.post(`/auth/refreshToken`, { refreshToken: tokenRequest.refreshToken })
                             const newToken = result.data;
                             localStorage.setItem('token', JSON.stringify(newToken));
+                            console.log("set new token", newToken);
                             originalConfig.headers['Authorization'] = `Bearer ${newToken.token}`;
 
                             return instance(originalConfig);
@@ -61,6 +65,6 @@ export default function requestApi(endpoint, method, body, responseType = 'json'
         method: method,
         url: `${endpoint}`,
         data: body,
-        responseType: responseType
+        responseType: 'json'
     })
 }

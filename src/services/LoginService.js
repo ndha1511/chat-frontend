@@ -6,14 +6,19 @@ export const login = async (phoneNumber, password) => {
     }
     try {
         const response = await requestApi("/auth/login", "POST", body, false);
-        const token = response.data;
-        localStorage.setItem("token", JSON.stringify(token));
         return response.data;
     } catch (error) {
         return Promise.reject(error);
     }
+
 }
 
-export const getUserInfo = async (phoneNumber) => {
-    
+export const checkLogin = () => {
+    const user = localStorage.getItem("user");
+    if(user) {
+        return JSON.parse(user);
+    } else {
+        return false;
+    }
 }
+
