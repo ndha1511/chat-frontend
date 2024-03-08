@@ -1,92 +1,27 @@
+import { useEffect, useState } from 'react';
 import styles from './Chats.module.scss';
 import classNames from 'classnames/bind';
+import { useNavigate } from 'react-router-dom';
+import { checkLogin } from '../../services/LoginService';
+import { getRoomsBySenderId } from '../../services/RoomService';
 
 const cx = classNames.bind(styles);
 
-const chats = [
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
-    {
-        receivernName: 'Cloud của tôi', 
-        avatar: 'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
-        newMessage: 'This is message',
-        mySend: true,
-        time: '2024-01-18'
-    },
 
-
-  
-]
 
 function Chats() {
+    const [rooms, setRooms] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const userLogin = checkLogin();
+        if(userLogin) {
+           getRoomsBySenderId(userLogin.id).then((resp) => {
+                setRooms(() => [...rooms, ...resp]);
+           }).catch(() => navigate('/'))
+        }
+        else navigate('/login');
+    }, [])
     return ( 
         <div className={cx("wrapper")}>
             <div className={cx("header")}>
@@ -94,7 +29,7 @@ function Chats() {
                 <button>Chưa đọc</button>
             </div>
             <div className={cx("chats")}>
-                {chats.map((value, index) => (
+                {rooms.length > 0 ? rooms.map((value, index) => (
                     <button key={index}>
                         <img src={value.avatar} alt='avatar' width={60} height={60}/>
                         <div className={cx("chat")}>
@@ -107,7 +42,8 @@ function Chats() {
                             </div>
                         </div>
                     </button>
-                ))}
+                )):
+                <div>Bạn chưa có tin nhắn nào, hãy kết bạn để chat thêm với nhiều người</div>}
             </div>
         </div>
     );
