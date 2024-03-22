@@ -51,6 +51,7 @@
     padding: 20px;
     min-height: 60vh;
     display: flex;
+    flex-direction: column;
     label {
        width: 100%; 
        input {
@@ -65,8 +66,7 @@
 }
 
 .modal-button {
- 
     height: 40px;
-    font-size: 15px;
+    width: 80px;
 }
 

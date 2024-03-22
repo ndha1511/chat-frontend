@@ -21,13 +21,16 @@ function Login() {
             localStorage.setItem("token", JSON.stringify(token));
             getUserInfo(phoneNumber).then((resp) => {
                 localStorage.setItem("user", JSON.stringify(resp));
+                navigate("/");
             }).catch(() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
+                setErr("số điện thoại hoặc mật khẩu không chính xác");
+                return;
             });
-            navigate("/");
         }).catch(() => {
             setErr("số điện thoại hoặc mật khẩu không chính xác");
+            return;
         })
     }
 

@@ -9,3 +9,12 @@ export const getUserInfo = async (phoneNumber) => {
     }
     
 }
+
+export const getUserById = async (userId) => {
+    try {
+        const response = await requestApi(`/users/id/${userId}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

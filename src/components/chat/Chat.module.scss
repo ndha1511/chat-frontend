@@ -3,8 +3,32 @@
     flex-direction: column;
     flex: 1;
     height: auto;
+    width: 72.2vw;
     
 }
+.avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: none;
+    border: 0.5px solid #fff;
+    margin-bottom: 20px;
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+    span {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        padding-right: 5px;
+        color: aliceblue;
+        // font-weight: bold;
+        font-size: 25px;
+    }
+}
+
 
 .header {
     display: flex;
@@ -70,20 +94,12 @@
 
 .message {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: column-reverse;
+    // justify-content: flex-end;
     background: linear-gradient(90deg, rgba(238, 237, 174, 1) 52%, rgba(234, 233, 191, 1) 78%, rgba(191, 188, 127, 1) 98%);
     overflow-y: auto;
     // max-height: 70%;
     flex: 1;
-}
-
-.content {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    flex: 1;
-    padding: 15px;
     &::-webkit-scrollbar {
         width: 10px;
        
@@ -93,6 +109,16 @@
         background-color: gainsboro;
         border-radius: 6px;
       }
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    // justify-content: flex-end;
+    overflow-y: auto;
+    flex: 1;
+    padding: 15px;
+
    
 }
 
