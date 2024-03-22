@@ -8,3 +8,12 @@ export const getRoomsBySenderId = async (senderId) => {
         return Promise.reject(error);
     }
 }
+
+export const getRoomBySenderIdAndReceiverId = async (senderId, receiverId) => {
+    try {
+        const response = await requestApi(`/rooms/findBySenderIdAndReceiverId?sender=${senderId}&receiver=${receiverId}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
