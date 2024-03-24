@@ -1,0 +1,83 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.box-register {
+  width: 500px;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: white;
+}
+
+.register-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  label {
+    position: relative;
+    margin-bottom: 20px;
+    border-bottom: 1px solid gray ;
+    border-radius: 8px;
+
+    .icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #007bff;
+  
+    }
+
+    input, select {
+      width: calc(100% - 20px); /* Giảm padding để input trông giống nhau */
+      padding: 10px;
+      padding-left: 50px; /* Để tạo chỗ cho icon */
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+
+      &:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+    }
+  }
+
+  button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+p {
+  margin-top: 20px;
+}
