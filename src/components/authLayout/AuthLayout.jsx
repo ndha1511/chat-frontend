@@ -4,10 +4,10 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
 
-function AuthLayout() {
+function AuthLayout({children}) {
     return (
         <div className={cx("wrapper")}>
-            <Login/>
+            {children}
         </div>
     );
 }
