@@ -16,7 +16,7 @@ function Search() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [notFound, setNotFound] = useState('');
 
-    const handleClose = () => { setShow(false); setUserSearch({}); setNotFound(''); };
+    const handleClose = () => { setShow(false); setUserSearch({}); setNotFound(''); setPhoneNumber(''); };
     const handleShow = () => setShow(true);
     const searchUser = () => {
         if (phoneNumber) {

@@ -11,6 +11,8 @@ import { getMessageByRoomId } from '../../services/MessageService';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { reRender } from '../../redux/reducers/renderReducer';
 import { sendMessage } from '../defaultLayout/DefaultLayout';
+import { reRenderRoom } from '../../redux/reducers/renderRoom';
+import { sendMessageToUser } from '../../services/ChatService';
 
 const cx = classNames.bind(styles);
 
@@ -68,6 +70,16 @@ function Chat() {
         )
 
     }
+    const saveScrollPosition = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
+    const restoreScrollPosition = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
 
     const convertMessage = (message) => {
         switch (message.type) {
@@ -77,15 +89,19 @@ function Chat() {
     }
     const loadMoreMessage = () => {
         const nextPage = currentPage + 1;
-        if(nextPage <= totalPage) {
+        if (nextPage < totalPage) {
             getMessageByRoomId(chatInfo.roomId, nextPage)
-                .then(resp => {                    
+                .then(resp => {
+                    const chatContainer = contentRef.current;
+                    const previousScrollRatio = chatContainer.scrollTop / (chatContainer.scrollHeight - chatContainer.clientHeight);
                     setMessages((prev) => [...resp.messages.reverse(), ...prev]);
                     setCurrentPage(nextPage);
+                    const newScrollTop = previousScrollRatio * (chatContainer.scrollHeight - chatContainer.clientHeight);
+                    chatContainer.scrollTop = newScrollTop;
                 })
                 .catch(err => console.log(err));
         } else {
-            setLoadMore(false); 
+            setLoadMore(false);
         }
 
     }
@@ -97,8 +113,11 @@ function Chat() {
         if ("roomId" in chatInfo) {
             getMessageByRoomId(chatInfo.roomId)
                 .then(resp => {
+                    setCurrentPage(0);
+                    setLoadMore(true);
                     setMessages(() => resp.messages.reverse());
                     setTotalPage(resp.totalPage);
+                    setScroll(!scroll);
                 })
                 .catch(err => console.log(err));
         } else {
@@ -112,19 +131,25 @@ function Chat() {
         }
     }, [scroll])
 
+
     const sendTextMessage = () => {
         setTextMessage("");
         const msg = {
             senderId: sender.id,
-            receiverId: chatInfo.id,
+            receiverId: chatInfo.receiverId,
             content: textMessage,
             messageType: "TEXT",
             messageStatus: "SENT"
         }
-        setMessages(prev => [...prev, msg]);
-        sendMessage(msg);
-        setScroll(!scroll);
-        // dispatch(reRender());
+
+        sendMessageToUser(msg)
+            .then(resp => {
+                setMessages(prev => [...prev, resp]);
+                setScroll(!scroll);
+                dispatch(reRenderRoom(chatInfo.roomId));
+            })
+            .catch(err => console.log(err));
+
     }
     return (
         <div className={cx("wrapper")}>
@@ -154,20 +179,20 @@ function Chat() {
                 </div>
             </div>
             <div className={cx("message")} id='scrollMsg' ref={contentRef}>
-               
-                    <InfiniteScroll dataLength={messages.length}
-                        style={{ display: 'flex', flexDirection: 'column' }}
-                        className={cx("content")}
-                        inverse={true}
-                        hasMore={loadMore}
-                        scrollableTarget="scrollMsg"
-                        next={loadMoreMessage}
-                    >
-                        {messages.map((message, index) => (
-                            RenderMessages(message, index)
-                        ))}
-                    </InfiniteScroll>
-               
+
+                <InfiniteScroll dataLength={messages.length}
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                    className={cx("content")}
+                    inverse={true}
+                    hasMore={loadMore}
+                    scrollableTarget="scrollMsg"
+                    next={loadMoreMessage}
+                >
+                    {messages.map((message, index) => (
+                        RenderMessages(message, index)
+                    ))}
+                </InfiniteScroll>
+
             </div>
             <div className={cx("footer")}>
                 <div className={cx("options")}>

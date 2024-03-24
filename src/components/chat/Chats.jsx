@@ -19,29 +19,23 @@ function Chats() {
     const [roomInfo, setRoomInfo] = useState([]);
     const dispatch = useDispatch();
     const userLogin = checkLogin();
-    const isRender = useSelector((state) => state.render.renderResult);
+    const isRender = useSelector((state) => state.room.renderResult);
+    const [totalPageRoom, setTotalPageRoom] = useState(1);
+    const [currentRoom, setCurrentRoom] = useState(0);
+    const [active, setActive] = useState(isRender.roomId);
 
     useEffect(() => {
         if (userLogin) {
             getRoomsBySenderId(userLogin.id).then((resp) => {
-                setRooms(() => resp);
+                setRooms(() => resp.roomResponses);
+                setTotalPageRoom(resp.totalPage);
+                setActive(isRender.roomId);
             }).catch((err) => console.log(err));
         }
         else navigate('/login');
-    }, [])
+    }, [isRender])
 
-    useEffect(() => {
-        rooms.forEach((room) => {
-            if (room.roomType === "SINGLE_CHAT") {
-                getUserById(room.receiverId)
-                    .then(resp => {
-                        const roomData = { ...room, ...resp };
-                        setRoomInfo((prev) => [...prev, roomData]);
-                    })
-                    .catch(err => { console.log(err); return; })
-            }
-        });
-    }, [rooms])
+    
 
     function arrayToDateTime(arr) {
         // Kiểm tra xem mảng có ít nhất 6 phần tử không (năm, tháng, ngày, giờ, phút, giây)
@@ -70,8 +64,12 @@ function Chats() {
                 <button>Chưa đọc</button>
             </div>
             <div className={cx("chats")}>
-                {roomInfo.length > 0 ? roomInfo.map((value, index) => (
-                    <button key={index} onClick={() => dispatch(setChatInfo(value))}>
+                {rooms.length > 0 ? rooms.map((value, index) => (
+                    <button key={index} onClick={() => {dispatch(setChatInfo(value)); setActive(value.roomId)}}
+                        style={{
+                            backgroundColor: active === value.roomId ? "gainsboro" : ""
+                        }}
+                    >
                         {value.avatar !== null ? <img src={value.avatar} alt='avatar' width={50} height={50} /> :
                             <div style={{
                                 backgroundColor: getColorForName(value.name),
@@ -85,12 +83,24 @@ function Chats() {
 
                         <div className={cx("chat")}>
                             <div className={cx("chat_info")}>
-                                <span>{value.name}</span>
+                                <span style={{fontWeight: value.numberOfUnreadMessage > 0 ? "bold" : "normal"}}>{value.name}</span>
                                 <p>{arrayToDateTime(value.time).toDateString()}</p>
                             </div>
                             <div className={cx("chat_text")}>
-                                {console.log(value.id, userLogin.id)}
-                                <span>{value.sender ? 'Bạn: ' + value.latestMessage : value.latestMessage}</span>
+                                <span style={{color: value.numberOfUnreadMessage > 0 ? 'black' : 'gray'}}>{value.sender ? (value.latestMessage.length > 30 ? 'Bạn: ' + value.latestMessage.slice(0, 30) + '...' : 'Bạn: ' + value.latestMessage) : 
+                                (value.latestMessage.length > 30 ? value.latestMessage.slice(0, 30) + '...' :  value.latestMessage)
+                                }</span>
+                                {
+                                    value.numberOfUnreadMessage > 0 ? 
+                                    <span style={{color: 'black', 
+                                    width: 20, 
+                                    height: 20, 
+                                    backgroundColor: 'red',
+                                    padding: 1,
+                                    borderRadius: "50%"
+                                }}>{value.numberOfUnreadMessage <= 99 ? value.numberOfUnreadMessage : "N" }</span>
+                                    : <></>
+                                }
                             </div>
                         </div>
                     </button>

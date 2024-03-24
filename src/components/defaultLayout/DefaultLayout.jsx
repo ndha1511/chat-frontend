@@ -4,10 +4,13 @@ import Search from '../search/Search';
 import styles from './DefaultLayout.module.scss';
 import classNames from 'classnames/bind';
 import { useDispatch } from 'react-redux';
-import { reRender } from '../../redux/reducers/renderReducer';
+
 import {over} from "stompjs";
 import SockJS from "sockjs-client";
 import { getDataFromLocalStorage } from '../../utils/LocalStorageHandle';
+import { reRender } from '../../redux/reducers/renderReducer';
+import { reRenderRoom } from '../../redux/reducers/renderRoom';
+
 
 
 
@@ -40,6 +43,7 @@ function DefaultLayout({ children, menu }) {
         
         const onMessageReceived = (payload) => {
             dispatch(reRender());
+            dispatch(reRenderRoom(""));
         }
         
         const onError = (err) => { 
