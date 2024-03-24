@@ -4,6 +4,9 @@ import classNames from 'classnames/bind';
 import { faGear, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { checkLogin } from '../../services/LoginService';
+import { extractName, getColorForName } from '../../utils/ExtractUsername';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +21,8 @@ const items_bot = [
 
 function Navigation() {
     const navigate = useNavigate();
+    const [user, setUser] = useState({});
+    const [colorAvatar, setColorAvatar] = useState('');
     const handleNavigate = (value) => {
         switch(value.tippyText) {
             case 'Tin nhắn': 
@@ -30,11 +35,23 @@ function Navigation() {
         }
 
     }
+    useEffect(() => {
+        const userLogin = checkLogin();
+        if(userLogin) {
+            setUser(userLogin);
+            setColorAvatar(() => getColorForName(userLogin.name));
+        }
+        else navigate('/login');
+    }, []);
     return <div className={cx("wrapper")}>
         
         <div className={cx("items")}>
-            <button className={cx("avatar")}>
-                <img src='https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg' alt='avatar' />
+            
+            <button className={cx("avatar")} style={{backgroundColor: colorAvatar}}>
+                {user.avatar ? 
+                    <img src={user.avatar} alt='avatar' /> :
+                    <span>{extractName(user.name)}</span>
+                }
             </button>
             {items_top.map((value, index) => (
                 <button key={index} className={cx("item")} onClick={() => {handleNavigate(value)}}>

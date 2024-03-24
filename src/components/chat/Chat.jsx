@@ -3,6 +3,16 @@ import styles from './Chat.module.scss';
 import classNames from 'classnames/bind';
 import { faImage, faNoteSticky, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faBorderAll, faMagnifyingGlass, faPaperclip, faPhone, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { extractName, getColorForName } from '../../utils/ExtractUsername';
+import { useEffect, useRef, useState } from 'react';
+import { getDataFromLocalStorage } from '../../utils/LocalStorageHandle';
+import { getMessageByRoomId } from '../../services/MessageService';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { reRender } from '../../redux/reducers/renderReducer';
+import { sendMessage } from '../defaultLayout/DefaultLayout';
+import { reRenderRoom } from '../../redux/reducers/renderRoom';
+import { sendMessageToUser } from '../../services/ChatService';
 
 const cx = classNames.bind(styles);
 
@@ -19,260 +29,140 @@ const optionButtons = [
     { tippyText: 'Đính kèm file', icon: faPaperclip }
 ]
 
-const chatMessages = [
-    {
-        senderId: '1',
-        receiverId: '2',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '1',
-        receiverId: '2',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '1',
-        receiverId: '2',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Test message'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '2',
-        receiverId: '1',
-        content: {
-            message: 'Voting Rights News — A magazine covering the nuts and bolts of power and political change, from the local up. New in Bolts: SCOTUS refuses to empower state legislatures to run elections as they please'
-        },
-        type: 'text'
-    },
-    {
-        senderId: '1',
-        receiverId: '2',
-        content: {
-            message: 'Twelve Republican senators joined Democrats in voting in favor of a same-sex marriage bill on Tuesday, a share that would have been all but imaginable a decade ago that shows how internal party divisions have grown on the issue. The bill, the Respect for Marriage Act, would require states to recognize same-sex marriages and repeal 1996′s Defense of Marriage Act, which defined marriage as being between a man and a woman. Since the early 2000s, both Democrats and Republicans have become more likely to say they support same-sex marriage. Just since 2015, the share of adults in favor of same-sex marriages has risen from 60 percent to 70 percent in 2021. This is also true among white Evangelical Protestants, who make up a major block of Republican voters and are known to turn out in primary elections to support candidates who share their views. Republican supporters argued the proposed legislation would protect religious liberty and, as Sen. Romney (R-Utah) said, show that “Congress — and I — esteem and love all of our fellow Americans equally.” Sen. Mike Lee (R-Utah) said on Tuesday, “I’m not aware of a single state in the United States threatening to pass any law infringing on the ability of same-sex couples to enjoy privileges associated with same-sex marriage.”'
-        },
-        type: 'text'
-    },
 
 
-]
 
-const RenderMessages = (message, index) => {
-    if (message.senderId === '1') {
-        if (message.type === 'text')
-            return (
-                <div className={cx("message-text")} key={index} style={{justifyContent: 'flex-end'}}>
-                    <div>
-                        {message.content.message}
-                    </div>
-                </div>
-            )
-    }
-    if (message.type === 'text')
-        return (
-            <div className={cx("message-text")} style={{justifyContent: 'flex-start'}} key={index}>
-                <img alt='avatar' src='https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg'/>
-                <div>
-                    {message.content.message}
-                </div>
-            </div>
-        )
-}
 
 
 
 
 function Chat() {
+    const sender = getDataFromLocalStorage("user");
+    const chatInfo = useSelector((state) => state.message.chatInfo);
+    const dispatch = useDispatch();
+    const [textMessage, setTextMessage] = useState('');
+    const [showButtonSend, setShowButtonSend] = useState(true);
+    const [messages, setMessages] = useState([]);
+    const contentRef = useRef(null);
+    const isRender = useSelector((state) => state.render.renderResult);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(1);
+    const [scroll, setScroll] = useState(false);
+    const [loadMore, setLoadMore] = useState(true);
+
+    const RenderMessages = (message, index) => {
+        if (message.senderId === sender.id) {
+            return (
+                <div className={cx("message-text")} key={index} style={{ justifyContent: 'flex-end' }}>
+                    <div>
+                        {message.content}
+                    </div>
+                </div>
+            )
+        }
+        return (
+            <div className={cx("message-text")} style={{ justifyContent: 'flex-start' }} key={index}>
+                <img alt='avatar' src='https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg' />
+                <div>
+                    {message.content}
+                </div>
+            </div>
+        )
+
+    }
+    const saveScrollPosition = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
+    const restoreScrollPosition = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
+
+    const convertMessage = (message) => {
+        switch (message.type) {
+            case "TEXT":
+
+        }
+    }
+    const loadMoreMessage = () => {
+        const nextPage = currentPage + 1;
+        if (nextPage < totalPage) {
+            getMessageByRoomId(chatInfo.roomId, nextPage)
+                .then(resp => {
+                    const chatContainer = contentRef.current;
+                    const previousScrollRatio = chatContainer.scrollTop / (chatContainer.scrollHeight - chatContainer.clientHeight);
+                    setMessages((prev) => [...resp.messages.reverse(), ...prev]);
+                    setCurrentPage(nextPage);
+                    const newScrollTop = previousScrollRatio * (chatContainer.scrollHeight - chatContainer.clientHeight);
+                    chatContainer.scrollTop = newScrollTop;
+                })
+                .catch(err => console.log(err));
+        } else {
+            setLoadMore(false);
+        }
+
+    }
+
+    const changeTextMessage = (e) => {
+        setTextMessage(e.target.value)
+    }
+    useEffect(() => {
+        if ("roomId" in chatInfo) {
+            getMessageByRoomId(chatInfo.roomId)
+                .then(resp => {
+                    setCurrentPage(0);
+                    setLoadMore(true);
+                    setMessages(() => resp.messages.reverse());
+                    setTotalPage(resp.totalPage);
+                    setScroll(!scroll);
+                })
+                .catch(err => console.log(err));
+        } else {
+            setMessages([]);
+        }
+    }, [chatInfo, isRender])
+    useEffect(() => {
+        if (contentRef.current) {
+            const contentElement = contentRef.current;
+            contentElement.scrollTop = contentElement.scrollHeight;
+        }
+    }, [scroll])
+
+
+    const sendTextMessage = () => {
+        setTextMessage("");
+        const msg = {
+            senderId: sender.id,
+            receiverId: chatInfo.receiverId,
+            content: textMessage,
+            messageType: "TEXT",
+            messageStatus: "SENT"
+        }
+
+        sendMessageToUser(msg)
+            .then(resp => {
+                setMessages(prev => [...prev, resp]);
+                setScroll(!scroll);
+                dispatch(reRenderRoom(chatInfo.roomId));
+            })
+            .catch(err => console.log(err));
+
+    }
     return (
         <div className={cx("wrapper")}>
             <div className={cx("header")}>
-                <img src='https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg' alt='avatar' />
+                <button className={cx("avatar")} style={{ backgroundColor: getColorForName(chatInfo.name) }}>
+                    {chatInfo.avatar ?
+                        <img src={chatInfo.avatar} alt='avatar' /> :
+                        <span>{extractName(chatInfo.name)}</span>
+                    }
+                </button>
                 <div className={cx("navbar")}>
                     <div className={cx("info")}>
-                        <p>Cloud của tôi</p>
+                        <p>{chatInfo.name}</p>
                         <button className={cx("btn-edit")}>
                             <FontAwesomeIcon icon={faPenToSquare} />
                         </button>
@@ -288,12 +178,21 @@ function Chat() {
 
                 </div>
             </div>
-            <div className={cx("message")}>
-                <div className={cx("content")}>
-                    {chatMessages.map((message, index) => {
-                        return RenderMessages(message, index);
-                    })}
-                </div>
+            <div className={cx("message")} id='scrollMsg' ref={contentRef}>
+
+                <InfiniteScroll dataLength={messages.length}
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                    className={cx("content")}
+                    inverse={true}
+                    hasMore={loadMore}
+                    scrollableTarget="scrollMsg"
+                    next={loadMoreMessage}
+                >
+                    {messages.map((message, index) => (
+                        RenderMessages(message, index)
+                    ))}
+                </InfiniteScroll>
+
             </div>
             <div className={cx("footer")}>
                 <div className={cx("options")}>
@@ -324,7 +223,8 @@ function Chat() {
                     })}
                 </div>
                 <div className={cx("text-input")}>
-                    <textarea placeholder='Nhập tin nhắn gửi tới Cloud của tôi'/>
+                    <textarea placeholder={`Nhập tin nhắn gửi tới ${chatInfo.name}`} value={textMessage} onChange={changeTextMessage} />
+                    <button onClick={sendTextMessage}>Gửi</button>
                 </div>
             </div>
         </div>);

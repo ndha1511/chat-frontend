@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faMobileScreenButton } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import { login } from '../../services/LoginService';
+import { getUserInfo } from '../../services/UserService';
 
 const cx = classNames.bind(styles);
 function Login() {
@@ -15,22 +16,33 @@ function Login() {
     const [disabledButton, setDissabledButton] = useState(true);
     const handleLogin = () => {
        
-        login(phoneNumber, password).then(() => {
-            navigate("/");
+        login(phoneNumber, password).then((response) => {
+            const token = response;
+            localStorage.setItem("token", JSON.stringify(token));
+            getUserInfo(phoneNumber).then((resp) => {
+                localStorage.setItem("user", JSON.stringify(resp));
+                navigate("/");
+            }).catch(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                setErr("số điện thoại hoặc mật khẩu không chính xác");
+                return;
+            });
         }).catch(() => {
             setErr("số điện thoại hoặc mật khẩu không chính xác");
+            return;
         })
     }
 
-    const isDisabledButton = () => {
-        if(phoneNumber.trim().length < 10 || password.trim().length < 6) {
-            setDissabledButton(true);
-        } else 
-            setDissabledButton(false);
-
-    }
 
     useEffect(() => {
+        const isDisabledButton = () => {
+            if(phoneNumber.trim().length < 10 || password.trim().length < 6) {
+                setDissabledButton(true);
+            } else 
+                setDissabledButton(false);
+    
+        }
         isDisabledButton();
     }, [phoneNumber, password]);
     return (
@@ -58,6 +70,7 @@ function Login() {
                             
                         }}/>
                     </label>
+                    <span style={{color: 'red'}}>{err}</span>
                     <button onClick={handleLogin} disabled={disabledButton}>Đăng nhập</button>
                     <Link to='/login/#' style={{marginTop: 20}}>Quên mật khẩu?</Link>
                 </div>
