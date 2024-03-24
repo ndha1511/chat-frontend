@@ -91,6 +91,7 @@
 .chat_text {
     width: 100%;
     display: flex;
+    justify-content: space-between;
     span {
         font-size: 14px;
         color: gray;

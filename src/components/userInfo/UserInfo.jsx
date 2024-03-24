@@ -6,6 +6,7 @@ import styles from "./UserInfo.module.scss";
 import classNames from "classnames/bind";
 import { useDispatch } from "react-redux";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
+import { reRenderRoom } from "../../redux/reducers/renderRoom";
 
 const cx = classNames.bind(styles);
 
@@ -16,13 +17,19 @@ function UserInfo({ user, closeModel = () => { } }) {
         const userSender = getDataFromLocalStorage("user");
         if (userSender) {
             getRoomBySenderIdAndReceiverId(userSender.id, user.id)
-                .then(resp => setRoom(resp))
-                .catch(err => console.log(err))
-                .finally(() => {
-                    const chatInfo = { ...room, ...user };
-                    dispatch(setChatInfo(chatInfo));
+                .then(resp => {
+                    dispatch(setChatInfo(resp));
+                    dispatch(reRenderRoom(resp.roomId));
                     closeModel();
-                });
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch(setChatInfo({
+                        ...user,
+                        receiverId: user.id
+                    }));
+                    closeModel();
+                })
 
         }
     }
