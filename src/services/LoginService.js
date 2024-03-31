@@ -1,8 +1,8 @@
 import requestApi from "../utils/Request"
 
-export const login = async (phoneNumber, password) => {
+export const login = async (email, password) => {
     const body = {
-        phoneNumber, password
+        email, password
     }
     try {
         const response = await requestApi("/auth/login", "POST", body, false);
