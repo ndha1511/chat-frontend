@@ -1,0 +1,21 @@
+.start {
+    text-align: start;
+}
+
+.end {
+    text-align: end;
+}
+
+.btn-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+        background-color: #cccccc;
+    }
+}
+
+.wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
