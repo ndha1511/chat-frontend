@@ -2,10 +2,10 @@ import axios from 'axios';
 
 
 
-export default function requestApi(endpoint, method, body, isInterceptors) {
+export default function requestApi(endpoint, method, body, isInterceptors, contentType = 'application/json') { 
     const headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
+        // "Accept": "application/json",
+        "Content-Type": contentType,
         "Access-Control-Allow-Origin": "*"
     }
     const instance = axios.create({ headers, baseURL: "http://localhost:8080/api/v1" });
@@ -34,7 +34,6 @@ export default function requestApi(endpoint, method, body, isInterceptors) {
             },
             async (error) => {
                 const originalConfig = error.config;
-                console.log("Access token expired")
                 if (error.response && error.response.status === 403) {
                     try {
                         const token = localStorage.getItem('token');

@@ -1,0 +1,23 @@
+.navbar-vertical {
+    display: flex;
+    height: 100vh; /* Chiều cao của navbar, có thể thay đổi tùy ý */
+    background-color: #f8f9fa; /* Màu nền của navbar */
+    // padding: 12px;
+    flex-direction: column;
+    // position: fixed;
+    justify-content: space-between;
+  }
+  .navbar-vertical .navbar-nav {
+    width: 100%; /* Chiều rộng của navbar-nav */
+  }
+  .navbar-vertical .nav-link {
+    text-align: center; /* Canh giữa nội dung của nav-link */
+  }
+
+//   .footer {
+//     display: flex;
+//     flex: 1;
+//     height: 50%;
+//     align-items: flex-end;
+//     justify-content: flex-end;
+//   }
