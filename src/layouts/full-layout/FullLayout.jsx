@@ -3,17 +3,21 @@ import React, { useEffect, useState } from "react";
 import Header from "../header/Header";
 import Navbar from "../navbars/Navbar";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
+import { useDispatch } from "react-redux";
+import { setChatInfo } from "../../redux/reducers/messageReducer";
 
 function FullLayout(props) {
+
+  const state = props.state;
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
- 
 
-  const [hiddenComponent, setHiddenComponent] = useState(false);
+
+  const dispatch = useDispatch();
   const changeShowComponent = () => {
-    setHiddenComponent(prev => !prev);
+    dispatch(props.action());
   }
 
   useEffect(() => {
@@ -31,10 +35,12 @@ function FullLayout(props) {
     };
   }, [windowSize]);
   return (
-    <div className="d-flex">
-      <Navbar />
+    <div className="d-flex" style={{ height: "100vh" }}>
+      <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
+        <Navbar />
+      </div>
       <div
-        className={`d-flex ${!hiddenComponent ? "d-none" : ""} d-lg-flex d-md-flex`}
+        className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}
         style={{
           paddingTop: 30,
           height: "100vh",
@@ -50,22 +56,21 @@ function FullLayout(props) {
           {props.sidebar}
         </div>
       </div>
-      <div className={`${hiddenComponent ? "d-none" : " "} d-lg-flex d-md-flex`} style={{
+      <div className={`${Object.keys(state).length <= 0 ? "d-none" : " "} d-flex d-lg-flex d-md-flex`} style={{
         display: "flex",
         // flexDirection: "column",
         flex: 1
-      }}>        
-        {React.cloneElement(props.content, {backButton: windowSize.width <= 768 ? 
-        <ButtonIcon
-          clickButton={() => {changeShowComponent()}}
-          className="btn-hover"
-          hoverColor="#f0f0f0"
-          width={50}
-          height={50}
-          borderRadius={50}
-        ><i class="bi bi-arrow-left"></i></ButtonIcon> :
-        <></>
-      })}
+      }}>
+        {React.cloneElement(props.content, {
+          backButton: windowSize.width <= 768 ?
+            <ButtonIcon
+              clickButton={() => { changeShowComponent() }}
+              className="btn-hover"
+              hoverColor="#f0f0f0"
+              borderRadius={50}
+            ><i className="bi bi-arrow-left"></i></ButtonIcon> :
+            <></>
+        })}
       </div>
     </div>
   );

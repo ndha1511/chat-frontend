@@ -29,7 +29,7 @@ export const friendIcon = [
 // send sticker, file, image
 export const actionChatIcon = [
     {
-        item: <img src="/assets/icons/sticker-icon.png" width={20} height={20} />,
+        item: <img src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} />,
         title: "Gửi sticker"
 
     },
