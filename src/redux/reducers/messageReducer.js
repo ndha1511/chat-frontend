@@ -2,7 +2,19 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   chatInfo: {},
+  messages: []
 }
+
+// cấu trúc khi dispatch 
+/**  
+ * @param {chatInfo}
+     const chatInfo = {
+        user: {...response},
+        roomId: props.room.roomId
+      };
+  * @param {messages}
+      const messages = [phần response của message khi fetch data]
+*/
 
 export const messageReducer = createSlice({
   name: 'message',
@@ -11,9 +23,23 @@ export const messageReducer = createSlice({
     setChatInfo: (state, action) => {
       state.chatInfo = action.payload;
     },
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
+    pushMessage: (state, action) => {
+      state.messages.push(action.payload);
+    },
+    updateMessage: (state, action) => {
+      const index = action.payload.index;
+      state.messages[index] = action.payload.message;
+    },
+    deleteMessage: (state, action) => {
+      const index = action.payload;
+      state.messages.splice(index, 1);
+    }
   },
 })
 
-export const { setChatInfo } = messageReducer.actions
+export const { setChatInfo, setMessages, pushMessage, updateMessage, deleteMessage } = messageReducer.actions
 
 export default messageReducer.reducer

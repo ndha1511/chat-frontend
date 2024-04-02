@@ -50,9 +50,8 @@ export default function requestApi(endpoint, method, body, isInterceptors, conte
 
                     } catch (err) {
                         if (err.response && err.response.status === 400) {
-                            localStorage.removeItem('token');
-                            localStorage.removeItem('user');
-                            window.location.href = '/login'
+                            localStorage.clear();
+                            window.location.href = 'auth/login'
                         }
                         return Promise.reject(err)
                     }

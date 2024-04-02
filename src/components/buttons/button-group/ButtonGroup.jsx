@@ -8,7 +8,11 @@ function ButtonGroup(props) {
         if(props.showModal) props.showModal(index);
     }
     return (
-        <div className={props.vertical ? "btn-group-vertical" : "btn-group"}>
+        <div className={`${props.vertical ? "btn-group-vertical" : "btn-group"}`}
+            style={{ 
+                width: props.widthBtnGroup
+             }}
+        >
             {
                 props.buttons.map((button, index) => (
                     <ButtonIcon

@@ -1,0 +1,19 @@
+.content-chat {
+    flex-direction: column;
+    position: relative;
+}
+
+.message {
+    display: flex;
+    width: 100%;
+}
+
+.message-right {
+    justify-content: flex-end;
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}

@@ -3,20 +3,23 @@ import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
 import { chatIcon } from "../../../configs/button-group-icon-config";
 
-function Header() {
+function Header(props) {
     const buttons = chatIcon;
     return (
         <div className="d-flex w-100 p-3" style={{ height: "100%", 
         justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f0f0f0" }}>
             <div className="d-flex" style={{ alignItems: "center" }}>
-                <Avatar/>
+                <Avatar user={props.user}/>
                 <div className="d-flex" style={{ 
                     marginLeft: 10,
                     alignItems: "center",
                  }}>
-                    <span style={{ fontWeight: "bold" }}>User Name</span>
+                    <span style={{ fontWeight: "bold" }}>{props.user.name}</span>
                     <ButtonIcon
                         title="Chỉnh sửa"
+                        className="btn-hover"
+                        hoverColor="#f0f0f0"
+                        borderRadius={50}
                     ><i className="bi bi-pencil-square"></i></ButtonIcon>
                 </div>
             </div>

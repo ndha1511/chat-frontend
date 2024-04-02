@@ -6,13 +6,32 @@
     text-align: end;
 }
 
+.wrapper-boxchat {
+    position: relative;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .btn-more {
+    top: 10px;
+    right: 12px;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     &:hover {
         background-color: #cccccc;
     }
+}
+
+.fixed {
+    top: 10px;
+    right: 10px;
+    position: absolute;
+}
+
+.fixed-msg {
+    position: absolute;
 }
 
 .wrapper {

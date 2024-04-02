@@ -1,23 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  renderResult: {
-    roomId: "",
-    bool: false
-  },
+  rooms: [],
 }
 
 export const renderRoom = createSlice({
   name: 'room',
   initialState,
   reducers: {
-    reRenderRoom: (state, action) => {
-      state.renderResult.roomId = action.payload;
-      state.renderResult.bool = !state.renderResult.bool;
+    createRooms: (state, action) => {
+      state.rooms = [...action.payload];
+    },
+    deleteRooms: (state, action) => {
+      const index = action.payload;
+      state.rooms.splice(index, 1);
+    },
+    updateRooms: (state, action) => {
+      const index = action.payload.index;
+      const newRoom = action.payload.room;
+      state.rooms[index] = newRoom;
     }
   },
 })
 
-export const { reRenderRoom } = renderRoom.actions
+export const { createRooms, deleteRooms, updateRooms } = renderRoom.actions
 
 export default renderRoom.reducer 
