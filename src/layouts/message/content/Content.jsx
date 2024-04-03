@@ -31,10 +31,10 @@ function Content(props) {
         <div className="d-flex content-chat" style={{ backgroundColor: "crimson", height: "100%" }}>
             {loading ? <div className="loading"><Spinner animation="border" variant="info" /></div> :
              messages.map((message, index) => {
-                return messages.length === index + 1 ? <div 
+                return messages.length === index + 1 ? <div key={index}
                 className={`message ${message.senderId === userCurrent.id ? "message-right" : "message-left"}`}> 
                 <MessageText message={message} key={index} lastMessage={true}/>  </div>:
-                <div
+                <div key={index}
                 className={`message ${message.senderId === userCurrent.id ? "message-right" : "message-left"}`}
                 > <MessageText message={message} key={index}/> </div>
             })

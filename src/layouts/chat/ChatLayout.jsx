@@ -15,6 +15,7 @@ function ChatLayout() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [roomRender, setRoomRender] = useState([]);
+
     useEffect(() => {
         if(user) {
             const getRoom = async (id) => {
@@ -32,7 +33,7 @@ function ChatLayout() {
             navigate("/auth/login");
         }
 
-    }, [dispatch, user.id]);
+    }, [dispatch, user && user.id ? user.id : ""]);
 
     useEffect(() => {
         const listBoxChat = rooms.map((room) => { return {item: <BoxChat room={room} /> }});
