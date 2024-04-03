@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.scss";
 import { login } from "../../services/LoginService";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,10 @@ function Login() {
     const [show, setShow] = useState(false);
     const user = useSelector((state) => state.userInfo.user);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(user) navigate("/chat");
+    }, [])
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -29,7 +33,6 @@ function Login() {
             localStorage.setItem("user", JSON.stringify(userInfo));
             setShow(false);
             dispatch(setUserInfo(userInfo));
-            console.log(user);
             navigate("/chat");
         } catch (error) {
             setShow(false);
@@ -77,7 +80,7 @@ function Login() {
                 </form>
                 <div className="footer">
                     <div className="w-100 d-flex justify-content-center">
-                        <a href="/chat">Quên mật khẩu</a>
+                        <a href="/auth/forgot-password">Quên mật khẩu</a>
                     </div>
                     <div className="mt-5 w-100 d-flex justify-content-center">
                         <span>Bạn chưa có tài khoản ?</span>

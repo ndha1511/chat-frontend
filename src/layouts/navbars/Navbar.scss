@@ -6,12 +6,20 @@
     flex-direction: column;
     // position: fixed;
     justify-content: space-between;
+    position: relative;
   }
   .navbar-vertical .navbar-nav {
     width: 100%; /* Chiều rộng của navbar-nav */
   }
   .navbar-vertical .nav-link {
     text-align: center; /* Canh giữa nội dung của nav-link */
+  }
+  .menu-setting {
+    background-color: #f8f9fa;
+    position: absolute;
+    bottom: 200px;
+    left: 25px;
+    
   }
 
 //   .footer {
