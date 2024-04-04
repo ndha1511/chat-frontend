@@ -1,5 +1,6 @@
 import ForgotPassword from "../auth/forgot-password/ForgotPassword";
 import Login from "../auth/login/Login";
+
 import Register from "../auth/register/register";
 
 import FullLayout from "../layouts/full-layout/FullLayout";

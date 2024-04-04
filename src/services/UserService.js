@@ -28,3 +28,12 @@ export const getUserById = async (userId) => {
         return Promise.reject(error);
     }
 }
+
+export const updateUser = async (newUser) => {
+    try {
+        const response = await requestApi(`/users/updateUser`, "PUT", newUser, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
