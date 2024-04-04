@@ -6,6 +6,7 @@
     flex-direction: column;
     // position: fixed;
     justify-content: space-between;
+    
     position: relative;
   }
   .navbar-vertical .navbar-nav {
@@ -29,3 +30,58 @@
 //     align-items: flex-end;
 //     justify-content: flex-end;
 //   }
+
+.avatar-dropdown {
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 50px; /* Bo góc */
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.avatar-dropdown:hover, .avatar-dropdown:focus {
+  color: #0056b3; /* Màu chữ khi hover hoặc focus */
+  background-color: #e9ecef; /* Màu nền khi hover hoặc focus */
+  border-color: #dee2e6; /* Màu viền khi hover hoặc focus */
+  text-decoration: none; /* Loại bỏ gạch chân khi hover hoặc focus */
+}
+
+/* Bạn có thể thêm một số style khác cho phần tử con bên trong .avatar-dropdown nếu cần */
+.avatar-dropdown i {
+  margin-right: 5px; /* Khoảng cách giữa icon và chữ */
+}
+
+.custom-dropdown-menu {
+    min-width: 300px; // Set chiều rộng tối thiểu cho menu
+    margin-left: 58px;
+    margin-top: -50px;
+  
+    .dropdown-item {
+      // Tùy chỉnh cho mỗi item trong dropdown
+      color: #333; // Đặt màu cho text
+  
+      &:hover {
+        background-color: #f8f9fa; // Màu nền khi hover
+      }
+    }
+  
+    .dropdown-divider {
+      margin: 0.5rem 0; // Khoảng cách cho divider
+    }
+    h6{
+      padding: 5px;
+      margin-left: 10px;
+      border-bottom: 1px solid gainsboro;
+    }
+  }
+
+////////////
+
+/* Modal styles */
+// Tùy chỉnh kích thước của modal
+.modal-dialog {
+  // Kích thước tùy chỉnh
+  max-width: 400px; // Hoặc bất kỳ kích thước nào bạn muốn
+  max-height: 400px;
+
+
+}

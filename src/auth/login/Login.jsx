@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Login.scss";
 import { login } from "../../services/LoginService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Modal, Spinner } from "react-bootstrap";
 import { getUserByEmail } from "../../services/UserService";
 import { useDispatch, useSelector } from "react-redux";
@@ -86,7 +86,7 @@ function Login() {
                         <span>Bạn chưa có tài khoản ?</span>
                     </div>
                     <div className="w-100 d-flex justify-content-center">
-                        <a href="/chat">Đăng ký ngay</a>
+                    <Link to="/auth/register">Đăng ký ngay</Link>
                     </div>
 
                 </div>

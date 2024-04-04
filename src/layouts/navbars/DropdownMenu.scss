@@ -1,0 +1,33 @@
+// .custom-dropdown-menu {
+//     // Tùy chỉnh cho dropdown menu
+//     min-width: 200px; // Set chiều rộng tối thiểu cho menu
+//     right: 0;
+//     left: auto; // Đảm bảo menu hiển thị bên phải
+  
+//     .dropdown-item {
+//       // Tùy chỉnh cho mỗi item trong dropdown
+//       color: #333; // Đặt màu cho text
+  
+//       &:hover {
+//         background-color: #f8f9fa; // Màu nền khi hover
+//       }
+//     }
+  
+//     .dropdown-divider {
+//       margin: 0.5rem 0; // Khoảng cách cho divider
+//     }
+//   }
+  
+//   // Tùy chỉnh Avatar trong Dropdown
+//   .avatar-dropdown {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     background-color: transparent;
+//     border: none;
+//     &:hover, &:focus {
+//       background-color: transparent;
+//       box-shadow: none;
+//     }
+//   }
+  
