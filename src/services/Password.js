@@ -26,3 +26,12 @@ export const resetPassword = async (resetPasswordRequest) => {
         return Promise.reject(error);
     }
 }
+
+export const changePassword = async (changePasswordRequest) => {
+    try {
+        const response = await requestApi("/users/changePassword", "POST", changePasswordRequest, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
