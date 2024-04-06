@@ -193,14 +193,14 @@ function ForgotPassword() {
                 
                 </div>
             </div>
-            <Modal show={show} className="modal-custom">
+            <Modal show={show} className="modal-custom" >
                 <Modal.Body>
                     <Spinner animation="border" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 </Modal.Body>
             </Modal>
-            <Modal show={showRs}>
+            <Modal show={showRs} centered>
                 <Modal.Body>
                     <h3>Mật khẩu đã được cập nhật</h3>
                     <Button onClick={prevLogin}>Trở lại trang đăng nhập</Button>

@@ -28,12 +28,12 @@ function ChatLayout() {
                     setLoading(false);
                 }
             }
-            getRoom(user.id);
+            getRoom(user.email);
         } else {
             navigate("/auth/login");
         }
 
-    }, [dispatch, user && user.id ? user.id : ""]);
+    }, [dispatch, user && user.email ? user.email : ""]);
 
     useEffect(() => {
         const listBoxChat = rooms.map((room) => { return {item: <BoxChat room={room} /> }});

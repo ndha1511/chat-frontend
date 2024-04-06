@@ -15,6 +15,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
     const [err, setErr] = useState("");
     const formRef = useRef(null);
     const dispatch = useDispatch();
+    const [currentGender, setCurrentGender] = useState(user.gender);
     useEffect(() => {
         if (!user) navigate("/auth/login");
     });
@@ -76,11 +77,11 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
                             <h6>Thông tin cá nhân</h6>
                             <div class="mb-3 d-flex align-items-center" style={{ height: "40px", width: "150px", justifyContent: "space-between" }}>
                                 <div>
-                                    <input type="radio" name="gender" id="gender" value={1} checked={user.gender ? true : false} />
+                                    <input type="radio" name="gender" id="gender" value={1} checked={currentGender ? true : false} onChange={() => {setCurrentGender(1)}} />
                                     <label for="gender" className="form-label">Nam</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="gender" id="gender" value={0} checked={!user.gender ? true : false} />
+                                    <input type="radio" name="gender" id="gender" value={0} checked={!currentGender ? true : false} onChange={() => {setCurrentGender(0)}} />
                                     <label for="gender" className="form-label">Nữ</label>
                                 </div>
                             </div>
