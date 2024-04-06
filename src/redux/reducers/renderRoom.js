@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   rooms: [],
+  reRender: false
 }
 
 export const renderRoom = createSlice({
@@ -19,10 +20,13 @@ export const renderRoom = createSlice({
       const index = action.payload.index;
       const newRoom = action.payload.room;
       state.rooms[index] = newRoom;
+    },
+    reRenderRoom: (state) => {
+      state.reRender = !state.reRender;
     }
   },
 })
 
-export const { createRooms, deleteRooms, updateRooms } = renderRoom.actions
+export const { createRooms, deleteRooms, updateRooms, reRenderRoom } = renderRoom.actions
 
-export default renderRoom.reducer 
+export default renderRoom.reducer

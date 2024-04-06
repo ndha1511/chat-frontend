@@ -1,12 +1,24 @@
-
 import React, { useEffect, useState } from "react";
 import Header from "../header/Header";
 import Navbar from "../navbars/Navbar";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
-import { useDispatch } from "react-redux";
-import { setChatInfo } from "../../redux/reducers/messageReducer";
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+import { useDispatch, useSelector } from "react-redux";
+import { pushMessage } from "../../redux/reducers/messageReducer";
+import { reRenderRoom } from "../../redux/reducers/renderRoom";
+
+var stompClient = null;
+
+export const connect = (onConnected, onError) => {
+  let sock = new SockJS('http://localhost:8080/ws');
+  stompClient = over(sock);
+  stompClient.connect({}, onConnected, onError);
+
+}
 
 function FullLayout(props) {
+  const user = useSelector((state) => state.userInfo.user);
 
   const state = props.state;
   const [windowSize, setWindowSize] = useState({
@@ -19,6 +31,22 @@ function FullLayout(props) {
   const changeShowComponent = () => {
     dispatch(props.action());
   }
+  useEffect(() => {
+    const onConnected = () => {
+      if (user)
+        stompClient.subscribe(`/user/${user.email}/queue/messages`, onEventReceived);
+    }
+    const onEventReceived = (payload) => { 
+      console.log(payload.body);
+      dispatch(pushMessage(payload.body));
+      dispatch(reRenderRoom());
+    }
+
+    const onError = (err) => {
+      console.log(err);
+    }
+    connect(onConnected, onError);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -67,13 +95,12 @@ function FullLayout(props) {
               clickButton={() => { changeShowComponent() }}
               className="btn-hover"
               hoverColor="#f0f0f0"
-              borderRadius={50}
-            ><i className="bi bi-arrow-left"></i></ButtonIcon> :
-            <></>
-        })}
+              borderRadius={50}><i className="bi bi-arrow-left"></i></ButtonIcon> :
+              <></>
+          })}
+        </div>
       </div>
-    </div>
-  );
-}
-
-export default FullLayout;
+    );
+  }
+  
+  export default FullLayout;

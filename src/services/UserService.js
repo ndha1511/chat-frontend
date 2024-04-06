@@ -20,14 +20,7 @@ export const getUserByEmail = async (email) => {
     
 }
 
-export const getUserById = async (userId) => {
-    try {
-        const response = await requestApi(`/users/id/${userId}`, "GET", [], true);
-        return response.data;
-    } catch (error) {
-        return Promise.reject(error);
-    }
-}
+
 
 export const updateUser = async (newUser) => {
     try {

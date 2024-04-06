@@ -5,6 +5,7 @@ import BaseMessage from '../BaseMessage';
 import './MessageText.scss';
 import { emojis } from '../../../configs/button-group-icon-config';
 import ButtonGroup from '../../buttons/button-group/ButtonGroup';
+import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 
 function MessageText(props) {
     const [isHovered, setIsHovered] = useState(false);
@@ -20,14 +21,15 @@ function MessageText(props) {
     return (
 
         <BaseMessage
+            message={props.message}
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
             showHidden={isHovered}
         >
             <div className='d-flex mess-hover' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
                 <div className="d-flex  mess-text" style={{ position: "relative" }}>
-                    <div className='text'> <p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p></div>
-                    <span>2:29</span>
+                    <div className='text'> <p>{props.message.content}</p></div>
+                    <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                     {isHovered && (
                         <div className="like-button" onMouseEnter={() => setShowContent(true)}
                             onMouseLeave={() => setShowContent(false)}>
@@ -49,10 +51,10 @@ function MessageText(props) {
                                 fontSize={18}
                                 backgroundColor="grey"
                                 borderRadius={20}
-                              
+
                             />
                         </div>
-                    )}
+                    )}  
                 </div>
 
             </div>

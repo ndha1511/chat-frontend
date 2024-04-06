@@ -2,6 +2,9 @@
     flex-direction: column;
     position: relative;
     overflow-y: auto;
+    flex-direction: column-reverse;
+    padding-bottom: 20px;
+    
 }
 
 .message {
