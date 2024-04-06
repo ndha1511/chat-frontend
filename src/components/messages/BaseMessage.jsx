@@ -6,13 +6,13 @@ function BaseMessage(props) {
     return (
         <div onMouseEnter={() => setHiddenBtn(true)} 
             onMouseLeave={() => setHiddenBtn(false)}
-        className="d-flex" style={{ flexDirection: props.isSender ? "row" : "row-reverse", alignItems: "flex-end"}}>
+        className="d-flex w-100 " style={{ flexDirection: props.isSender ? "row" : "row-reverse", alignItems: "flex-end",justifyContent:"flex-end"}}>
             <div className="hidden" style={{ display: hiddenBtn ? "block": "none"}}>
-                <div>
+                <div className="">
                     <p>List button here</p>
                 </div>
             </div>
-            <div className="d-flex" style={{ flexDirection: "column", alignItems: "flex-end" }}>
+
                 {props.children}
                 {
                     props.lastMessage ?
@@ -20,7 +20,7 @@ function BaseMessage(props) {
                             <p>status message</p>
                         </div> : <></>
                 }
-            </div>
+     
         </div>
     );
 }

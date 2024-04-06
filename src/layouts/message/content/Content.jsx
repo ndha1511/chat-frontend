@@ -29,7 +29,7 @@ function Content(props) {
     }, [props.roomId]);
 
     return (
-        <div className="d-flex content-chat" style={{ backgroundColor: "crimson", height: "100%" }}>
+        <div className="d-flex content-chat w-100 " style={{ backgroundColor: "crimson", height: "100%" }}>
             {loading ? <div className="loading"><Spinner animation="border" variant="info" /></div> :
              messages.map((message, index) => {
                 return messages.length === index + 1 ? <div key={index}

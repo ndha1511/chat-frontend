@@ -40,7 +40,7 @@ function FullLayout(props) {
         <Navbar />
       </div>
       <div
-        className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}
+        className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex col-12 col-md-3 `}
         style={{
           paddingTop: 30,
           height: "100vh",
@@ -56,7 +56,7 @@ function FullLayout(props) {
           {props.sidebar}
         </div>
       </div>
-      <div className={`${Object.keys(state).length <= 0 ? "d-none" : " "} d-flex d-lg-flex d-md-flex`} style={{
+      <div className={`${Object.keys(state).length <= 0 ? "d-none" : " "} d-flex d-lg-flex d-md-flex col-12 col-md-8`} style={{
         display: "flex",
         // flexDirection: "column",
         flex: 1
