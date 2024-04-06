@@ -1,6 +1,7 @@
 .content-chat {
     flex-direction: column;
     position: relative;
+    overflow-y: auto;
 }
 
 .message {

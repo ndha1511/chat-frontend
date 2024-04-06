@@ -5,6 +5,7 @@ import { setMessages } from "../../../redux/reducers/messageReducer";
 import MessageText from "../../../components/messages/message-text/MessageText";
 import "./Content.scss";
 import { Spinner } from "react-bootstrap";
+import MessageImage from "../../../components/messages/mesage-image/MessageImage";
 
 function Content(props) {
 
@@ -32,10 +33,10 @@ function Content(props) {
             {loading ? <div className="loading"><Spinner animation="border" variant="info" /></div> :
              messages.map((message, index) => {
                 return messages.length === index + 1 ? <div key={index}
-                className={`message ${message.senderId === userCurrent.id ? "message-right" : "message-left"}`}> 
-                <MessageText message={message} key={index} lastMessage={true}/>  </div>:
+                className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}> 
+                <MessageImage message={message} key={index} lastMessage={message.senderId === userCurrent.email ? true : false}/>  </div>:
                 <div key={index}
-                className={`message ${message.senderId === userCurrent.id ? "message-right" : "message-left"}`}
+                className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                 > <MessageText message={message} key={index}/> </div>
             })
             }
