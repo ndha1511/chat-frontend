@@ -13,11 +13,8 @@ const cx = classNames.bind(styles);
 
 function Register() {
 
-
+    const [err1, setErr1] = useState("");
     const RegisterSchema = Yup.object().shape({
-        phoneNumber: Yup.string()
-        .matches(/^(0[1-9]{9})$/, 'Số điện thoại phải bắt đầu bằng số 0 và gồm đúng 10 chữ số')
-        .required('Số điện thoại là bắt buộc'),
         name: Yup.string().required('Tên là bắt buộc'),
         email: Yup.string().required('Email bắt buộc nhập là bắt buộc'),
         gender: Yup.string().required('Giới tính là bắt buộc'),
@@ -39,16 +36,17 @@ function Register() {
 
     const handleSubmit = async (values) => {
         setSubmitting(true);
-        setShowVerificationForm(true)
         const data = { ...values, gender: Number(values.gender) }
         setErr(''); // Đặt lại thông báo lỗi
         try {
             await sendOtp(data);
+            setShowVerificationForm(true)
             console.log('Đăng ký thành công, vui lòng xác thực email của bạn!');
 
         } catch (error) {
             console.error('Đăng ký không thành công:', error.message);
             setErr('Đăng ký không thành công: ' + error.message);
+            setErr1("Email đã tồn tại");
         }
         setSubmitting(false);
     };
@@ -66,7 +64,8 @@ function Register() {
             // Kiểm tra kết quả xác minh OTP từ server
             if (response === 'valid') {
                 // Nếu OTP hợp lệ, chuyển hướng đến trang đăng ký và chuyền thông tin email qua `state`
-                navigate('/login');
+               alert("Đăng ký thành công");
+               navigate("/auth/login");
             } else {
                 // Nếu OTP không hợp lệ, hiển thị thông báo lỗi tương ứng
                 setErr('Mã xác thực không hợp lệ. Vui lòng kiểm tra lại.');
@@ -87,7 +86,6 @@ function Register() {
           
                 <Formik
                     initialValues={{
-                        phoneNumber: '',
                         email: '',
                         name: '',
                         gender: 0,
@@ -107,15 +105,11 @@ function Register() {
                                 <Form className={cx("col-12")}>
 
                                 <div className={cx("register-content")}>
-                                    <label htmlFor='phoneNumber'>
-                                        <FontAwesomeIcon className={cx("icon")} icon={faMobileScreenButton} />
-                                        <Field type="text" id='phoneNumber' name="phoneNumber" placeholder='Số điện thoại' />
-                                        <ErrorMessage name="phoneNumber" component="div" className={cx("error")} />
-                                    </label>
                                     <label htmlFor='email'>
                                         <FontAwesomeIcon className={cx("icon")} icon={faEnvelope} />
                                         <Field onChange={(e) => { handleChange(e); setEmail(e.target.value) }} type="email" id='email' name="email" placeholder='Email' />
                                         <ErrorMessage name="email" component="div" className={cx("error")} />
+                                        {err1 && <span className='text-danger'>{err1}</span>}
                                     </label>
                                     <label htmlFor='name'>
                                         <FontAwesomeIcon className={cx("icon")} icon={faUser} />
@@ -126,8 +120,8 @@ function Register() {
                                         <FontAwesomeIcon className={cx("icon")} icon={faVenusMars} />
                                         <Field as="select" id='gender' name="gender">
                                             <option value="">Giới tính</option>
-                                            <option value="0">Nam</option>
-                                            <option value="1">Nữ</option>
+                                            <option value="1">Nam</option>
+                                            <option value="0">Nữ</option>
                                         </Field>
                                         <ErrorMessage name="gender" component="div" className={cx("error")} />
                                     </label>
