@@ -10,6 +10,7 @@ import BoxChat from "../../components/box-chat/BoxChat";
 
 function ChatLayout() {
     const rooms = useSelector((state) => state.room.rooms);
+    const rerenderRoom = useSelector((state) => state.room.reRender);
     const navigate = useNavigate();
     const user = useSelector((state) => state.userInfo.user);
     const dispatch = useDispatch();
@@ -33,10 +34,10 @@ function ChatLayout() {
             navigate("/auth/login");
         }
 
-    }, [dispatch, user && user.email ? user.email : ""]);
+    }, [dispatch, user && user.email ? user.email : "", rerenderRoom]);
 
     useEffect(() => {
-        const listBoxChat = rooms.map((room) => { return {item: <BoxChat room={room} /> }});
+        const listBoxChat = rooms.map((room) => { return {item: <BoxChat room={room}/> }});
         setRoomRender(() => listBoxChat);
     }, [rooms]);
 

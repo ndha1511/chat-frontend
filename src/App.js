@@ -10,6 +10,7 @@ import { setChatInfo } from "./redux/reducers/messageReducer";
 
 
 function App() {
+  
   const chatInfo = useSelector(state => state.message.chatInfo);
   const rejectState = () => {
     return setChatInfo({});
