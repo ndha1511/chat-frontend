@@ -5,6 +5,7 @@ import { displayDateTime } from "../../utils/DateTimeHandle";
 import { useDispatch } from "react-redux";
 import { getUserById } from "../../services/UserService";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
+import { litmitString } from "../../utils/StringHandle";
 
 function BoxChat(props) {
     const [hiddenButton, setHiddenButton] = useState(true);
@@ -62,7 +63,7 @@ function BoxChat(props) {
                         fontSize: "18px",
                         fontWeight: props.room.numberOfUnreadMessage > 0 ? "bold" : "normal"
                     }}>
-                        {props.room.name}
+                        {litmitString(props.room.name)}
                     </span>
                 </div>
                 <div className="row">

@@ -21,8 +21,11 @@ function MessageLayout(props) {
                         <Footer user={chatInfo.user}/>
                     </div>
                 </div> :
-                <div className="d-flex w-100">
-                    <h3>Hello app chat</h3>
+                <div className="d-flex w-100" style={{ 
+                    backgroundImage: `url("/assets/images/background-zalo.png")`,
+                    height: "100%",
+                 }}>
+                    
                 </div>
             }
         </div>
