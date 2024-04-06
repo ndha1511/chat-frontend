@@ -41,7 +41,7 @@ const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }
                     </div>
                 </div>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer className='modal-f'>
                 <Button variant="outline-primary" onClick={onOpenUpdateModal}>Cập nhật thông tin</Button>
                 <Button variant="primary" onClick={onOpenChangePassword}>Thay Đổi Mật Khẩu</Button>
             </Modal.Footer>

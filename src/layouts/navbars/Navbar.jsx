@@ -77,7 +77,7 @@ function Navbar() {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                    {/* Modal để hiển thị hồ sơ */}               
+                    {/* Modal  */}               
                         <ProfileModal show={showProfileModal} onClose={handleCloseProfileModal} onOpenChangePassword={handleShowChangePasswordModal} onOpenUpdateModal={changeUpdateModal} />
                         <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />
                         <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal}/>
