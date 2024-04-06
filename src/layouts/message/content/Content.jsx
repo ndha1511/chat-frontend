@@ -7,6 +7,7 @@ import "./Content.scss";
 import { Spinner } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
+import MessageFile from "../../../components/messages/message-file/MessageFile";
 
 function Content(props) {
 
@@ -61,6 +62,7 @@ function Content(props) {
                     > {renderMessage(message, index)} </div>
                 })}
             </InfiniteScroll>
+
 
         </div>
     );

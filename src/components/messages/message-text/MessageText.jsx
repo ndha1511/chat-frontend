@@ -3,14 +3,25 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import BaseMessage from '../BaseMessage';
 import './MessageText.scss';
+
+import { emojis } from '../../../configs/button-group-icon-config';
+import ButtonGroup from '../../buttons/button-group/ButtonGroup';
+
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
+
 
 function MessageText(props) {
     const [isHovered, setIsHovered] = useState(false);
     const userCurrent = useSelector((state) => state.userInfo.user);
+    const [showContent, setShowContent] = useState(false);
+    const buttons = emojis.map(item => {
+        return {
+            item: item.icon
+        }
+    });
+
 
     return (
-    
             <BaseMessage
                 message={props.message}
                 isSender={userCurrent.email === props.message.senderId}
@@ -23,14 +34,34 @@ function MessageText(props) {
                         <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                         {isHovered && (
                         <div className="like-button">
+
                             <button className="btn-icon-custom">👍</button>
                         </div>
+
                     )}
-                    </div>
-                   
+
+                    {showContent && (
+                        <div className='btn-emoji'>
+                            <ButtonGroup buttons={buttons}
+                                className="btn-hover"
+                                width={50}
+                                height={45}
+                                backgroundActive="#6495ed"
+                                hoverColor="#87cefa"
+                                active={0}
+                                textHoverColor="blue"
+                                fontSize={18}
+                                backgroundColor="grey"
+                                borderRadius={20}
+                              
+                            />
+                        </div>
+                    )}
                 </div>
-            </BaseMessage>
-     
+
+            </div>
+        </BaseMessage>
+
     );
 }
 

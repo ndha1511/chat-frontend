@@ -76,6 +76,13 @@ export const filterMessageIcon = [
     }
 ] 
 
+export const btnCT = [
+    {    item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)',}}></i>,},
+    {    item: <i className="bi bi-reply-fill" style={{ transform: 'scaleX(-1) ',}}></i>,},
+    {    item: <i className="bi bi-three-dots"></i>,},
+
+]
+
 export const emojis = [
     {
         id: "6610ff903df61304b883dce3",

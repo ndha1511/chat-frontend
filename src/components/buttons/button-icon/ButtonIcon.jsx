@@ -19,7 +19,11 @@ function ButtonIcon(props) {
                     borderBottom: props.borderBottom ? props.borderBottom : "0",
                     borderRadius: props.borderRadius ? props.borderRadius : 0,
                     fontWeight: props.fontWeight ? props.fontWeight : "normal",
-                    marginRight: props.marginRight ? props.marginRight : 0
+                    marginRight: props.marginRight ? props.marginRight : 0,
+                    fontSize: props.fontSize,
+                    backgroundColor: props.backgroundColor,
+                 
+                  
                  }}
                  onClick={props.clickButton ? props.clickButton : () => {}}
         >
