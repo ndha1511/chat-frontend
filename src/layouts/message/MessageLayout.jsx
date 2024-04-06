@@ -6,6 +6,7 @@ import Header from "./header/Header";
 
 function MessageLayout(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
+    // console.log(chatInfo);
     return (
         <div className="d-flex w-100">
             {Object.keys(chatInfo).length > 0 ?

@@ -5,6 +5,7 @@ import { setMessages } from "../../../redux/reducers/messageReducer";
 import MessageText from "../../../components/messages/message-text/MessageText";
 import "./Content.scss";
 import { Spinner } from "react-bootstrap";
+import InfiniteScroll from "react-infinite-scroll-component";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
 
 function Content(props) {
@@ -12,13 +13,26 @@ function Content(props) {
     const messages = useSelector(state => state.message.messages);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [loading, setLoading] = useState(true);
+    const [disabled, setDisabled] = useState(false);
     const dispatch = useDispatch();
+
+    const renderMessage = (message, index, isLatest = false) => {
+        const messageType = message.messageType;
+        switch (messageType) {
+            case "TEXT":
+                return <MessageText message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+            case "FILE": break;
+            case "IMAGE":
+                return <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+            default: break;
+        }
+    }
 
     useEffect(() => {
         setLoading(true);
         const getMessages = async () => {
             try {
-                const response = await getMessageByRoomId(props.roomId);
+                const response = await getMessageByRoomId(userCurrent.email, props.roomId);
                 dispatch(setMessages(response.messages.reverse()));
                 setLoading(false);
             } catch (error) {
@@ -26,21 +40,28 @@ function Content(props) {
             }
         }
         getMessages();
-    }, [props.roomId]);
+    }, [props.roomId, messages]);
 
     return (
-        <div className="d-flex content-chat w-100 " style={{ backgroundColor: "crimson", height: "100%" }}>
-            {loading ? <div className="loading"><Spinner animation="border" variant="info" /></div> :
-             messages.map((message, index) => {
-                return messages.length === index + 1 ? <div key={index}
-                className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}> 
-                <MessageImage message={message} key={index} lastMessage={message.senderId === userCurrent.email ? true : false}/>  </div>:
-                <div key={index}
-                className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
-                > <MessageText message={message} key={index}/> </div>
-            })
-            }
-           
+        <div id="scrollableDiv" className="d-flex content-chat w-100 " style={{ backgroundColor: "crimson", height: "100%" }}>
+            <InfiniteScroll
+                dataLength={messages.length}
+                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px" }} //To put endMessage and loader to the top.
+                inverse={true}
+                hasMore={true && !disabled}
+                loader={<h4 className="p-5">Loading...</h4>}
+                scrollableTarget="scrollableDiv"
+            >
+                {messages.map((message, index) => {
+                    return index === 0 ? <div key={index}
+                    className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+                    {renderMessage(message, index, true)}  </div> :
+                    <div key={index}
+                        className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
+                    > {renderMessage(message, index)} </div>
+                })}
+            </InfiniteScroll>
+
         </div>
     );
 }

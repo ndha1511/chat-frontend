@@ -16,7 +16,6 @@ export const register = async ({ phoneNumber,email, name, gender, dateOfBirth, p
     console.log(userData)
     try {
         const response = await requestApi("/auth/register", "POST", userData, false);
-        const token = response.data;
         return response.data;
     } catch (error) {
 

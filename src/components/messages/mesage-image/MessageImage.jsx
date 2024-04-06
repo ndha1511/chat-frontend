@@ -10,9 +10,9 @@ function MessageImage(props) {
     return (
         <BaseMessage isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}>
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", padding: "10px", justifyContent: "flex-end"}}>
                 <img src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg"
-                    style={{ maxHeight: "100px", maxWidth: "300px", borderRadius: "10px" }}
+                    style={{ maxHeight: "600px", maxWidth: "400px", borderRadius: "10px" }}
                 />
                 <button className="btn-icon-custom">👍</button>
             </div>
