@@ -10,7 +10,8 @@ function ButtonGroup(props) {
     return (
         <div className={`${props.vertical ? "btn-group-vertical" : "btn-group"}`}
             style={{ 
-                width: props.widthBtnGroup
+                width: props.widthBtnGroup,
+             
              }}
         >
             {
@@ -29,6 +30,11 @@ function ButtonGroup(props) {
                         fontWeight={props.fontWeight ? props.fontWeight : "normal"}
                         textHoverColor={props.textHoverColor ? props.textHoverColor : "black"}
                         marginRight={props.marginRight ? props.marginRight : 0}
+                        fontSize = {props.fontSize}
+                        backgroundColor={props.backgroundColor}
+                        borderRadius={props.borderRadius ? props.borderRadius : 0}
+                     
+                      
                     >
                         {button.item}
                     </ButtonIcon>

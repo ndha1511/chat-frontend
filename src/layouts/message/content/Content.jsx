@@ -6,6 +6,7 @@ import MessageText from "../../../components/messages/message-text/MessageText";
 import "./Content.scss";
 import { Spinner } from "react-bootstrap";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
+import MessageFile from "../../../components/messages/message-file/MessageFile";
 
 function Content(props) {
 
@@ -38,6 +39,7 @@ function Content(props) {
                 <div key={index}
                 className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                 > <MessageText message={message} key={index}/> </div>
+                
             })
             }
            
