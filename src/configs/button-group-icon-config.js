@@ -76,3 +76,36 @@ export const filterMessageIcon = [
     }
 ] 
 
+export const emojis = [
+    {
+        id: "6610ff903df61304b883dce3",
+        icon: "❤",
+        emoji_type: "HEART"
+    },
+    {
+        id: "6610ffd93df61304b883dce4",
+        icon: "👍",
+        emoji_type: "LIKE"
+    },
+    {
+        id: "661100463df61304b883dce5",
+        icon: "😆",
+        emoji_type: "SMILE"
+    },
+    {
+        id: "661100b23df61304b883dce6",
+        icon: "😭",
+        emoji_type: "CRY"
+    },
+    {
+        id: "661101803df61304b883dce7",
+        icon: "😠",
+        emoji_type: "ANGRY"
+    },
+    {
+        id: "6611056c3df61304b883dce8",
+        icon: "😮",
+        emoji_type: "WOW"
+    }
+]
+

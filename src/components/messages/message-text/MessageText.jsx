@@ -5,10 +5,10 @@ function MessageText(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     return (
         <BaseMessage 
-            isSender={userCurrent.id === props.message.senderId}
+            isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
         >
-            <div>{props.message.content}</div>
+            <div><p>hihi</p></div>
         </BaseMessage>
     );
 }
