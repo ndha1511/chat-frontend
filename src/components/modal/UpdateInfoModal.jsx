@@ -10,12 +10,13 @@ import { setUserInfo } from "../../redux/reducers/userReducer";
 function UpdateInfoModal({ show, onClose, handleBack }) {
 
     const user = useSelector((state) => state.userInfo.user);
+    const gender = user && user.gender ? user.gender : "";
     const navigate = useNavigate();
     const [showSpinner, setShowSpinner] = useState(false);
     const [err, setErr] = useState("");
     const formRef = useRef(null);
     const dispatch = useDispatch();
-    const [currentGender, setCurrentGender] = useState(user.gender);
+    const [currentGender, setCurrentGender] = useState(gender);
     useEffect(() => {
         if (!user) navigate("/auth/login");
     });
@@ -70,7 +71,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
                     <form onSubmit={submitForm} id="myForm">
                         <div class="mb-3 p-2">
                             <label for="name" className="form-label">Tên hiển thị</label>
-                            <input type="text" className="form-control" id="name" name="name" defaultValue={user.name} />
+                            <input type="text" className="form-control" id="name" name="name" defaultValue={user && user.name ? user.name : "" } />
                         </div>
 
                         <div className="user-info">
@@ -87,7 +88,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
                             </div>
                             <div class="mb-3">
                                 <label for="name" className="form-label">Tên hiển thị</label>
-                                <input type="date" className="form-control" id="dob" name="dob" defaultValue={user.dob} />
+                                <input type="date" className="form-control" id="dob" name="dob" defaultValue={user && user.dob ? user.dob : ""} />
                             </div>
                         </div>
                         {err && <span className="text-danger">{err}</span>}

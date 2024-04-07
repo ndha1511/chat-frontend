@@ -24,7 +24,7 @@ function MessageText(props) {
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
-            showHidden={isHovered}
+            // showHidden={isHovered}
         >
             <div className='d-flex mess-hover' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
                 <div className="d-flex  mess-text" style={{ position: "relative" }}>

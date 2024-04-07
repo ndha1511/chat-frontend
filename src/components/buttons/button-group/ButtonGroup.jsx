@@ -6,6 +6,7 @@ function ButtonGroup(props) {
     const clickButton = (index) => {
         setActive(index);
         if(props.showModal) props.showModal(index);
+        if(props.handle) props.handle(index);
     }
     return (
         <div className={`${props.vertical ? "btn-group-vertical" : "btn-group"}`}
@@ -31,7 +32,6 @@ function ButtonGroup(props) {
                         textHoverColor={props.textHoverColor ? props.textHoverColor : "black"}
                         marginRight={props.marginRight ? props.marginRight : 0}
                         fontSize = {props.fontSize}
-                        backgroundColor={props.backgroundColor}
                         borderRadius={props.borderRadius ? props.borderRadius : 0}
                      
                       

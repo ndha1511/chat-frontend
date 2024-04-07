@@ -21,7 +21,7 @@ function ButtonIcon(props) {
                     fontWeight: props.fontWeight ? props.fontWeight : "normal",
                     marginRight: props.marginRight ? props.marginRight : 0,
                     fontSize: props.fontSize,
-                    backgroundColor: props.backgroundColor,
+                    // backgroundColor: props.backgroundColor,  
                  
                   
                  }}

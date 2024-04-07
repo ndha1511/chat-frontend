@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessageByRoomId } from "../../../services/MessageService";
 import { setMessages } from "../../../redux/reducers/messageReducer";
@@ -8,6 +8,8 @@ import "./Content.scss";
 import { Spinner } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
+import MessageError from "../../../components/messages/message-error/MessageError";
+import MessageVideo from "../../../components/messages/message-video/MessageVideo";
 
 function Content(props) {
 
@@ -17,38 +19,62 @@ function Content(props) {
     const [loading, setLoading] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const dispatch = useDispatch();
+    const scrollableDivRef = useRef(null);
 
     const renderMessage = (message, index, isLatest = false) => {
+        var component = <></>;
         const messageType = message.messageType;
         switch (messageType) {
             case "TEXT":
-                return <MessageText message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                component = <MessageText message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />;
+                return checkStatusMessage(message, index, isLatest, component);
             case "FILE":
-                return <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false}/>;
+                component = <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                return checkStatusMessage(message, index, isLatest, component);
+
             case "IMAGE":
-                return <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                component = <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                return checkStatusMessage(message, index, isLatest, component);
+            case "VIDEO":
+                component = <MessageVideo message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                return checkStatusMessage(message, index, isLatest, component);
+
             default: break;
         }
+
+    }
+    const checkStatusMessage = (message, index, isLatest, component) => {
+        if (message.messageStatus === "ERROR") {
+            return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+        }
+        return component;
     }
 
     useEffect(() => {
-        const getMessages = async () => {
-            try {
-                const response = await getMessageByRoomId(userCurrent.email, props.roomId);
-                // dispatch(setMessages(response.messages.reverse()));
-                setMessagesSate(() => response.messages.reverse());
-                setLoading(true);
-            } catch (error) {
-                console.log(error);
+        if (props.roomId) {
+            const getMessages = async () => {
+                try {
+                    const response = await getMessageByRoomId(userCurrent.email, props.roomId);
+                    // dispatch(setMessages(response.messages.reverse()));
+                    setMessagesSate(() => response.messages.reverse());
+                    setLoading(true);
+                } catch (error) {
+                    console.log(error);
+                }
             }
+            getMessages();
         }
-        getMessages();
     }, [props.roomId, messages]);
+    useEffect(() => {
+        if (scrollableDivRef.current) {
+            scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
+        }
+    }, [messageState]);
 
     return (
-        <div id="scrollableDiv" className="d-flex content-chat w-100 " style={{ backgroundColor: "crimson", height: "100%" }}>
+        <div ref={scrollableDivRef} id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
 
-             {loading ?<InfiniteScroll
+            {loading ? <InfiniteScroll
                 dataLength={messageState.length}
                 style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px" }} //To put endMessage and loader to the top.
                 inverse={true}
@@ -58,14 +84,14 @@ function Content(props) {
             >
                 {messageState.map((message, index) => {
                     return index === 0 ? <div key={index}
-                    className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
-                    {renderMessage(message, index, true)}  </div> :
-                    <div key={index}
-                        className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
-                    > {renderMessage(message, index)} </div>
+                        className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+                        {renderMessage(message, index, true)}  </div> :
+                        <div key={index}
+                            className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
+                        > {renderMessage(message, index)} </div>
                 })}
             </InfiniteScroll> : <></>}
-            </div>
+        </div>
     );
 }
 
