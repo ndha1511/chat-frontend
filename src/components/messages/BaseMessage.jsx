@@ -22,17 +22,15 @@ function BaseMessage(props) {
             onMouseLeave={() => setHiddenBtn(false)}
             className="d-flex w-100 " style={{ flexDirection: props.isSender ? "row" : "row-reverse", alignItems: "flex-end", justifyContent: "flex-end", position:'relative'}}>
             <div className="hidden" style={{ display: hiddenBtn ? "block" : "none", marginBottom: "20px" }}>
-                <div style={{backgroundColor:'white', borderRadius:5,border:'0.5px solid grey'}}>
+                <div style={{backgroundColor:'#f0f0f0', borderRadius:5,border:'0.5px solid grey'}}>
                     <ButtonGroup buttons={buttons}
                         className="btn-hover"
                         width={25}
                         height={25}
-                        backgroundActive="#6495ed"
-                        hoverColor="#87cefa"
+                        hoverColor="#f0f0f0"
                         active={0}
                         textHoverColor="blue"
                         fontSize={18}
-                        backgroundColor="white"
                         borderRadius={5}
                     />
                 </div>

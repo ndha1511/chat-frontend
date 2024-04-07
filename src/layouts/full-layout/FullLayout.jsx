@@ -17,6 +17,8 @@ export const connect = (onConnected, onError) => {
 
 }
 
+
+
 function FullLayout(props) {
   const user = useSelector((state) => state.userInfo.user);
 
@@ -25,6 +27,8 @@ function FullLayout(props) {
     width: window.innerWidth,
     height: window.innerHeight
   });
+
+
 
 
   const dispatch = useDispatch();
@@ -36,15 +40,32 @@ function FullLayout(props) {
       if (user)
         stompClient.subscribe(`/user/${user.email}/queue/messages`, onEventReceived);
     }
-    const onEventReceived = (payload) => { 
-      console.log(payload.body);
-      dispatch(pushMessage(payload.body));
-      dispatch(reRenderRoom());
+    const onEventReceived = (payload) => {
+      const info = payload.body;
+      const status = info.status || "";
+      switch (JSON.stringify(status)) {
+        case "SUCCESS":
+          dispatch(pushMessage(payload.body));
+          dispatch(reRenderRoom());
+          break;
+        case "SENT":
+          
+          break;
+        case "ERROR":
+          dispatch(pushMessage(payload.body));
+          dispatch(reRenderRoom());
+          break;
+  
+
+      }
+
     }
 
     const onError = (err) => {
+      connect(onConnected, onError);
       console.log(err);
     }
+
     connect(onConnected, onError);
   }, []);
 
@@ -96,11 +117,11 @@ function FullLayout(props) {
               className="btn-hover"
               hoverColor="#f0f0f0"
               borderRadius={50}><i className="bi bi-arrow-left"></i></ButtonIcon> :
-              <></>
-          })}
-        </div>
+            <></>
+        })}
       </div>
-    );
-  }
-  
-  export default FullLayout;
+    </div>
+  );
+}
+
+export default FullLayout;
