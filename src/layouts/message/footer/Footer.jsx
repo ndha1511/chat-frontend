@@ -172,6 +172,7 @@ function Footer(props) {
                 dispatch(pushMessage(msg));
                 dispatch(reRenderRoom());
                 findRoomId();
+                setTextContent("")
             } catch (error) {
                 console.log(error);
             }

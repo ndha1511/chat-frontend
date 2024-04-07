@@ -8,8 +8,9 @@ import { useDispatch } from 'react-redux';
 import { getRoomBySenderIdAndReceiverId } from '../../services/RoomService';
 import { setChatInfo } from '../../redux/reducers/messageReducer';
 
-const AccountInfor = ({ show, onClose, handleBack,user,addFriend }) => {
+const AccountInfor = ({ show, onClose, handleBack,user,addFriend, closeModal }) => {
     const userCurrent = useSelector((state) => state.userInfo.user);
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
     useEffect(() => {
@@ -25,12 +26,16 @@ const AccountInfor = ({ show, onClose, handleBack,user,addFriend }) => {
             };
             dispatch(setChatInfo(chatInfo));
             return response;
+            
         } catch (error) {
             const chatInfo = {
                 user,
                 roomId: ""
             };
             dispatch(setChatInfo(chatInfo));
+        }
+        finally{
+            onClose()
         }
     }
     return (

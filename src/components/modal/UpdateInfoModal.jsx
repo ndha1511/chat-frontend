@@ -56,7 +56,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
     return (
         <Modal show={show} onHide={onClose} size="md" centered> 
             <Modal.Header closeButton className='modal-header-cs'>
-                <Button variant="outline-secondary" className='btn-hearder' onClick={handleBack}><i className="bi bi-caret-left"></i></Button>
+                <Button variant="outline-secondary" className='btn-hearder' onClick={handleBack}><i className="bi bi-chevron-down" style={{  transform: 'rotate(90deg)', fontSize:17 }}></i></Button>
                 <Modal.Title>Thông Tin Cá Nhân</Modal.Title>
             </Modal.Header>
             <Modal.Body className='modal-body-cs' style={{ height: "350px" }}>

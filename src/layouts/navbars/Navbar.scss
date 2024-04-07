@@ -23,13 +23,6 @@
     
   }
 
-//   .footer {
-//     display: flex;
-//     flex: 1;
-//     height: 50%;
-//     align-items: flex-end;
-//     justify-content: flex-end;
-//   }
 
 .avatar-dropdown {
   display: inline-block;
@@ -41,7 +34,7 @@
 .avatar-dropdown:hover, .avatar-dropdown:focus {
   color: #0056b3; /* Màu chữ khi hover hoặc focus */
   background-color: #e9ecef; /* Màu nền khi hover hoặc focus */
-  border-color: #dee2e6; /* Màu viền khi hover hoặc focus */
+  border-color: #e6dede; /* Màu viền khi hover hoặc focus */
   text-decoration: none; /* Loại bỏ gạch chân khi hover hoặc focus */
 }
 

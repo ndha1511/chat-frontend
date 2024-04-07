@@ -2,6 +2,8 @@ import { useSelector } from "react-redux";
 import BaseMessage from "../BaseMessage";
 import "./MessageImage.scss";
 import { emojis } from "../../../configs/button-group-icon-config";
+import { arrayToDateTime } from '../../../utils/DateTimeHandle';
+
 
 
 function MessageImage(props) {
