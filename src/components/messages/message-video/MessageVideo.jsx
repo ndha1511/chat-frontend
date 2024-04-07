@@ -22,6 +22,7 @@ function MessageVideo(props) {
             }}>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
             </div>
             </div>
+
         </BaseMessage>
     );
 }
