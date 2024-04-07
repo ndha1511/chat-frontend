@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ListGroup, Button } from 'react-bootstrap';
 import "./ProfileModal.scss"; // Đảm bảo file SCSS được chỉnh sửa để phù hợp
 import Avatar from '../avatar/Avatar';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { sendFriendRequest } from '../../services/ChatService';
 
@@ -10,6 +10,7 @@ const HelloMessage = ({ show, onClose,user,handleBack }) => {
     const userSender = useSelector((state) => state.userInfo.user);
     const [txt,setTxt] = useState("")
     const navigate = useNavigate();
+    
 
     const addFriend = async () => {
         console.log(txt)

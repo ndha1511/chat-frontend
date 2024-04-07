@@ -4,8 +4,9 @@ import { useDispatch } from "react-redux";
 import "./Footer.scss";
 import { sendMessageToUser } from "../../../services/ChatService";
 import { useState } from "react";
-import { pushMessage } from "../../../redux/reducers/messageReducer";
+import { pushMessage, setChatInfo } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
+import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 
 
 
@@ -17,30 +18,49 @@ function Footer(props) {
     const dispatch = useDispatch();
     const emoji_string = "😀 😃 😄 😁 😆 😅 😂 🤣 🥲 🥹 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥸 🤩 🥳 🙂‍↕️ 😏 😒 🙂‍↔️ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮‍💨 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🫣 🤗 🫡 🤔 🫢 🤭 🤫 🤥 😶 😶‍🌫️ 😐 😑 😬 🫨 🫠 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵‍💫 🫥 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾";
     const emojis = emoji_string.split(" ");
-    
 
+    const findRoomId = async () => {
+        if (chatInfo.roomId === "") {
+            try {
+                const response = await getRoomBySenderIdAndReceiverId(userCurrent.email, chatInfo.user.email);
+                const dataChatDispatch = {
+                    user: chatInfo.user,
+                    roomId: response.roomId
+                }
+                dispatch(setChatInfo(dataChatDispatch));
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+        return;
+    }
 
     const changeFile = async (event) => {
-       if(event.target.files) {
-        const fileList = event.target.files;
-        const selectedFile = fileList[0];
-        const fileName = selectedFile.name;
-        const fileExtension = fileName.split('.').pop();
-        const fileType = checkExtensionFile(fileExtension);
-        const request = new FormData();
-        request.append("senderId", userCurrent.email);
-        request.append("receiverId", chatInfo.user.email);
-        request.append("messageType", fileType);
-        request.append("fileContent", selectedFile);
-        request.append("hiddenSenderSide", false);
-        try {
-            const msg = await sendMessageToUser(request);
-            dispatch(pushMessage(msg));
-            dispatch(reRenderRoom());
-        } catch (error) {
-            console.error(error);
+        if (event.target.files) {
+
+            try {
+                const fileList = event.target.files;
+                const selectedFile = fileList[0];
+                let fileName = "";
+                if (selectedFile.name)
+                    fileName = selectedFile.name;
+                const fileExtension = fileName.split('.').pop();
+                const fileType = checkExtensionFile(fileExtension);
+                const request = new FormData();
+                request.append("senderId", userCurrent.email);
+                request.append("receiverId", chatInfo.user.email);
+                request.append("messageType", fileType);
+                request.append("fileContent", selectedFile);
+                request.append("hiddenSenderSide", false);
+                const msg = await sendMessageToUser(request);
+                dispatch(pushMessage(msg));
+                dispatch(reRenderRoom());
+                findRoomId();
+            } catch (error) {
+                console.error(error);
+            }
         }
-       }
     }
 
     const actionChatIcon = [
@@ -85,6 +105,7 @@ function Footer(props) {
                 const msg = await sendMessageToUser(request);
                 dispatch(pushMessage(msg));
                 dispatch(reRenderRoom());
+                findRoomId();
             } catch (error) {
                 console.log(error);
             }

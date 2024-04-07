@@ -4,13 +4,35 @@ import "./ProfileModal.scss"; // Đảm bảo file SCSS được chỉnh sửa �
 import Avatar from '../avatar/Avatar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { getRoomBySenderIdAndReceiverId } from '../../services/RoomService';
+import { setChatInfo } from '../../redux/reducers/messageReducer';
 
 const AccountInfor = ({ show, onClose, handleBack,user,addFriend }) => {
-    // const user = useSelector((state) => state.userInfo.user);
+    const userCurrent = useSelector((state) => state.userInfo.user);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     useEffect(() => {
         if (!user) navigate("/auth/login");
     })
+
+    const viewSendMessage = async () => {
+        try {
+            const response = await getRoomBySenderIdAndReceiverId(userCurrent.email, user.email);
+            const chatInfo = {
+                user,
+                roomId: response.roomId
+            };
+            dispatch(setChatInfo(chatInfo));
+            return response;
+        } catch (error) {
+            const chatInfo = {
+                user,
+                roomId: ""
+            };
+            dispatch(setChatInfo(chatInfo));
+        }
+    }
     return (
         <Modal show={show} onHide={onClose} size="md" centered>
             <Modal.Header closeButton className='modal-header-cs'>
@@ -33,7 +55,7 @@ const AccountInfor = ({ show, onClose, handleBack,user,addFriend }) => {
                     </div>
                     <div className='btn-account-infor'>
                         <Button variant="outline-primary" onClick={addFriend} >Kết bạn</Button>
-                        <Button variant="primary" >Nhắn tin</Button>
+                        <Button variant="primary" onClick={viewSendMessage}>Nhắn tin</Button>
                     </div>
                     <div className="user-info">
                         <h6>Thông tin cá nhân</h6>

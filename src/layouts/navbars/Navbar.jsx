@@ -12,6 +12,7 @@ import ChangePasswordModal from "../../components/modal/ChangePasswordModal";
 import { useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../redux/reducers/userReducer";
 import UpdateInfoModal from "../../components/modal/UpdateInfoModal";
+import { setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
 
 function Navbar() {
     const buttons = navbarIcon;
@@ -53,6 +54,20 @@ function Navbar() {
         navigate('/auth/login');
 
     }
+
+    const clickButton = (index) => {
+        switch (index) {
+            case 0: 
+                dispatch(setViewIndedx(0));
+                break;
+            case 1:
+                dispatch(setViewIndedx(1));
+                break;
+            default: 
+                dispatch(setViewIndedx(2));
+                break;
+        }
+    }
     useEffect(() => {
         if (!user) navigate("/auth/login");
     })
@@ -83,6 +98,7 @@ function Navbar() {
                         <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal}/>
                     <div>
                         <ButtonGroup buttons={buttons} vertical
+                            handle={clickButton}
                             className="btn-hover"
                             width={68}
                             height={65}
