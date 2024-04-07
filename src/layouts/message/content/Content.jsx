@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessageByRoomId } from "../../../services/MessageService";
-import { setChatInfo, setMessages } from "../../../redux/reducers/messageReducer";
+
 import MessageText from "../../../components/messages/message-text/MessageText";
 import MessageFile from "../../../components/messages/message-file/MessageFile";
 import "./Content.scss";
-import { Spinner } from "react-bootstrap";
+
 import InfiniteScroll from "react-infinite-scroll-component";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
 import MessageError from "../../../components/messages/message-error/MessageError";
 import MessageVideo from "../../../components/messages/message-video/MessageVideo";
-import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
+import ImageGroup from "../../../components/messages/image-group/ImageGroup";
+
 
 function Content(props) {
 
@@ -18,10 +19,12 @@ function Content(props) {
     const [messageState, setMessagesSate] = useState([]);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [loading, setLoading] = useState(false);
-    const [disabled, setDisabled] = useState(false);
+    const [loadMore, setLoadMore] = useState(true);
     const dispatch = useDispatch();
     const scrollableDivRef = useRef(null);
     const chatInfo = useSelector(state => state.message.chatInfo);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     
 
     const renderMessage = (message, index, isLatest = false) => {
@@ -41,6 +44,9 @@ function Content(props) {
             case "VIDEO":
                 component = <MessageVideo message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
                 return checkStatusMessage(message, index, isLatest, component);
+            case "IMAGE_GROUP":
+                component = <ImageGroup message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                return checkStatusMessage(message, index, isLatest, component);
 
             default: break;
         }
@@ -53,6 +59,17 @@ function Content(props) {
         }
         return component;
     }
+    const fetchMore = async () => {
+        console.log("Fetching more data");
+        try {
+            setCurrentPage(prev => prev + 1);
+            const response = await getMessageByRoomId(userCurrent.email, props.roomId, currentPage);
+            const messagesMore = response.messages.reverse();
+            setMessagesSate(prev => [...messagesMore, ...prev]);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         if (chatInfo.roomId != "") {
@@ -61,6 +78,7 @@ function Content(props) {
                     const response = await getMessageByRoomId(userCurrent.email, props.roomId);
                     // dispatch(setMessages(response.messages.reverse()));
                     setMessagesSate(() => response.messages.reverse());
+                    setTotalPages(response.totalPage);
                     setLoading(true);
                 } catch (error) {
                     console.log(error);
@@ -74,16 +92,19 @@ function Content(props) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
         }
     }, [messageState]);
+    useEffect(() => {
+        if(currentPage === totalPages) setLoadMore(true);
+    }, [currentPage])
 
     return (
-        <div ref={scrollableDivRef} id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
+        <div  id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
 
             {loading ? <InfiniteScroll
                 dataLength={messageState.length}
                 style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px" }} //To put endMessage and loader to the top.
                 inverse={true}
-                hasMore={true && !disabled}
-                loader={<h4 className="p-5">Loading...</h4>}
+                next={fetchMore}
+                hasMore={loadMore}
                 scrollableTarget="scrollableDiv"
             >
                 {messageState.map((message, index) => {

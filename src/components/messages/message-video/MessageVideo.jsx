@@ -10,7 +10,7 @@ function MessageVideo(props) {
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
         >
-            <video width="350" height="500" controls >
+            <video controls  style={{ maxWidth: "40vh", padding: 10 }}>
                 <source src={fileInfo.filePath} type="video/mp4" />
             </video>
         </BaseMessage>

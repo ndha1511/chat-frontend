@@ -2,19 +2,19 @@ import axios from 'axios';
 
 
 
-export default function requestApi(endpoint, method, body, isInterceptors, contentType = 'application/json') { 
+export default function requestApi(endpoint, method, body, isInterceptors, contentType = 'application/json') {
     const headers = {
         // "Accept": "application/json",
         "Content-Type": contentType,
         "Access-Control-Allow-Origin": "*"
     }
     const instance = axios.create({ headers, baseURL: "http://localhost:8080/api/v1" });
-    
+
 
     if (isInterceptors) {
         instance.interceptors.request.use(
             (config) => {
-                if(!config.url.includes("/refreshToken")) {
+                if (!config.url.includes("/refreshToken")) {
                     const token = localStorage.getItem('token');
                     if (token) {
                         const tokenRequest = JSON.parse(token);
@@ -38,12 +38,24 @@ export default function requestApi(endpoint, method, body, isInterceptors, conte
                     try {
                         const token = localStorage.getItem('token');
                         if (token) {
-                            const tokenRequest = JSON.parse(token);
-                            console.log(tokenRequest);
-                            const result = await instance.post(`/auth/refreshToken`, { refreshToken: tokenRequest.refreshToken })
-                            const newToken = result.data;
-                            localStorage.setItem('token', JSON.stringify(newToken));
-                            console.log("set new token", newToken);
+                            if (contentType === "multipart/form-data") {
+                                const tokenRequest = JSON.parse(token);
+                                console.log(tokenRequest);
+                                const formData = new FormData();
+                                formData.append("refreshToken", tokenRequest.refreshToken)
+                                const result = await instance.post(`/auth/refreshToken-formData`, formData);
+                                const newToken = result.data;
+                                localStorage.setItem('token', JSON.stringify(newToken));
+                                console.log("set new token", newToken);
+                            } else {
+                                const tokenRequest = JSON.parse(token);
+                                console.log(tokenRequest);
+                                const result = await instance.post(`/auth/refreshToken`, { refreshToken: tokenRequest.refreshToken })
+                                const newToken = result.data;
+                                localStorage.setItem('token', JSON.stringify(newToken));
+                                console.log("set new token", newToken);
+                            }
+
                             // originalConfig.headers['Authorization'] = `Bearer ${newToken.accessToken}`;
                             return instance(originalConfig);
                         }

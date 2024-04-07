@@ -33,7 +33,7 @@ function MessageFile(props) {
             lastMessage={props.lastMessage ? true : false}>
             <div className="mess-file" style={{ position: "relative" }} onClick={downloadFile}>
                 <div className="mess-ct">
-                    <img src="https://i.pinimg.com/736x/74/b1/10/74b110781d66cd3b501bc85c469f93be.jpg" alt="" />
+                    <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
                     <div className="mess-text">
                         <div><h6>{originalName}</h6></div>
                         <div> <span>885B</span></div>
