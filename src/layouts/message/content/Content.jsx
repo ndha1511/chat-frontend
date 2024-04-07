@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessageByRoomId } from "../../../services/MessageService";
-import { setMessages } from "../../../redux/reducers/messageReducer";
+import { setChatInfo, setMessages } from "../../../redux/reducers/messageReducer";
 import MessageText from "../../../components/messages/message-text/MessageText";
 import MessageFile from "../../../components/messages/message-file/MessageFile";
 import "./Content.scss";
@@ -10,6 +10,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
 import MessageError from "../../../components/messages/message-error/MessageError";
 import MessageVideo from "../../../components/messages/message-video/MessageVideo";
+import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 
 function Content(props) {
 
@@ -20,6 +21,8 @@ function Content(props) {
     const [disabled, setDisabled] = useState(false);
     const dispatch = useDispatch();
     const scrollableDivRef = useRef(null);
+    const chatInfo = useSelector(state => state.message.chatInfo);
+    
 
     const renderMessage = (message, index, isLatest = false) => {
         var component = <></>;
@@ -43,6 +46,7 @@ function Content(props) {
         }
 
     }
+    
     const checkStatusMessage = (message, index, isLatest, component) => {
         if (message.messageStatus === "ERROR") {
             return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
@@ -51,7 +55,7 @@ function Content(props) {
     }
 
     useEffect(() => {
-        if (props.roomId) {
+        if (chatInfo.roomId != "") {
             const getMessages = async () => {
                 try {
                     const response = await getMessageByRoomId(userCurrent.email, props.roomId);
@@ -63,8 +67,8 @@ function Content(props) {
                 }
             }
             getMessages();
-        }
-    }, [props.roomId, messages]);
+        }else {setMessagesSate(() => []);}
+    }, [chatInfo.roomId, messages]);
     useEffect(() => {
         if (scrollableDivRef.current) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;

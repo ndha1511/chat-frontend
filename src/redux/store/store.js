@@ -4,6 +4,7 @@ import chatReducer from '../reducers/chatReducer';
 import renderReducer from '../reducers/renderReducer';
 import renderRoom from '../reducers/renderRoom';
 import userReducer from '../reducers/userReducer';
+import renderLayoutReducer from '../reducers/renderLayoutReducer';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     chat: chatReducer,
     render: renderReducer,
     room: renderRoom,
-    userInfo: userReducer
+    userInfo: userReducer,
+    renderView: renderLayoutReducer
   },
 })
