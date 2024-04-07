@@ -38,7 +38,7 @@ function MessageText(props) {
 
                     )}
 
-                    {showContent && (
+                    {/* {showContent && (
                         <div className='btn-emoji'>
                             <ButtonGroup buttons={buttons}
                                 className="btn-hover"
@@ -54,7 +54,7 @@ function MessageText(props) {
 
                             />
                         </div>
-                    )}  
+                    )}   */}
                 </div>
 
             </div>

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMessageByRoomId } from "../../../services/MessageService";
 import { setMessages } from "../../../redux/reducers/messageReducer";
 import MessageText from "../../../components/messages/message-text/MessageText";
+import MessageFile from "../../../components/messages/message-file/MessageFile";
 import "./Content.scss";
 import { Spinner } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -11,8 +12,9 @@ import MessageImage from "../../../components/messages/mesage-image/MessageImage
 function Content(props) {
 
     const messages = useSelector(state => state.message.messages);
+    const [messageState, setMessagesSate] = useState([]);
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const dispatch = useDispatch();
 
@@ -21,7 +23,8 @@ function Content(props) {
         switch (messageType) {
             case "TEXT":
                 return <MessageText message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
-            case "FILE": break;
+            case "FILE":
+                return <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false}/>;
             case "IMAGE":
                 return <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
             default: break;
@@ -29,12 +32,12 @@ function Content(props) {
     }
 
     useEffect(() => {
-        setLoading(true);
         const getMessages = async () => {
             try {
                 const response = await getMessageByRoomId(userCurrent.email, props.roomId);
-                dispatch(setMessages(response.messages.reverse()));
-                setLoading(false);
+                // dispatch(setMessages(response.messages.reverse()));
+                setMessagesSate(() => response.messages.reverse());
+                setLoading(true);
             } catch (error) {
                 console.log(error);
             }
@@ -44,15 +47,16 @@ function Content(props) {
 
     return (
         <div id="scrollableDiv" className="d-flex content-chat w-100 " style={{ backgroundColor: "crimson", height: "100%" }}>
-            <InfiniteScroll
-                dataLength={messages.length}
+
+             {loading ?<InfiniteScroll
+                dataLength={messageState.length}
                 style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px" }} //To put endMessage and loader to the top.
                 inverse={true}
                 hasMore={true && !disabled}
                 loader={<h4 className="p-5">Loading...</h4>}
                 scrollableTarget="scrollableDiv"
             >
-                {messages.map((message, index) => {
+                {messageState.map((message, index) => {
                     return index === 0 ? <div key={index}
                     className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
                     {renderMessage(message, index, true)}  </div> :
@@ -60,7 +64,7 @@ function Content(props) {
                         className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                     > {renderMessage(message, index)} </div>
                 })}
-            </InfiniteScroll>
+            </InfiniteScroll> : <></>}
             </div>
     );
 }

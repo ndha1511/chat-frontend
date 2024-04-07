@@ -6,16 +6,18 @@ import { useState } from "react";
 
 function MessageFile(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
+    const fileInfo = props.message.content;
+    const originalName = fileInfo.filename + '.' + fileInfo.fileExtension;
  
 
     return (
-        <BaseMessage isSender={userCurrent.email === props.message.senderId}
+        <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}>
             <div className="mess-file" style={{ position: "relative" }}>
                 <div className="mess-ct">
                     <img src="https://i.pinimg.com/736x/74/b1/10/74b110781d66cd3b501bc85c469f93be.jpg" alt="" />
                     <div className="mess-text">
-                        <div><h6>aspanspanlication</h6></div>
+                        <div><h6>{originalName}</h6></div>
                         <div> <span>885B</span></div>
                     </div>
                     <div className="btn-down">
