@@ -13,10 +13,11 @@ import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 function Footer(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const messages = useSelector(state => state.message.messages);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [textContent, setTextContent] = useState("");
     const dispatch = useDispatch();
-    const emoji_string = "😀 😃 😄 😁 😆 😅 😂 🤣 🥲 🥹 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥸 🤩 🥳 🙂‍↕️ 😏 😒 🙂‍↔️ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮‍💨 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🫣 🤗 🫡 🤔 🫢 🤭 🤫 🤥 😶 😶‍🌫️ 😐 😑 😬 🫨 🫠 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵‍💫 🫥 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾";
+    const emoji_string = "😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🤩 🥳 🙂‍ 😏 😒 🙂‍ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾";
     const emojis = emoji_string.split(" ");
 
     const findRoomId = async () => {
@@ -37,6 +38,7 @@ function Footer(props) {
     }
 
     const changeFile = async (event) => {
+
         if (event.target.files) {
 
             try {
@@ -60,12 +62,42 @@ function Footer(props) {
             } catch (error) {
                 console.error(error);
             }
+
         }
     }
 
+    const insertEmoji = (emoji) => {
+        // setTextContent(textContent + emoji);
+        setShowEmojiPicker(false); // Đóng menu emoji sau khi chọn
+        const textarea = document.getElementById('input-msg');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const textBefore = textContent.substring(0, start);
+        const textAfter  = textContent.substring(end, textContent.length);
+        setTextContent(textBefore + emoji + textAfter);
+        
+        // Đặt lại focus cho textarea và di chuyển con trỏ đến sau emoji vừa chèn
+        setTimeout(() => {
+            textarea.focus();
+            const position = start + emoji.length;
+            textarea.setSelectionRange(position, position);
+        }, 0);
+    };
+
+    const renderEmojiPicker = () => {
+        return showEmojiPicker && (
+            <div className="emoji-picker">
+                {emojis.map((emoji, index) => (
+                    <button key={index} onClick={() => insertEmoji(emoji)}>{emoji}</button>
+                ))}
+            </div>
+        );
+    };
+    
     const actionChatIcon = [
         {
-            item: <img src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} />,
+            
+            item: <img src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
             title: "Gửi sticker"
 
         },
@@ -119,23 +151,30 @@ function Footer(props) {
     const changeMessageContent = (e) => {
         setTextContent(e.target.value);
     }
+
+
     return (
         <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center" }}>
+            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center", position:'relative' }}>
                 <ButtonGroup handle={handleButton} buttons={actionChatIcon} className="btn-hover"
                     marginRight={15}
                     width={40} height={40}
                     hoverColor="#f0f0f0"
                 />
+                {renderEmojiPicker()}
             </div>
             <div className="d-flex w-100" style={{ height: "45%", borderTop: "1px solid gray" }}>
                 <label htmlFor="input-msg" style={{ width: "80%" }} className="border">
-                    <textarea onChange={changeMessageContent} placeholder={`Nhập tin nhắn gửi tới ${props.user.name}`} id="input-msg" className="input-message w-100" />
+                    <textarea onChange={changeMessageContent} id="input-msg" value={textContent}  placeholder={`Nhập tin nhắn gửi tới ${props.user.name}`} className="input-message w-100" />
                 </label>
                 <button onClick={sendMessage}>Gửi</button>
             </div>
+        
+     
         </div>
+        
     );
 }
 
 export default Footer;
+
