@@ -29,4 +29,4 @@ export const renderRoom = createSlice({
 
 export const { createRooms, deleteRooms, updateRooms, reRenderRoom } = renderRoom.actions
 
-export default renderRoom.reducer 
+export default renderRoom.reducer

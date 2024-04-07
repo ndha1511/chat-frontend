@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Header from "../header/Header";
 import Navbar from "../navbars/Navbar";
@@ -96,13 +95,12 @@ function FullLayout(props) {
               clickButton={() => { changeShowComponent() }}
               className="btn-hover"
               hoverColor="#f0f0f0"
-              borderRadius={50}
-            ><i className="bi bi-arrow-left"></i></ButtonIcon> :
-            <></>
-        })}
+              borderRadius={50}><i className="bi bi-arrow-left"></i></ButtonIcon> :
+              <></>
+          })}
+        </div>
       </div>
-    </div>
-  );
-}
-
-export default FullLayout;
+    );
+  }
+  
+  export default FullLayout;
