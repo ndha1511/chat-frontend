@@ -54,4 +54,28 @@
     overflow: hidden;
     flex-wrap: nowrap;
   }
-  
+
+  .btn-account-infor{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    // border: 1px solid blueviolet;
+    margin-bottom: 15px;
+    button{
+      width: 45%;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .bd-text{
+    width: 100%;
+    padding: 10px;
+    textarea{
+      width: 100%;
+      border: 0.5px solid gainsboro;
+      height: 150px;
+    }
+  }

@@ -5,8 +5,8 @@ import Avatar from '../avatar/Avatar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }) => {
-    const user = useSelector((state) => state.userInfo.user);
+const AccountInfor = ({ show, onClose, handleBack,user,addFriend }) => {
+    // const user = useSelector((state) => state.userInfo.user);
     const navigate = useNavigate();
     useEffect(() => {
         if (!user) navigate("/auth/login");
@@ -14,6 +14,7 @@ const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }
     return (
         <Modal show={show} onHide={onClose} size="md" centered>
             <Modal.Header closeButton className='modal-header-cs'>
+                <Button variant="outline-secondary" className='btn-hearder' onClick={handleBack}><i className="bi bi-caret-left"></i></Button>
                 <Modal.Title>Thông Tin Cá Nhân</Modal.Title>
             </Modal.Header>
             <Modal.Body className='modal-body-cs'>
@@ -26,27 +27,29 @@ const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }
                         />
                     </div>
                     <div className="profile-avatar">
-                        <Avatar user={user} width={70} height={70}/>
+                        <Avatar user={user} width={70} height={70} />
                         <h5 className="text-center mt-2">{user && user.name ? user.name : ""}</h5>
                         <i className="bi bi-pencil"></i>
                     </div>
-                    
+                    <div className='btn-account-infor'>
+                        <Button variant="outline-primary" onClick={addFriend} >Kết bạn</Button>
+                        <Button variant="primary" >Nhắn tin</Button>
+                    </div>
                     <div className="user-info">
                         <h6>Thông tin cá nhân</h6>
                         <ListGroup variant="flush">
                             <ListGroup.Item>{`Giới tính: ${user && user.gender ? "Nam" : "Nữ"}`}</ListGroup.Item>
-                            <ListGroup.Item>Ngày sinh: {user && user.dob ? user.dob : "" }</ListGroup.Item>
+                            <ListGroup.Item>Ngày sinh: {user && user.dob ? user.dob : ""}</ListGroup.Item>
                             <ListGroup.Item>{`Email: ${user && user.email ? user.email : ""}`}</ListGroup.Item>
                         </ListGroup>
                     </div>
                 </div>
             </Modal.Body>
             <Modal.Footer className='modal-f'>
-                <Button variant="outline-primary" onClick={onOpenUpdateModal}>Cập nhật thông tin</Button>
-                <Button variant="primary" onClick={onOpenChangePassword}>Thay Đổi Mật Khẩu</Button>
+
             </Modal.Footer>
         </Modal>
     );
 };
 
-export default ProfileModal;
+export default AccountInfor;

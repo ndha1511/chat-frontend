@@ -1,19 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, ListGroup, Button } from 'react-bootstrap';
 import "./ProfileModal.scss"; // Đảm bảo file SCSS được chỉnh sửa để phù hợp
 import Avatar from '../avatar/Avatar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { sendFriendRequest } from '../../services/ChatService';
 
-const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }) => {
-    const user = useSelector((state) => state.userInfo.user);
+const HelloMessage = ({ show, onClose,user,handleBack }) => {
+    const userSender = useSelector((state) => state.userInfo.user);
+    const [txt,setTxt] = useState("")
     const navigate = useNavigate();
-    useEffect(() => {
-        if (!user) navigate("/auth/login");
-    })
+
+    const addFriend = async () => {
+        console.log(txt)
+        
+        const emailSender = userSender.email
+        const emailRe = user.email
+        const request ={
+            message:txt,
+            senderId: emailSender,
+            receiverId: emailRe
+        }
+        try {
+            const response = await sendFriendRequest(request);
+            alert(response);
+        } catch (error) {
+            console.error("Error sending friend request:", error);
+            alert("Không thể gửi yêu cầu kết bạn.");
+        }
+    }
+
     return (
         <Modal show={show} onHide={onClose} size="md" centered>
             <Modal.Header closeButton className='modal-header-cs'>
+            <Button variant="outline-secondary" className='btn-hearder' onClick={handleBack}><i className="bi bi-caret-left"></i></Button>
                 <Modal.Title>Thông Tin Cá Nhân</Modal.Title>
             </Modal.Header>
             <Modal.Body className='modal-body-cs'>
@@ -31,22 +51,17 @@ const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }
                         <i className="bi bi-pencil"></i>
                     </div>
                     
-                    <div className="user-info">
-                        <h6>Thông tin cá nhân</h6>
-                        <ListGroup variant="flush">
-                            <ListGroup.Item>{`Giới tính: ${user && user.gender ? "Nam" : "Nữ"}`}</ListGroup.Item>
-                            <ListGroup.Item>Ngày sinh: {user && user.dob ? user.dob : "" }</ListGroup.Item>
-                            <ListGroup.Item>{`Email: ${user && user.email ? user.email : ""}`}</ListGroup.Item>
-                        </ListGroup>
+                    <div className="bd-text">
+                        <textarea id='txtMess' onChange={(e)=>setTxt(e.target.value)}  placeholder='hãy nói theo cách của bạn' ></textarea>
                     </div>
                 </div>
             </Modal.Body>
             <Modal.Footer className='modal-f'>
-                <Button variant="outline-primary" onClick={onOpenUpdateModal}>Cập nhật thông tin</Button>
-                <Button variant="primary" onClick={onOpenChangePassword}>Thay Đổi Mật Khẩu</Button>
+                <Button variant="outline-primary" onClick={handleBack} >Thông tin</Button>
+                <Button variant="primary" onClick={addFriend} >Kết bạn</Button>
             </Modal.Footer>
         </Modal>
     );
 };
 
-export default ProfileModal;
+export default HelloMessage;
