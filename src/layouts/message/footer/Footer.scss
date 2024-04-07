@@ -8,3 +8,44 @@
     // overflow: hidden;
     resize: none;
 }
+
+.emoji-picker{
+    background: none;
+    border: 1px solid #ccc; /* Thay đổi màu sắc và kích thước của border tại đây */
+    border-radius: 4px; /* Tuỳ chỉnh việc bo tròn góc của border */
+    font-size: 12px;
+    position: absolute;
+    cursor: pointer;
+    margin: 5px;
+    padding: 5px; /* Thêm padding để tạo khoảng cách xung quanh emoji */
+    background-color: white;
+    margin-bottom: 255px;
+    max-height: 200px;
+    max-width: 30%;
+    overflow: auto;
+    button{
+        border: none;
+        background-color: white;
+    }
+  
+}
+/* Tùy chỉnh thanh cuộn cho toàn bộ trang hoặc một phần tử cụ thể */
+.emoji-picker::-webkit-scrollbar {
+    width: 8px; /* Chiều rộng của thanh cuộn */
+}
+
+/* Đường ray của thanh cuộn (phần nền) */
+.emoji-picker::-webkit-scrollbar-track {
+    background: white; /* Màu nền của đường ray */
+}
+
+/* Tay cầm của thanh cuộn (phần có thể di chuyển) */
+.emoji-picker::-webkit-scrollbar-thumb {
+    background: gainsboro; /* Màu của tay cầm */
+    height: 40px;
+}
+
+/* Khi hover vào tay cầm của thanh cuộn */
+.emoji-picker::-webkit-scrollbar-thumb:hover {
+    background: #b8b7b7; /* Màu của tay cầm khi được hover */
+}
