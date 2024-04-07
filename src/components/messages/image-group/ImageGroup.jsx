@@ -1,13 +1,11 @@
 import { useSelector } from "react-redux";
 import BaseMessage from "../BaseMessage";
-import "./MessageImage.scss";
 import { emojis } from "../../../configs/button-group-icon-config";
 
 
-function MessageImage(props) {
+function ImageGroup(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const emojisArr = emojis;
-    const fileInfo = props.message.content;
+    const images = props.messgage.content;
     const messageStatus = props.message.messageStatus;
     
 
@@ -22,13 +20,15 @@ function MessageImage(props) {
                 <button className="btn-icon-custom">👍</button>
             </div> :
                 <div style={{ position: "relative", padding: 10 }}>
-                    <img src={fileInfo.filePath}
+                    {images.map((image, index) => {
+                        return <img src={image.filePath}
                         style={{ maxHeight: "500px", maxWidth: "45vh", borderRadius: "10px" }}
                     />
+                    })}
                     <button className="btn-icon-custom">👍</button>
                 </div>}
         </BaseMessage>
     );
 }
  
-export default MessageImage;
+export default ImageGroup;

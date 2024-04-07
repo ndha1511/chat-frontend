@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import { useDispatch } from "react-redux";
 import "./Footer.scss";
-import { sendMessageToUser } from "../../../services/ChatService";
-import { useState } from "react";
+import { sendImgaeGroup, sendMessageToUser } from "../../../services/ChatService";
+import { useRef, useState } from "react";
 import { pushMessage, setChatInfo } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
@@ -12,7 +12,7 @@ import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 
 function Footer(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const messages = useSelector(state => state.message.messages);
+    const fileInputRef = useRef(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [textContent, setTextContent] = useState("");
@@ -40,28 +40,62 @@ function Footer(props) {
     const changeFile = async (event) => {
 
         if (event.target.files) {
+            if(event.target.files.length > 1) {
+                try {
+                    const fileList = event.target.files;
+                    for(let i = 0; i < fileList.length; i++) {
+                        const filename = fileList[i].name;
+                        const fileExtension = filename.split(".").pop();
 
-            try {
-                const fileList = event.target.files;
-                const selectedFile = fileList[0];
-                let fileName = "";
-                if (selectedFile.name)
-                    fileName = selectedFile.name;
-                const fileExtension = fileName.split('.').pop();
-                const fileType = checkExtensionFile(fileExtension);
-                const request = new FormData();
-                request.append("senderId", userCurrent.email);
-                request.append("receiverId", chatInfo.user.email);
-                request.append("messageType", fileType);
-                request.append("fileContent", selectedFile);
-                request.append("hiddenSenderSide", false);
-                const msg = await sendMessageToUser(request);
-                dispatch(pushMessage(msg));
-                dispatch(reRenderRoom());
-                findRoomId();
-            } catch (error) {
-                console.error(error);
+                        if(checkExtensionFile(fileExtension) !== "IMAGE") {
+                            alert("Bạn chỉ có thể upload nhiều file ảnh cùng lúc");
+                            fileInputRef.current.value = null;
+                            return;
+                        }
+                    }
+                    const request = new FormData();
+                    request.append("senderId", userCurrent.email);
+                    request.append("receiverId", chatInfo.user.email);
+                    request.append("messageType", "IMAGE_GROUP");
+                    request.append("filesContent", fileList);
+                    request.append("hiddenSenderSide", false);
+                    const msg = await sendImgaeGroup(request);
+                    dispatch(pushMessage(msg));
+                    dispatch(reRenderRoom());
+                    findRoomId();
+                    fileInputRef.current.value = null;
+                } catch (error) {
+                    console.error(error);
+                    fileInputRef.current.value = null;
+                }
+
+            } else {
+                try {
+                    const fileList = event.target.files;
+                    const selectedFile = fileList[0];
+                    let fileName = "";
+                    if (selectedFile.name)
+                        fileName = selectedFile.name;
+                    const fileExtension = fileName.split('.').pop();
+                    const fileType = checkExtensionFile(fileExtension);
+                    const request = new FormData();
+                    request.append("senderId", userCurrent.email);
+                    request.append("receiverId", chatInfo.user.email);
+                    request.append("messageType", fileType);
+                    request.append("fileContent", selectedFile);
+                    request.append("hiddenSenderSide", false);
+                    const msg = await sendMessageToUser(request);
+                    dispatch(pushMessage(msg));
+                    dispatch(reRenderRoom());
+                    findRoomId();
+                    fileInputRef.current.value = null;
+                } catch (error) {
+                    console.error(error);
+                    fileInputRef.current.value = null;
+                }
             }
+
+            
 
         }
     }
@@ -97,13 +131,13 @@ function Footer(props) {
     const actionChatIcon = [
         {
             
-            item: <img src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
+            item: <img ref={fileInputRef} src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
             title: "Gửi sticker"
 
         },
         {
             item: <label htmlFor="image" style={{ cursor: "pointer" }}>
-                <input id="image" type="file" accept="image/*" style={{ display: "none" }} onChange={changeFile} />
+                <input ref={fileInputRef} id="image" type="file" accept="image/*" style={{ display: "none" }} onChange={changeFile} multiple/>
                 <i className="bi bi-image" style={{ fontSize: 20 }}></i>
             </label>,
             title: "Gửi hình ảnh"
@@ -111,7 +145,7 @@ function Footer(props) {
         {
 
             item: <label htmlFor="attachFile" style={{ cursor: "pointer" }}>
-                <input id="attachFile" type="file" style={{ display: "none" }} onChange={changeFile} />
+                <input id="attachFile" type="file" style={{ display: "none" }} onChange={changeFile} multiple/>
                 <i className="bi bi-paperclip" style={{ fontSize: 20 }}></i>
             </label>,
             title: "Đính kèm file"
