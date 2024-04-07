@@ -41,23 +41,26 @@ function FullLayout(props) {
         stompClient.subscribe(`/user/${user.email}/queue/messages`, onEventReceived);
     }
     const onEventReceived = (payload) => {
-      const info = payload.body;
-      const status = info.status || "";
-      switch (JSON.stringify(status)) {
-        case "SUCCESS":
-          dispatch(pushMessage(payload.body));
-          dispatch(reRenderRoom());
-          break;
-        case "SENT":
+      dispatch(pushMessage(payload.body));
+      // alert(payload.body);
+      dispatch(reRenderRoom());
+      // const info = payload.body;
+      // const status = info.status || "";
+      // switch (JSON.stringify(status)) {
+      //   case "SUCCESS":
+      //     dispatch(pushMessage(payload.body.message));
+      //     dispatch(reRenderRoom());
+      //     break;
+      //   case "SENT":
           
-          break;
-        case "ERROR":
-          dispatch(pushMessage(payload.body));
-          dispatch(reRenderRoom());
-          break;
+      //     break;
+      //   case "ERROR":
+      //     dispatch(pushMessage(payload.body));
+      //     dispatch(reRenderRoom());
+      //     break;
   
 
-      }
+      // }
 
     }
 
