@@ -44,7 +44,7 @@ function MessageText(props) {
                                 className="btn-hover"
                                 width={50}
                                 height={45}
-                                backgroundActive="#6495ed"
+                                // backgroundActive="#6495ed"
                                 hoverColor="#87cefa"
                                 active={0}
                                 textHoverColor="blue"

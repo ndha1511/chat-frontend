@@ -11,6 +11,7 @@ import MessageImage from "../../../components/messages/mesage-image/MessageImage
 import MessageError from "../../../components/messages/message-error/MessageError";
 import MessageVideo from "../../../components/messages/message-video/MessageVideo";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
+import MessageRevoked from "../../../components/messages/message-revoked/MessageRevoked";
 
 function Content(props) {
 
@@ -50,6 +51,8 @@ function Content(props) {
     const checkStatusMessage = (message, index, isLatest, component) => {
         if (message.messageStatus === "ERROR") {
             return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+        }else if(message.messageStatus === "REVOKED"){
+            return <MessageRevoked message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
         }
         return component;
     }

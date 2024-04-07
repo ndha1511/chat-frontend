@@ -10,3 +10,12 @@ export const getMessageByRoomId = async (senderId, roomId, page = 0, limit = 40)
         return Promise.reject(error);
     }
 }
+
+export const revokeMessage = async (oject) => {
+    try {
+        const response = await requestApi(`/messages/revokeMessage`, "POST", oject,true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+};

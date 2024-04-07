@@ -13,13 +13,10 @@
         padding: 10px;
         flex-direction: column;
         border: 1px solid gainsboro;
-      width: auto;
-     
+         width: auto;
         border-radius: 10px;
         // justify-content: flex-end;
         // align-items: flex-end;
-
-
         .text {
 
             // border: 1px solid gainsboro;
@@ -65,4 +62,26 @@
       
         
     }
+
+    .mess-text-cs {
+        display: flex;
+        background-color: white;
+        padding: 10px;
+        flex-direction: column;
+        border: 1px solid gainsboro;
+         width: 200px;
+        border-radius: 10px;
+        
+        .text-cs {
+            font-size: 15px;
+            color: rgb(153, 142, 142);
+          
+        }
+        span {
+            // border: 1px solid gainsboro;
+            font-size: 12px;
+            color: rgb(154, 150, 150);
+        }
+    }
+    
     

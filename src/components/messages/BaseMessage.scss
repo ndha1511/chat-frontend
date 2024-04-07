@@ -1,4 +1,13 @@
-.btn-hv{
-    // background-color: white;
-   
+
+.custom-dropdown-menu-cs{
+//  margin-left: 20px;
+display: flex;
+justify-content: center;
+flex-direction: column;
+align-items: center;
+width: 200px;
+font-size:15px;
 }
+.dropdown-divider {
+    margin: 0.5rem 0; // Khoảng cách cho divider
+  }
