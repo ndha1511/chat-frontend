@@ -8,3 +8,11 @@ export const sendMessageToUser = async (message) => {
         return Promise.reject(error);
     }
 }
+export const sendFriendRequest = async (data) => {
+    try {
+        const response = await requestApi("/friends/add", "POST",data , true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

@@ -6,6 +6,8 @@ import ChatLayout from "./layouts/chat/ChatLayout";
 import MessageLayout from "./layouts/message/MessageLayout";
 import { useSelector } from "react-redux";
 import { setChatInfo } from "./redux/reducers/messageReducer";
+import ContacLayoutMenu from "./layouts/contact/ContactLayoutMenu";
+import ContentLayout from "./layouts/contact/ContentLayout";
 
 
 

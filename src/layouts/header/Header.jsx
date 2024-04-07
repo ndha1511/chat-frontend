@@ -6,12 +6,19 @@ import { friendIcon } from "../../configs/button-group-icon-config";
 import { Button, Modal } from "react-bootstrap";
 import "./Header.scss";
 import Avatar from "../../components/avatar/Avatar";
+import { getUserByEmail } from "../../services/UserService";
+import AccountInfor from "../../components/modal/AccountInfor";
+import { sendFriendRequest } from "../../services/ChatService";
+import HelloMessage from "../../components/modal/HelloMessage";
+import ProfileModal from "../../components/modal/ProfileModal";
 
 
 
 function Header() {
     const [showModalAddFriend, setShowModalAddFriend] = useState(false);
     const [showModalAddGroup, setShowModalAddGroup] = useState(false);
+    const [showAccountInforModal, setShowAccountInforModal] = useState(false)
+    const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
     const [userSearch, setUserSearch] = useState({});
     const [invalid, setInvalid] = useState("");
     const buttons = friendIcon;
@@ -19,12 +26,39 @@ function Header() {
 
     const handleCloseAddFriend = () => setShowModalAddFriend(false);
     const handleCloseAddGroup = () => setShowModalAddGroup(false);
+    const handleCloseAccountInfor = () => setShowAccountInforModal(false)
+ 
+    const handleCloseShowHelloMessageModal = () => setShowHelloMessageModal(false)
+    const handleShowModalAddFriend = () => {
+        handleCloseAccountInfor();
+        setShowModalAddFriend(true)
+    }
+    const handleShowHelloMessageModal = () => {
+        handleCloseAccountInfor()
+        setShowHelloMessageModal(true)
+      
+    }
+    const handleShowAccountInfor = () => {
+        handleCloseShowHelloMessageModal()
+        setShowAccountInforModal(true)
+      
+    }
 
     const searchUser = async () => {
+        const email = document.getElementById('searchFriend').value;
+        if (!email) {
+            setInvalid("Vui lòng nhập email.");
+            return;
+        }
         try {
-
+            const result = await getUserByEmail(email);
+            setUserSearch(result);
+            setInvalid(""); // Nếu tìm thấy người dùng, xóa thông báo lỗi
+            setShowAccountInforModal(true)
+            setShowModalAddFriend(false)
         } catch (error) {
-
+            console.error("Error searching user:", error);
+            setInvalid("Không tìm thấy người dùng hoặc có lỗi xảy ra.");
         }
     }
 
@@ -36,7 +70,25 @@ function Header() {
             case 1:
                 setShowModalAddGroup(true);
                 break;
+            case 1:
+                setShowAccountInforModal(true);
+                break;
+            case 2:
+                setShowHelloMessageModal(true);
+                break;
             default: break;
+        }
+    }
+    const addFriend = async () => {
+        const email = user.email
+
+        console.log(email)
+        try {
+            const response = await sendFriendRequest(email);
+            alert(response.data);
+        } catch (error) {
+            console.error("Error sending friend request:", error);
+            alert("Không thể gửi yêu cầu kết bạn.");
         }
     }
     return (
@@ -60,7 +112,9 @@ function Header() {
                         <label htmlFor='searchFriend'>
                             <input type="email" id='searchFriend' placeholder='Email' />
                         </label>
-                        <span className="text-danger">Invalid Email</span>
+                        {invalid && <span className="text-danger">{invalid}</span>}
+                        {/* Kết quả tìm kiếm hoặc thông báo lỗi */}
+                        {userSearch && <div>{userSearch.name}</div>}
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="md-f">
@@ -72,7 +126,8 @@ function Header() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+            <AccountInfor show={showAccountInforModal} onClose={handleCloseAccountInfor} handleBack={handleShowModalAddFriend} user={userSearch} addFriend={handleShowHelloMessageModal} />
+            <HelloMessage show={showHelloMessageModal} onClose={handleCloseShowHelloMessageModal} handleBack={handleShowAccountInfor} user={userSearch} />
             {/* Modal create group */}
             <Modal show={showModalAddGroup} onHide={handleCloseAddGroup} className="md-G" scrollable={true} centered>
                 <Modal.Header className="md-h" closeButton>
@@ -80,10 +135,10 @@ function Header() {
 
                 </Modal.Header>
                 <Modal.Body className="md-bd">
-                    <div className="body-top" > 
+                    <div className="body-top" >
                         <div className="name">
-                        <i class="bi bi-camera"></i>
-                        <input className="ip-name" type="text" id="name" placeholder="Nhập tên nhóm" />
+                            <i class="bi bi-camera"></i>
+                            <input className="ip-name" type="text" id="name" placeholder="Nhập tên nhóm" />
                         </div>
                         <div className="search">
                             <i className="bi bi-search"></i>
