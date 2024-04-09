@@ -29,7 +29,7 @@ function Content(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
-    
+
 
     const renderMessage = (message, index, isLatest = false) => {
         var component = <></>;
@@ -56,11 +56,11 @@ function Content(props) {
         }
 
     }
-    
+
     const checkStatusMessage = (message, index, isLatest, component) => {
         if (message.messageStatus === "ERROR") {
             return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
-        }else if(message.messageStatus === "REVOKED"){
+        } else if (message.messageStatus === "REVOKED") {
             return <MessageRevoked message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
         }
         return component;
@@ -86,12 +86,14 @@ function Content(props) {
                     setMessagesSate(() => response.messages.reverse());
                     setTotalPages(response.totalPage);
                     setLoading(true);
+                    if (currentPage === response.totalPage - 1) setLoadMore(false);
+                    else setLoadMore(true);
                 } catch (error) {
                     console.log(error);
                 }
             }
             getMessages();
-        }else {setMessagesSate(() => []);}
+        } else { setMessagesSate(() => []); }
     }, [chatInfo.roomId, messages]);
     useEffect(() => {
         if (scrollableDivRef.current) {
@@ -99,11 +101,11 @@ function Content(props) {
         }
     }, [messageState]);
     useEffect(() => {
-        if(currentPage === totalPages) setLoadMore(true);
+
     }, [currentPage])
 
     return (
-        <div  id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
+        <div id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
 
             {loading ? <InfiniteScroll
                 dataLength={messageState.length}

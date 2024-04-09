@@ -43,22 +43,26 @@ function Footer(props) {
             if(event.target.files.length > 1) {
                 try {
                     const fileList = event.target.files;
+                    const request = new FormData();
                     for(let i = 0; i < fileList.length; i++) {
-                        const filename = fileList[i].name;
+                        const file = fileList[i];
+                        const filename = file.name;
                         const fileExtension = filename.split(".").pop();
-
+                
                         if(checkExtensionFile(fileExtension) !== "IMAGE") {
                             alert("Bạn chỉ có thể upload nhiều file ảnh cùng lúc");
                             fileInputRef.current.value = null;
                             return;
                         }
+                
+                        // Thêm từng file vào FormData
+                        request.append("filesContent", file);
                     }
-                    const request = new FormData();
+                    
                     request.append("senderId", userCurrent.email);
                     request.append("receiverId", chatInfo.user.email);
                     request.append("messageType", "IMAGE_GROUP");
-                    request.append("filesContent", fileList);
-                    request.append("hiddenSenderSide", false);
+                    request.append("messageStatus", "SENDING");
                     const msg = await sendImgaeGroup(request);
                     dispatch(pushMessage(msg));
                     dispatch(reRenderRoom());

@@ -12,7 +12,9 @@ function MessageFile(props) {
     const originalName = fileInfo.filename + '.' + fileInfo.fileExtension;
 
     const downloadFile = async () => {
+        
         try {
+            console.log("click here");
             const response = await downFile(fileInfo.fileKey);
             const blob = new Blob([response], { type: 'application/octet-stream' });
             const url = window.URL.createObjectURL(blob);
@@ -26,12 +28,12 @@ function MessageFile(props) {
             console.log(error);
         }
     }
- 
+
 
     return (
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}>
-            <div className="mess-file" style={{ position: "relative" }} onClick={downloadFile}>
+            {/* <div className="mess-file" style={{ position: "relative" }} onClick={downloadFile}>
                 <div className="mess-ct">
                     <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
                     <div className="mess-text">
@@ -42,11 +44,43 @@ function MessageFile(props) {
                         <button ><i className="bi bi-box-arrow-in-down"></i></button>
                     </div>
                 </div>
+
+
+                <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
+                <button className="btn-icon-custom">👍</button>
+            </div> */}
+            {props.message.messageStatus === "SENDING" ?
+                <div className="mess-file" style={{ position: "relative", backgroundColor: "gray" }} >
+                <div className="mess-ct">
+                    <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
+                    <div className="mess-text">
+                        <div><h6>{originalName}</h6></div>
+                        <div> <span>885B</span></div>
+                    </div>
+                </div>
              
 
                 <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                 <button className="btn-icon-custom">👍</button>
             </div>
+             :
+            <div className="mess-file" style={{ position: "relative" }} onClick={downloadFile}>
+            <div className="mess-ct">
+                <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
+                <div className="mess-text">
+                    <div><h6>{originalName}</h6></div>
+                    <div> <span>885B</span></div>
+                </div>
+                <div className="btn-down">
+                    <button ><i className="bi bi-box-arrow-in-down"></i></button>
+                </div>
+            </div>
+         
+
+            <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
+            <button className="btn-icon-custom">👍</button>
+        </div>
+            }
         </BaseMessage>
     );
 }

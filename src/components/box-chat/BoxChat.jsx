@@ -5,6 +5,8 @@ import { displayDateTime } from "../../utils/DateTimeHandle";
 import { useDispatch } from "react-redux";
 import { getUserByEmail} from "../../services/UserService";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
+import { seenMessage } from "../../services/ChatService";
+import { reRenderRoom } from "../../redux/reducers/renderRoom";
 
 function BoxChat(props) {
     const [hiddenButton, setHiddenButton] = useState(true);
@@ -35,6 +37,13 @@ function BoxChat(props) {
                 roomId: props.room.roomId
             };
             dispatch(setChatInfo(chatInfo));
+            const request = {
+                roomId: props.room.roomId,
+                senderId: props.room.senderId,
+                receiverId: props.room.receiverId
+            }
+            await seenMessage(request);
+            dispatch(reRenderRoom());
         } catch (error) {
             console.log(error);
         }
@@ -95,8 +104,11 @@ function BoxChat(props) {
                     props.room.numberOfUnreadMessage > 0 ?
                         <div className="d-flex row fixed-number-msg" style={{ justifyContent: "flex-end" }}>
                             <span className="center number-msg" style={{
-                                fontSize: "14px",
+                                fontSize: "8px",
                                 width: 30,
+                                height: 30,
+                                textAlign: "center",
+                                alignContent: "center",
                                 paddingLeft: 5,
                                 paddingRight: 5,
                                 borderRadius: "15px",

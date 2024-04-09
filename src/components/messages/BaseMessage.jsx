@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "./BaseMessage.scss";
 import ButtonGroup from "../buttons/button-group/ButtonGroup";
 import { btnCT } from "../../configs/button-group-icon-config";
 import { Button, Dropdown, Form, ListGroup, Modal } from "react-bootstrap";
 import { deleteMessage, revokeMessage } from "../../services/MessageService";
+import { pushMessage } from "../../redux/reducers/messageReducer";
 
 function BaseMessage(props) {
     const [hiddenBtn, setHiddenBtn] = useState(false);
     const user = useSelector((state) => state.userInfo.user);
+    const dispatch = useDispatch();
     // const buttons = btnCT;
     const [statusMessage, setStatusMessage] = useState("");
 
@@ -22,6 +24,7 @@ function BaseMessage(props) {
             default: return "";
         }
     }
+
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <a
             href="/"
@@ -46,6 +49,7 @@ function BaseMessage(props) {
             }
            
             await revokeMessage(reques);
+            dispatch(pushMessage(false));
             console.log("Tin nhắn đã được thu hồi thành công");
         } catch (error) {
             console.error("Xảy ra lỗi khi thu hồi tin nhắn", error);
@@ -97,7 +101,6 @@ function BaseMessage(props) {
                         width={25}
                         height={25}
                         hoverColor="#f0f0f0"
-                        active={0}
                         textHoverColor="blue"
                         fontSize={18}
                         borderRadius={5}

@@ -5,7 +5,7 @@ import { emojis } from "../../../configs/button-group-icon-config";
 
 function ImageGroup(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const images = props.messgage.content;
+    const images = props.message.content;
     const messageStatus = props.message.messageStatus;
     
 
@@ -19,7 +19,7 @@ function ImageGroup(props) {
                 />
                 <button className="btn-icon-custom">👍</button>
             </div> :
-                <div style={{ position: "relative", padding: 10 }}>
+                <div style={{ position: "relative", padding: 10, display: "flex", width: "65%", flexWrap: "wrap", justifyContent: "flex-end" }}>
                     {images.map((image, index) => {
                         return <img src={image.filePath}
                         style={{ maxHeight: "500px", maxWidth: "45vh", borderRadius: "10px" }}
