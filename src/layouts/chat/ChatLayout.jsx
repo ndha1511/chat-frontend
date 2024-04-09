@@ -10,6 +10,7 @@ import BoxChat from "../../components/box-chat/BoxChat";
 
 function ChatLayout() {
     const rooms = useSelector((state) => state.room.rooms);
+    const [rooms2, setRooms2] = useState([]);
     const rerenderRoom = useSelector((state) => state.room.reRender);
     const navigate = useNavigate();
     const user = useSelector((state) => state.userInfo.user);
@@ -23,6 +24,7 @@ function ChatLayout() {
                 try {
                     const response = await getRoomsBySenderId(id);
                     dispatch(createRooms(response.roomResponses));
+                    setRooms2(response.roomResponses);
                     setLoading(false);
                 } catch (error) {
                     console.log(error)
