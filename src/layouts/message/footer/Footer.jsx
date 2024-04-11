@@ -3,7 +3,7 @@ import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import { useDispatch } from "react-redux";
 import "./Footer.scss";
 import { sendImgaeGroup, sendMessageToUser } from "../../../services/ChatService";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pushMessage, setChatInfo } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
@@ -17,8 +17,27 @@ function Footer(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [textContent, setTextContent] = useState("");
     const dispatch = useDispatch();
+    const emojiPickerRef = useRef(null);
+    const stickerIconRef = useRef(null); 
     const emoji_string = "😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🤩 🥳 🙂‍ 😏 😒 🙂‍ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾";
     const emojis = emoji_string.split(" ");
+
+
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target) && !stickerIconRef.current.contains(event.target)) {
+                setShowEmojiPicker(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [emojiPickerRef, stickerIconRef]);
+
 
     // trường hợp 2 user chưa có chat room
     const findRoomId = async () => {
@@ -107,7 +126,7 @@ function Footer(props) {
 
     const insertEmoji = (emoji) => {
         // setTextContent(textContent + emoji);
-        setShowEmojiPicker(false); // Đóng menu emoji sau khi chọn
+        // setShowEmojiPicker(false); // Đóng menu emoji sau khi chọn
         const textarea = document.getElementById('input-msg');
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -125,7 +144,7 @@ function Footer(props) {
 
     const renderEmojiPicker = () => {
         return showEmojiPicker && (
-            <div className="emoji-picker">
+            <div className="emoji-picker" ref={emojiPickerRef}>
                 {emojis.map((emoji, index) => (
                     <button key={index} onClick={() => insertEmoji(emoji)}>{emoji}</button>
                 ))}
@@ -136,7 +155,7 @@ function Footer(props) {
     const actionChatIcon = [
         {
             
-            item: <img ref={fileInputRef} src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
+            item: <img ref={stickerIconRef} src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
             title: "Gửi sticker"
 
         },
