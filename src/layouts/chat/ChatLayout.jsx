@@ -1,42 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
+import {useSelector } from "react-redux";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import Header from "./header/Header";
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import { getRoomsBySenderId } from "../../services/RoomService";
-import { createRooms } from "../../redux/reducers/renderRoom";
-import { useNavigate } from "react-router-dom";
 import BoxChat from "../../components/box-chat/BoxChat";
 
 function ChatLayout() {
     const rooms = useSelector((state) => state.room.rooms);
-    const [rooms2, setRooms2] = useState([]);
-    const rerenderRoom = useSelector((state) => state.room.reRender);
-    const navigate = useNavigate();
-    const user = useSelector((state) => state.userInfo.user);
-    const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
     const [roomRender, setRoomRender] = useState([]);
 
-    useEffect(() => {
-        if(user) {
-            const getRoom = async (id) => {
-                try {
-                    const response = await getRoomsBySenderId(id);
-                    dispatch(createRooms(response.roomResponses));
-                    setRooms2(response.roomResponses);
-                    setLoading(false);
-                } catch (error) {
-                    console.log(error)
-                    setLoading(false);
-                }
-            }
-            getRoom(user.email);
-        } else {
-            navigate("/auth/login");
-        }
-
-    }, [dispatch, user && user.email ? user.email : "", rerenderRoom]);
+    
 
     useEffect(() => {
         const listBoxChat = rooms.map((room) => { return {item: <BoxChat room={room}/> }});
@@ -45,11 +17,6 @@ function ChatLayout() {
 
     return (
         <div className="d-flex w-100" style={{ flexDirection: "column"}}>
-            {loading ? <div className="d-flex w-100 justify-content-center align-items-center"
-                style={{ height: "500px"}}
-            >
-                <Spinner animation="border" variant="primary" />
-            </div> :
             <div>
                 <Header />
             <div className="d-flex">
@@ -70,7 +37,6 @@ function ChatLayout() {
                 }
             </div>
             </div>
-            }
 
         </div>
     );

@@ -6,7 +6,9 @@ import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { useDispatch, useSelector } from "react-redux";
 import { pushMessage } from "../../redux/reducers/messageReducer";
-import { reRenderRoom } from "../../redux/reducers/renderRoom";
+import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
+import { getRoomsBySenderId } from "../../services/RoomService";
+import { useNavigate} from "react-router-dom";
 
 var stompClient = null;
 
@@ -17,10 +19,24 @@ export const connect = (onConnected, onError) => {
 
 }
 
+export const disconnect = () => {
+  if (stompClient !== null) {
+    stompClient.disconnect();
+  }
+}
+
 
 
 function FullLayout(props) {
   const user = useSelector((state) => state.userInfo.user);
+  const rooms = useSelector((state) => state.room.rooms);
+  const rerenderRoom = useSelector((state) => state.room.reRender);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [connection, setConnection] = useState(false);
+
+
 
   const state = props.state;
   const [windowSize, setWindowSize] = useState({
@@ -35,42 +51,90 @@ function FullLayout(props) {
   const changeShowComponent = () => {
     dispatch(props.action());
   }
+  const onEventReceived = (payload) => {
+    const dataReceived = JSON.parse(payload.body);
+    if (dataReceived.hasOwnProperty("status")) {
+      const status = dataReceived.status;
+      switch (status) {
+        case "SUCCESS":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          break;
+        case "SENT":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          break;
+        case "SEEN":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          break;
+        case "CREATE_GROUP":
+          dispatch(reRenderRoom());
+          break;
+        case "ADD_MEMBER":
+          dispatch(reRenderRoom());
+        case "REVOKED_MESSAGE":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+        default:
+          break;
+      }
+    } else {
+
+    }
+
+
+
+  }
+  
   useEffect(() => {
     const onConnected = () => {
       if (user)
         stompClient.subscribe(`/user/${user.email}/queue/messages`, onEventReceived);
-    }
-    const onEventReceived = (payload) => {
-      dispatch(pushMessage(payload.body));
-      // alert(payload.body);
-      dispatch(reRenderRoom());
-      // const info = payload.body;
-      // const status = info.status || "";
-      // switch (JSON.stringify(status)) {
-      //   case "SUCCESS":
-      //     dispatch(pushMessage(payload.body.message));
-      //     dispatch(reRenderRoom());
-      //     break;
-      //   case "SENT":
-          
-      //     break;
-      //   case "ERROR":
-      //     dispatch(pushMessage(payload.body));
-      //     dispatch(reRenderRoom());
-      //     break;
-  
-
-      // }
-
+      setConnection(true);
     }
 
     const onError = (err) => {
-      connect(onConnected, onError);
       console.log(err);
     }
 
     connect(onConnected, onError);
+    setLoading(true);
   }, []);
+  useEffect(() => {
+    if (user) {
+      const getRoom = async (id) => {
+        try {
+          const response = await getRoomsBySenderId(id);
+          dispatch(createRooms(response.roomResponses));
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      getRoom(user.email);
+    } else {
+      navigate("/auth/login");
+    }
+
+  }, [dispatch, user && user.email ? user.email : "", rerenderRoom, loading]);
+
+  useEffect(() => {
+    try {
+      if(connection) {
+        if(!connected) {
+          if(rooms.length > 0) { 
+            rooms.forEach(room => {
+              if(room.roomType === "GROUP_CHAT")
+                stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived);
+            })
+            setConnected(true);
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [rooms])
 
   useEffect(() => {
     const handleResize = () => {
