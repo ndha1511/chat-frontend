@@ -129,7 +129,7 @@ function Header() {
             <AccountInfor show={showAccountInforModal} onClose={handleCloseAccountInfor} handleBack={handleShowModalAddFriend} user={userSearch} addFriend={handleShowHelloMessageModal} />
             <HelloMessage show={showHelloMessageModal} onClose={handleCloseShowHelloMessageModal} handleBack={handleShowAccountInfor} user={userSearch} />
             {/* Modal create group */}
-            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup} className="md-G" scrollable={true} centered>
+            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup}  scrollable={true} centered>
                 <Modal.Header className="md-h" closeButton>
                     <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>Tạo nhóm</Modal.Title>
 
@@ -145,8 +145,39 @@ function Header() {
                             <input type="text" placeholder="Nhập tên, Email" />
                         </div>
                     </div>
-                    <div className="body-center">
-
+                    <div className="body-center-cs">
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
+                        <span>aaaa</span><br />
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="md-f">

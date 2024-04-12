@@ -12,11 +12,13 @@
         background-color: white;
         padding: 10px;
         flex-direction: column;
-        border: 1px solid gainsboro;
+        // border: 1px solid rgb(8, 7, 7);
          width: auto;
         border-radius: 10px;
+        min-width: 110px;
         // justify-content: flex-end;
         // align-items: flex-end;
+        position: relative;
         .text {
 
             // border: 1px solid gainsboro;
@@ -37,32 +39,53 @@
     }
 
     .btn-icon-custom {
-        width: 20px;
-        height: 20px;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        position: absolute;
-        border-radius: 50%;
-        bottom: -10px;
-        right: 10px;
+        margin-bottom: -15px;
+        margin-right: -15px;
         background-color: #f0f0f0;
         font-size: 10px;
-    }
-    .btn-emoji{
-    
         position: absolute;
-      
-        margin-top: 30px;
-        margin-left: 120px;
-        border-radius: 20px;
-        background-color: grey;
-        display: flex;
-      
+
         
     }
-
+    .btn-icon-custom-s {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: 30px;
+        border-radius: 14px;
+        // margin-bottom: -25px;
+        margin-top: 53px;
+        // margin-left: 20px;
+        background-color: #f0f0f0;
+        font-size: 11px;
+        padding: 5px;
+        
+    }
+    .dropd-menu{
+        margin-top: -50px;
+        display: flex;
+        flex-direction: row;
+        // position: relative;
+        border-radius: 30px;
+        padding: 2px;
+        position: absolute;
+       
+        .btn-emoji{
+            display: flex;
+            flex-direction: row; 
+            gap: 5px;
+            .emoji-item {
+                padding: 5px; /* Đệm cho mỗi emoji */
+                cursor: pointer;
+                border-radius: 20px;
+            }
+        }
+    
+    }
+   
     .mess-text-cs {
         display: flex;
         background-color: white;

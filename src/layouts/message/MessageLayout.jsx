@@ -15,7 +15,7 @@ function MessageLayout(props) {
                         {props.backButton}
                         <Header user={chatInfo.user}/>
                     </div>
-                    <div className="w-100" style={{ height: "70%" }}>
+                    <div className="w-100" style={{ height: "70%",width:'100%'}}>
                         <Content roomId={chatInfo.roomId}/>
                     </div>
                     <div className="d-flex w-100" style={{ height: "18%" }}>

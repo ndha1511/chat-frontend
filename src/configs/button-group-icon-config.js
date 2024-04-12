@@ -63,6 +63,10 @@ export const chatIcon = [
     {
         item: <i className="bi bi-camera-video"></i>,
         title: "Gọi video"
+    },
+    {
+        item: <i className="bi bi-square-half"></i>,
+        title: "Thông tin hội thoại"
     }
 ]
 

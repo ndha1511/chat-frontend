@@ -1,0 +1,373 @@
+.offcanvas-body {
+    width: 100%;
+    /* Đảm bảo rằng body sử dụng toàn bộ chiều rộng */
+    padding: 0;
+
+}
+
+.Offcanva-tong {
+
+    // width: 100%;
+    .Offcanva-top {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        // border: 1px solid red;
+
+        .Offcanva-name {
+            // border: 1px solid red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+
+            button {
+                border-radius: 50%;
+                background-color: gainsboro;
+                border: none;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 10px;
+            }
+
+        }
+
+        .Offcanva-btn-top {
+            display: flex;
+            width: 90%;
+            // border: 1px solid red;
+            align-items: center;
+            justify-content: space-around;
+            margin-top: 5px;
+            
+
+            .item {
+                // border: 1px solid red;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                // border: 1px solid red;
+                width: 32%;
+                padding: 5px;
+
+                button {
+                    border-radius: 50%;
+                    background-color: gainsboro;
+                    border: none;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: 10px;
+                }
+                span {
+                    font-size: 11px;
+                    color: rgb(134, 127, 127);
+                    text-align: center;
+                    // border: 1px solid red;
+                    width: 70px;
+                    padding: 3px;
+    
+                }
+            }
+        }
+    }
+
+    .Offcanva-center {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        border: none;
+        // padding: 10px;
+        // border: 1px solid red;
+
+        .Offcanva-btn-center {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            // border: 1px solid red;
+            // margin-top: 5px;
+
+            span {
+                font-size: 15px;
+                color: rgb(134, 127, 127);
+                text-align: center;
+                // border: 1px solid red;
+                margin-left: 10px;
+
+            }
+
+            button {
+                border-radius: 50%;
+                background-color: gainsboro;
+                border: none;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                // margin-left: 10px;
+                font-size: 20px;
+            }
+        }
+
+
+    }
+
+    .Offcanva-center1 {
+        width: 100%;
+        margin-top: 5px;
+
+        .Offcanva-img-mp4-file-link {
+         
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            border: none;
+            padding: 10px;
+            color: black;
+            // border: 1px solid red;
+            height: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+
+            h6 {
+                // font-size: 16px;
+            }
+
+            button {
+                border-radius: 50%;
+                background-color: white;
+                border: none;
+                width: 25px;
+                height: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                // margin-bottom: 10px;
+                margin-top: -7px;
+                font-size: 18px;
+                
+                .rotate {
+                    transform: rotate(-90deg);
+                    /* Xoay 90 độ */
+                    transition: transform 0.2s ease;
+                    /* Thêm hiệu ứng chuyển đổi mượt mà */
+                }
+                i {
+                    color: gray; 
+                }
+            }
+         
+        }
+
+        .Offcanva-center1-content {
+            width: 100%;
+            display: flex;
+            // border: 1px solid red;
+            flex-wrap: wrap;
+            margin-top: -10px;
+            .Offcanva-center1-content-img {
+                // border: 1px solid red;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+
+                img {
+                    margin-bottom: 10px;
+                    margin: 5px;
+                    border-radius: 5px;
+                    width: 70px;
+                    height: 70px;
+                }
+            }
+
+            .Offcanva-center1-content-btn {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+
+                button {
+                    width: 95%;
+                    background-color: gainsboro;
+                    color: rgb(53, 51, 51);
+                    font-weight: 500;
+                    font-size: 17px;
+                    border: none;
+                }
+            }
+        }
+        .file{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .Offcanva-center1-content-file{
+           
+                display: flex;
+                flex-direction: row;
+                margin-top: -10px;
+                align-items: center;
+                justify-content: center;
+                // border: 1px solid black;
+                height: 80px;
+                width: 95%;
+               padding: 3px;
+              
+                i{
+                    width: 50px;
+                    height: 50px;
+                    // border-radius: 50%;
+              
+                    font-size: 45px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                span{
+                    font-size: 13px;
+                    color: rgb(123, 116, 116);
+                    margin-top: 40px;
+                }
+                .mess-text{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;  
+                    padding: 5px;
+              
+                    height: 60px;
+                    margin-left: 10px;
+                    width: 60%;
+                    h6{
+                        font-size: 12px;
+                    }
+                    span{
+                        font-size: 11px;
+                        color: rgb(123, 116, 116);
+                    }
+                }
+            
+        }
+        }
+        
+        .Offcanva-footer-cs{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            // padding: 10px;
+            // border: 1px solid red;
+            align-items: center;
+            margin-top: -10px;
+            padding-top: 10px;
+            padding-bottom: 20px;
+            .Offcanva-btn-footer-cs {
+                display: flex;
+                align-items: center;
+                width: 95%;
+                // border: 1px solid red;
+                margin-top: 5px;
+                background-color: gainsboro;
+                color: red;
+                border: none;
+    
+                span {
+                    font-size: 15px;
+                    color:red;
+                    text-align: center;
+                    // border: 1px solid red;
+                    margin-left: 10px;
+                    
+    
+                }
+    
+            }
+
+        }
+        
+    }
+}
+
+//Offcanvas quan li
+.ql-body{
+    padding: 10px;
+    width: 100%;
+    .ql-content{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        span{
+            width: 90%;
+            font-size: 14px;
+            color: rgb(72, 70, 70);
+        }
+    }
+    .ql-content1{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        // border: 1px solid red;
+        border-bottom: 1px solid gainsboro;
+        height: 33px;
+        h6{
+            width: 90%;
+            font-size: 14px;
+            color: rgb(72, 70, 70);
+            // border: 1px solid red; 
+            margin-right: 10px;
+            i{
+                font-size: 12px;
+                margin-left: 5px;
+                
+            }
+        }
+        .form-check{
+            // border: 1px solid red;
+           width: 10%;
+           display: flex;
+           justify-content: flex-end;
+        }
+      
+    }
+    .ql-btn{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        button{
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            border-radius: 5px;
+            height: 40px;
+            border: none;
+            margin-bottom: 4px;
+            transition: background-color 0.3s ease;
+            i{
+                margin-right: 10px;
+            }
+            &:hover {
+                background-color: rgb(203, 199, 199); /* Màu khi hover */
+                cursor: pointer;
+            }
+        
+            &:active {
+                background-color: gray; /* Màu khi active/chọn */
+            }
+        }
+    }
+}

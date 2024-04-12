@@ -2,20 +2,33 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import BaseMessage from '../BaseMessage';
+import { Dropdown } from 'react-bootstrap';
 import './MessageText.scss';
 import { emojis } from '../../../configs/button-group-icon-config';
-import ButtonGroup from '../../buttons/button-group/ButtonGroup';
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 
 function MessageText(props) {
     const [isHovered, setIsHovered] = useState(false);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [showContent, setShowContent] = useState(false);
-    const buttons = emojis.map(item => {
-        return {
-            item: item.icon
-        }
-    });
+    const [selectedEmojis, setSelectedEmojis] = useState([]);
+    const [emojiCount, setEmojiCount] = useState(0);
+    
+    const handleSelectEmoji = (emoji) => {
+        setEmojiCount(prevCount => prevCount + 1);
+        setSelectedEmojis(prevEmojis => {
+            if (!prevEmojis.includes(emoji)) {
+                return [...prevEmojis, emoji];
+            }
+            return prevEmojis;
+        });
+        setShowContent(false); // Automatically close the menu after selection
+    };
+    const handleClearEmojis = () => {
+        setSelectedEmojis([]);
+        setEmojiCount(0);
+        setShowContent(false); // Tự động đóng menu sau khi xóa
+    };
 
 
     return (
@@ -24,37 +37,50 @@ function MessageText(props) {
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
-            // showHidden={isHovered}
+        // showHidden={isHovered}
         >
             <div className='d-flex mess-hover' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
-                <div className="d-flex  mess-text" style={{ position: "relative" }}>
+                <div className="d-flex  mess-text" >
                     <div className='text'> <p>{props.message.content}</p></div>
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
-                    {isHovered && (
-                        <div className="like-button" onMouseEnter={() => setShowContent(true)}
-                            onMouseLeave={() => setShowContent(false)}>
-                            <button className="btn-icon-custom">👍</button>
+                    {selectedEmojis.length > 0 && (
+                        <div className='btn-icon-custom-s'>
+                            {selectedEmojis.slice(0, 3).map(emoji => (
+                                <span key={emoji}>{emoji}</span>
+                            ))}
+                            {emojiCount > 0 && <span> {emojiCount}</span>}
                         </div>
-
                     )}
 
-                    {/* {showContent && (
-                        <div className='btn-emoji'>
-                            <ButtonGroup buttons={buttons}
-                                className="btn-hover"
-                                width={50}
-                                height={45}
-                                // backgroundActive="#6495ed"
-                                hoverColor="#87cefa"
-                                active={0}
-                                textHoverColor="blue"
-                                fontSize={18}
-                                backgroundColor="grey"
-                                borderRadius={20}
 
-                            />
+                    {isHovered && (
+                        <div onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
+                            <Dropdown show={showContent}>
+                                <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
+                                    <div className='btn-icon-custom'>
+                                        {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : '👍'}
+
+                                    </div>
+
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu className='dropd-menu'>
+                                    <div className="btn-emoji">
+                                        {emojis.map((emoji, index) => (
+                                            <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
+                                                {emoji.icon}
+                                            </Dropdown.Item>
+                                        ))}
+                                        {selectedEmojis.length > 0 && (
+                                            <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
+                                                <i className="bi bi-x-lg"></i>
+                                            </Dropdown.Item>
+                                        )}
+                                    </div>
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </div>
-                    )}   */}
+                    )}
                 </div>
 
             </div>
@@ -63,4 +89,17 @@ function MessageText(props) {
     );
 }
 
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href="/"
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+        className="" // Thêm class cho avatar dropdown
+    >
+        {children}
+    </a>
+));
 export default MessageText;
