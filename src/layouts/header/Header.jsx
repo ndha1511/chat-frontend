@@ -11,6 +11,7 @@ import AccountInfor from "../../components/modal/AccountInfor";
 import { sendFriendRequest } from "../../services/ChatService";
 import HelloMessage from "../../components/modal/HelloMessage";
 import ProfileModal from "../../components/modal/ProfileModal";
+import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 
 
 
@@ -129,12 +130,12 @@ function Header() {
             <AccountInfor show={showAccountInforModal} onClose={handleCloseAccountInfor} handleBack={handleShowModalAddFriend} user={userSearch} addFriend={handleShowHelloMessageModal} />
             <HelloMessage show={showHelloMessageModal} onClose={handleCloseShowHelloMessageModal} handleBack={handleShowAccountInfor} user={userSearch} />
             {/* Modal create group */}
-            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup} className="md-G" scrollable={true} centered>
+            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup}  className="md-G" centered scrollable={true}>
                 <Modal.Header className="md-h" closeButton>
                     <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>Tạo nhóm</Modal.Title>
 
                 </Modal.Header>
-                <Modal.Body className="md-bd">
+                <Modal.Body className="md-bd" style={{ maxHeight: 500}} >
                     <div className="body-top" >
                         <div className="name">
                             <i class="bi bi-camera"></i>
@@ -146,7 +147,13 @@ function Header() {
                         </div>
                     </div>
                     <div className="body-center">
-
+                        <table className="table table-hover">
+                            <tr className="tr-create-group">
+                                <td><input type="checkbox"/></td>
+                                <td><Avatar/></td>
+                                <td>hehe</td>
+                            </tr>
+                        </table>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="md-f">

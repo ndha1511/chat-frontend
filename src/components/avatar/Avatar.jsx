@@ -2,7 +2,6 @@ import { extractName, getColorForName } from "../../utils/ExtractUsername";
 
 function Avatar(props) {
     const user = props.user ? props.user : null;
-    const group = props.group ? props.group : null;
     return (
         <div className="avatar"
             data-bs-toggle={`tooltip`}

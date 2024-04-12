@@ -9,6 +9,8 @@ import { pushMessage } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate} from "react-router-dom";
+import { setFriend } from "../../redux/reducers/friendReducer";
+import { getFriendRequest } from "../../services/FriendService";
 
 var stompClient = null;
 
@@ -35,6 +37,20 @@ function FullLayout(props) {
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
   const [connection, setConnection] = useState(false);
+  useEffect(() => {
+    const getListFriends = async (email) => {
+        try {
+            const response = await getFriendRequest(email);
+            dispatch(setFriend(response));
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
+    if(user)
+      getListFriends(user.email);
+
+  }, []);
 
 
 
