@@ -3,15 +3,15 @@ import Avatar from "../avatar/Avatar";
 import "./BoxChat.scss";
 import { displayDateTime } from "../../utils/DateTimeHandle";
 import { useDispatch } from "react-redux";
-import { getUserByEmail} from "../../services/UserService";
+import { getUserByEmail } from "../../services/UserService";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
 import { seenMessage } from "../../services/ChatService";
 import { reRenderRoom } from "../../redux/reducers/renderRoom";
+import { getGroupById } from "../../services/GroupService";
 
 function BoxChat(props) {
     const [hiddenButton, setHiddenButton] = useState(true);
     const [date, setDate] = useState(displayDateTime(props.room.time));
-    // console.log(date);
     const dispatch = useDispatch();
 
     const user = {
@@ -30,20 +30,44 @@ function BoxChat(props) {
     const pushChatMessage = async () => {
         try {
             // console.log(props.room.receiverId)
-            const response = await getUserByEmail(props.room.receiverId);
-            console.log(response);
-            const chatInfo = {
-                user: {...response},
-                roomId: props.room.roomId
-            };
-            dispatch(setChatInfo(chatInfo));
-            const request = {
-                roomId: props.room.roomId,
-                senderId: props.room.senderId,
-                receiverId: props.room.receiverId
+            if (props.room.roomType === "GROUP_CHAT") {
+                const response = await getGroupById(props.room.receiverId);
+                console.log(response);
+                const userData = {
+                    name: response.groupName,
+                    email: response.id,
+                    ...response
+                }
+                const chatInfo = {
+                    user: userData,
+                    roomId: props.room.roomId,
+                };
+                dispatch(setChatInfo(chatInfo));
+                const request = {
+                    roomId: props.room.roomId,
+                    senderId: props.room.senderId,
+                    receiverId: props.room.receiverId
+                }
+                await seenMessage(request);
+                dispatch(reRenderRoom());
+
+            } else {
+                const response = await getUserByEmail(props.room.receiverId);
+                console.log(response);
+                const chatInfo = {
+                    user: { ...response },
+                    roomId: props.room.roomId
+                };
+                dispatch(setChatInfo(chatInfo));
+                const request = {
+                    roomId: props.room.roomId,
+                    senderId: props.room.senderId,
+                    receiverId: props.room.receiverId
+                }
+                await seenMessage(request);
+                dispatch(reRenderRoom());
             }
-            await seenMessage(request);
-            dispatch(reRenderRoom());
+
         } catch (error) {
             console.log(error);
         }
@@ -54,6 +78,7 @@ function BoxChat(props) {
         console.log('Inner button clicked');
     }
     useEffect(() => {
+        setDate(displayDateTime(props.room.time));
         const intervalId = setInterval(() => {
             setDate(displayDateTime(props.room.time));
         }, 1000);
@@ -61,7 +86,7 @@ function BoxChat(props) {
         return () => {
             clearInterval(intervalId);
         };
-    }, [])
+    }, [props.room.time])
     return (
 
         <div className="row d-flex w-100 wrapper-boxchat" onClick={pushChatMessage} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>

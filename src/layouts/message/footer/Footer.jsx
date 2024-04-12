@@ -23,6 +23,7 @@ function Footer(props) {
     const emojis = emoji_string.split(" ");
 
 
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target) && !stickerIconRef.current.contains(event.target)) {
@@ -37,6 +38,8 @@ function Footer(props) {
         };
     }, [emojiPickerRef, stickerIconRef]);
 
+
+    // trường hợp 2 user chưa có chat room
     const findRoomId = async () => {
         if (chatInfo.roomId === "") {
             try {

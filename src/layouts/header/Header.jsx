@@ -14,6 +14,7 @@ import ProfileModal from "../../components/modal/ProfileModal";
 
 
 
+
 function Header() {
     const [showModalAddFriend, setShowModalAddFriend] = useState(false);
     const [showModalAddGroup, setShowModalAddGroup] = useState(false);
@@ -129,12 +130,14 @@ function Header() {
             <AccountInfor show={showAccountInforModal} onClose={handleCloseAccountInfor} handleBack={handleShowModalAddFriend} user={userSearch} addFriend={handleShowHelloMessageModal} />
             <HelloMessage show={showHelloMessageModal} onClose={handleCloseShowHelloMessageModal} handleBack={handleShowAccountInfor} user={userSearch} />
             {/* Modal create group */}
-            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup}  scrollable={true} centered>
+
+            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup}  className="md-G" centered scrollable={true}>
+
                 <Modal.Header className="md-h" closeButton>
                     <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>Tạo nhóm</Modal.Title>
 
                 </Modal.Header>
-                <Modal.Body className="md-bd">
+                <Modal.Body className="md-bd" style={{ maxHeight: 500}} >
                     <div className="body-top" >
                         <div className="name">
                             <i class="bi bi-camera"></i>
@@ -145,39 +148,15 @@ function Header() {
                             <input type="text" placeholder="Nhập tên, Email" />
                         </div>
                     </div>
-                    <div className="body-center-cs">
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
-                        <span>aaaa</span><br />
+
+                    <div className="body-center">
+                        <table className="table table-hover">
+                            <tr className="tr-create-group">
+                                <td><input type="checkbox"/></td>
+                                <td><Avatar/></td>
+                                <td>hehe</td>
+                            </tr>
+                        </table>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="md-f">

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../redux/reducers/userReducer";
 import UpdateInfoModal from "../../components/modal/UpdateInfoModal";
 import { setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
+import { disconnect } from "../full-layout/FullLayout";
 
 function Navbar() {
     const buttons = navbarIcon;
@@ -51,6 +52,7 @@ function Navbar() {
     const logout = () => {
         localStorage.clear();
         dispatch(setUserInfo(null));
+        disconnect();
         navigate('/auth/login');
 
     }

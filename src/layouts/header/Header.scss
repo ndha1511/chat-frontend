@@ -99,9 +99,36 @@
         font-size: 14px;
     }
 }
-.body-center-cs{
-    height: 250px;
-    border: 1px solid black;
-    margin-top: 20px;
-  
+
+.body-center{
+    height: 350px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 10px;
+    padding-top: 20px;
+    overflow: auto;
+}
+.tr-create-group {
+    display: flex;
+    align-items: center;
+    td {
+        padding: 15px;
+    }
+    input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%; /* Đảm bảo hình tròn */
+        outline: none;
+        border: 2px solid #ccc; /* Viền */
+    }
+}
+input:checked {
+    background-color: rgb(160, 160, 230); /* Màu nền khi được chọn */
+    border-color: gray;
+}
+.tr-create-group:hover {
+    background-color: #f0f0f0;
+
 }
