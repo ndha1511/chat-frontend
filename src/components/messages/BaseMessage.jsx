@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./BaseMessage.scss";
 import ButtonGroup from "../buttons/button-group/ButtonGroup";
@@ -6,6 +6,8 @@ import { btnCT } from "../../configs/button-group-icon-config";
 import { Button, Dropdown, Form, ListGroup, Modal } from "react-bootstrap";
 import { deleteMessage, revokeMessage } from "../../services/MessageService";
 import { pushMessage } from "../../redux/reducers/messageReducer";
+import Avatar from "../avatar/Avatar";
+import { getUserByEmail } from "../../services/UserService";
 
 function BaseMessage(props) {
     const [hiddenBtn, setHiddenBtn] = useState(false);
@@ -90,6 +92,12 @@ function BaseMessage(props) {
 
     ]
 
+    const senderUser = {
+        avatar: props.message.senderAvatar,
+        name: props.message.senderName
+    }
+
+   
 
     return (
         <div onMouseEnter={() => setHiddenBtn(true)}
@@ -111,7 +119,14 @@ function BaseMessage(props) {
             </div>
         )}
 
-            {props.children}
+            {props.isSender ? props.children: 
+                <div className="d-flex" style={{ paddingLeft: 10 }}>
+                    <Avatar user={senderUser} width={40} height={40}/>
+                    <div>
+                        {props.children}
+                    </div>
+                </div>
+            }
             {
                 props.lastMessage ?
                     <div className="m-2" style={{ position: "absolute", bottom: -60, padding: 10 }}>
