@@ -38,9 +38,7 @@ function Header() {
     const friends = useSelector((state) => state.friend.friendsAccepted);
     const dispatch = useDispatch()
     const handleCloseAddFriend = () => setShowModalAddFriend(false);
-    const handleCloseAddGroup = () => setShowModalAddGroup(false);
     const handleCloseAccountInfor = () => setShowAccountInforModal(false)
-    const [friendId,setFriendId] = useState([]);
 
     const handleCloseShowHelloMessageModal = () => setShowHelloMessageModal(false)
     const handleShowModalAddFriend = () => {
@@ -104,7 +102,7 @@ function Header() {
                 console.log(friends)
             } catch (error) {
                 console.error("", error);
-                alert("Error fetching friend requests.");
+     
             }
         };
 
@@ -113,22 +111,7 @@ function Header() {
     }, [dispatch]);
 
 
-    useEffect(() => {
-        console.log(friendId);
-        // Bạn có thể thực hiện bất kỳ hành động gì bạn muốn với friendId ở đây
-    }, [friendId]);
-
-    const handleChange = (event) => {
-        if(event.target.checked){
-            setFriendId(()=>[...friendId,event.target.value]);
-        }else{
-            const memberId = event.target.value
-            const newMemBer =[...friendId]
-            const aa=   newMemBer.filter(id=>id!==memberId)
-            setFriendId(aa)
-        }
-        
-    }
+  
     const renderTooltip = props => (
         <Tooltip id="button-tooltip" {...props}>
             Vui lòng nhập 

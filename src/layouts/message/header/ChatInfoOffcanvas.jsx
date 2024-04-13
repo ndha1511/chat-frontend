@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Avatar from '../../../components/avatar/Avatar';
 import CreateGroupModal from '../../header/CreateGroupModal';
+import { useSelector } from 'react-redux';
 
 const ChatInfoOffcanvas = ({ show, handleClose, user,handleShowManager  }) => {
     const [showMember, setShowMember] = useState(false);
@@ -10,12 +11,15 @@ const ChatInfoOffcanvas = ({ show, handleClose, user,handleShowManager  }) => {
     const [showFile, setShowFile] = useState(false);
     const [showSecurity, setShowSecurity] = useState(false);
     const [showManager, setShowManager] = useState(false)
+    const chatInfo = useSelector(state => state.message.chatInfo);
 
     const handleShowManagerModal = ()=>{
         setShowManager(true)
       
     }
-
+    const groupChat = chatInfo.user
+    // console.log(groupChat);
+    console.log(groupChat.members)
     // Prepare images, files, and any other state or handlers that are solely related to this offcanvas
     const images = [
         'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
@@ -48,7 +52,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, user,handleShowManager  }) => {
                         <div className="Offcanva-top">
                             <Avatar />
                             <div className="Offcanva-name">
-                                <h5>Hoàng Anh</h5>
+                                <h5>{groupChat.name}</h5>
                                 <Button><i className="bi bi-pencil-square"></i></Button>
                             </div>
                             <div className="Offcanva-btn-top">
@@ -62,9 +66,12 @@ const ChatInfoOffcanvas = ({ show, handleClose, user,handleShowManager  }) => {
                                 </div>
                                 <div className="item">
                                     <Button onClick={handleShowManagerModal}> <i className="bi bi-person-add"></i></Button>
-                                    <span>Tạo nhóm <br /> trò chuyện</span>
+                                    <span>Thêm <br /> thành viên</span>
                                 </div>
-                                <CreateGroupModal show={showManager} handleClose={() => setShowManager(false)} />
+                                <CreateGroupModal show={showManager} handleClose={() => setShowManager(false)}
+                                    groupName={groupChat.name} 
+                                    selectedMembers={groupChat.members}
+                                />
                                 <div className="item">
                                     <Button onClick={handleShowManager} ><i className="bi bi-gear"></i></Button>
                                     <span>Quản lí <br /> Công cộng</span>
@@ -80,7 +87,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, user,handleShowManager  }) => {
                                 <Button className="Offcanva-center">
                                     <div className="Offcanva-btn-center">
                                         <Button><i className="bi bi-people"></i></Button>
-                                        <span>17 nhóm chung</span>
+                                        <span>{groupChat.numberOfMembers} thành viên</span>
                                     </div>
                                 </Button>
                             )}

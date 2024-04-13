@@ -41,7 +41,9 @@ function BoxChat(props) {
                 const chatInfo = {
                     user: userData,
                     roomId: props.room.roomId,
+                    room: props.room
                 };
+
                 dispatch(setChatInfo(chatInfo));
                 const request = {
                     roomId: props.room.roomId,

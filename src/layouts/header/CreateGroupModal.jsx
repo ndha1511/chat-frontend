@@ -7,14 +7,20 @@ import { addGroup } from '../../services/GroupService';
 
 // Your other code...
 
-function CreateGroupModal({ show, handleClose }) {
+function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
     const [friendName, setFriendName] = useState('');
     const [friendId, setFriendId] = useState([]);
+    const[updateMemberId,setUpdateMemberId] = useState([]);
+    const[updateState,setUpdateState] = useState(false);
+
+    const [isUpdateMode, setIsUpdateMode] = useState(false);
+    const[title,setTitle] = useState('Tạo nhóm');
     const [isValid, setIsValid] = useState(true); // State to manage input validity
     const friends = useSelector((state) => state.friend.friendsAccepted);
+    const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
     const dispatch = useDispatch();
-
+    
     const handleAddGroup = async () => {
         if (!friendName.trim()) {
             setIsValid(false);
@@ -62,6 +68,18 @@ function CreateGroupModal({ show, handleClose }) {
             setFriendId(friendId.filter(id => id !== memberId));
         }
     };
+    useEffect(() => {
+        console.log(updateMemberId);
+        // Bạn có thể thực hiện bất kỳ hành động gì bạn muốn với friendId ở đây
+    }, [updateMemberId]);
+    const handleUpdate = (event) => {
+        const memberId = event.target.value;
+        if (event.target.checked) {
+            setUpdateMemberId([...updateMemberId, memberId]);
+        } else {
+            setUpdateMemberId(updateMemberId.filter(id => id !== memberId));
+        }
+    };
 
 
     const renderTooltip = props => (
@@ -69,10 +87,29 @@ function CreateGroupModal({ show, handleClose }) {
             Vui lòng nhập tên nhóm
         </Tooltip>
     );
+
+    
+    
+    useEffect(() => {
+        if (selectedMembers && selectedMembers.length > 0) {
+            // Chuyển đổi danh sách selectedMembers thành mảng các email
+            const selectedEmails = selectedMembers.map(member => member);
+            setFriendId(selectedEmails);
+            console.log(selectedEmails)
+            setIsUpdateMode(true)
+            setTitle('Thêm thành viên')
+        }
+    }, [selectedMembers,updateState]);
+  
+    useEffect(() => {
+        if (groupName) {
+            setFriendName(groupName);
+        }
+    }, [groupName]);
     return (
         <Modal show={show} onHide={handleClose} className="md-G" centered scrollable={true}>
             <Modal.Header className="md-h" closeButton>
-                <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>Tạo nhóm</Modal.Title>
+                <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="md-bd" style={{ maxHeight: 500 }}>
                 <div className="body-top">
@@ -109,8 +146,12 @@ function CreateGroupModal({ show, handleClose }) {
                                     <td>
                                         <Form.Check
                                             type="checkbox"
-                                            onChange={(e) => handleChange(e, friend.email)}
+                                            onChange={(e) => {
+                                                handleChange(e, friend.email)
+                                                handleUpdate(e,friend.email)
+                                            }}
                                             value={friend.email}
+                                            checked={friendId.includes(friend.email)}
                                             id={`checkbox-${index}`} // Thêm ID cho mỗi checkbox
                                         />
                                     </td>
@@ -123,12 +164,22 @@ function CreateGroupModal({ show, handleClose }) {
                 </div>
             </Modal.Body>
             <Modal.Footer className="md-f">
-                <Button variant="secondary" onClick={handleClose} className="modal-button-custom">
+                <Button variant="secondary" onClick={()=>{
+                    handleClose()
+                    setUpdateMemberId([])
+                    setUpdateState(prev=> !prev)
+                }} className="modal-button-custom">
                     Hủy
                 </Button>
-                <Button variant="primary" onClick={handleAddGroup} className="modal-button-custom">
-                    Tạo nhóm
-                </Button>
+                {isUpdateMode ? ( // Hiển thị nút "Update" nếu đang trong chế độ "Update"
+                    <Button variant="primary" onClick={handleAddGroup} className="modal-button-custom">
+                        Update
+                    </Button>
+                ) : (
+                    <Button variant="primary" onClick={handleAddGroup} className="modal-button-custom">
+                        Tạo nhóm
+                    </Button>
+                )}
             </Modal.Footer>
         </Modal>
     );
