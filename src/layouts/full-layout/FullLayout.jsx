@@ -12,7 +12,7 @@ import { useNavigate} from "react-router-dom";
 import { setFriend } from "../../redux/reducers/friendReducer";
 import { getFriendRequest } from "../../services/FriendService";
 
-var stompClient = null;
+export var stompClient = null;
 
 export const connect = (onConnected, onError) => {
   let sock = new SockJS('http://localhost:8080/ws');
@@ -71,6 +71,7 @@ function FullLayout(props) {
     const dataReceived = JSON.parse(payload.body);
     if (dataReceived.hasOwnProperty("status")) {
       const status = dataReceived.status;
+      const room = dataReceived.room;
       switch (status) {
         case "SUCCESS":
           dispatch(reRenderRoom());
@@ -86,9 +87,35 @@ function FullLayout(props) {
           break;
         case "CREATE_GROUP":
           dispatch(reRenderRoom());
+          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
           break;
         case "ADD_MEMBER":
           dispatch(reRenderRoom());
+          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
+          break;
+        case "ADD_MEMBER_GROUP":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          break;
+        case "REMOVE_MEMBER":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          stompClient.unsubscribe(room.id);
+          break;
+        case "REMOVE_MEMBER_GROUP":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          break;
+        case "REMOVE_GROUP": 
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          stompClient.unsubscribe(room.id);
+          break;
+        case "LEAVE":
+          dispatch(reRenderRoom());
+          dispatch(pushMessage(payload.body));
+          stompClient.unsubscribe(room.id);
+          break;
         case "REVOKED_MESSAGE":
           dispatch(reRenderRoom());
           dispatch(pushMessage(payload.body));
@@ -140,8 +167,8 @@ function FullLayout(props) {
         if(!connected) {
           if(rooms.length > 0) { 
             rooms.forEach(room => {
-              if(room.roomType === "GROUP_CHAT")
-                stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived);
+              if(room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE")
+                stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
             })
             setConnected(true);
           }
