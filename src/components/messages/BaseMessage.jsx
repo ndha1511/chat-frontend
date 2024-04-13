@@ -98,7 +98,6 @@ function BaseMessage(props) {
     }
 
 
-
     return (
         <div onMouseEnter={() => setHiddenBtn(true)}
             onMouseLeave={() => setHiddenBtn(false)}
@@ -126,7 +125,6 @@ function BaseMessage(props) {
             {!props.isSender && props.message.messageType !== "SYSTEM" && <div style={{ padding: 10 }}>
                 <Avatar user={senderUser} width={40} height={40} /></div>}
               
-
             {
                 props.lastMessage ?
                     <div className="m-2" style={{ position: "absolute", bottom: -60, padding: 10 }}>

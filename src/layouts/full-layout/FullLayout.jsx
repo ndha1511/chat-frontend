@@ -95,24 +95,29 @@ function FullLayout(props) {
           break;
         case "ADD_MEMBER_GROUP":
           dispatch(reRenderRoom());
+
           dispatch(reRenderMessge());
           break;
         case "REMOVE_MEMBER":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+
           stompClient.unsubscribe(room.id);
           break;
         case "REMOVE_MEMBER_GROUP":
           dispatch(reRenderRoom());
+
           dispatch(reRenderMessge());
           break;
         case "REMOVE_GROUP": 
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+
           stompClient.unsubscribe(room.id);
           break;
         case "LEAVE":
           dispatch(reRenderRoom());
+
           dispatch(reRenderMessge());
           stompClient.unsubscribe(room.id);
           break;
@@ -120,6 +125,7 @@ function FullLayout(props) {
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
           break;
+
         case "REVOKED_MESSAGE":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
@@ -171,12 +177,12 @@ function FullLayout(props) {
         if(!connected) {
           if(rooms.length > 0) { 
             rooms.forEach(room => {
+
               if(room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE"){
                 stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
-                console.log(room)
 
               }
-                
+
             })
             setConnected(true);
           }
