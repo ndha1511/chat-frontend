@@ -3,7 +3,7 @@ import { Modal, Button, Form, Tooltip, OverlayTrigger } from 'react-bootstrap'; 
 import { reRender } from '../../redux/reducers/renderReducer';
 import Avatar from '../../components/avatar/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
-import { addGroup } from '../../services/GroupService';
+import { addGroup, addMember } from '../../services/GroupService';
 
 // Your other code...
 
@@ -44,6 +44,26 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             console.error("Error creating group:", error);
         }
     };
+
+    const handleAddMemberToGroup = async () => {
+        if(updateMemberId.length > 0) {
+            const request = {
+                adderId: user.email,
+                membersId: updateMemberId,
+                groupId: chatInfo.roomId
+            }
+            try {
+                await addMember(request);
+                setUpdateMemberId([]);
+                handleClose();
+            } catch (error) {
+                console.error("Error creating group:", error);
+            }
+
+        }
+        
+        
+    }
 
     function createGroupFormData(groupData) {
         const formData = new FormData();
@@ -172,7 +192,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
                     Hủy
                 </Button>
                 {isUpdateMode ? ( // Hiển thị nút "Update" nếu đang trong chế độ "Update"
-                    <Button variant="primary" onClick={handleAddGroup} className="modal-button-custom">
+                    <Button variant="primary" onClick={handleAddMemberToGroup} className="modal-button-custom">
                         Update
                     </Button>
                 ) : (

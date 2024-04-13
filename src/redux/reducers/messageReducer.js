@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   chatInfo: {},
-  messages: []
+  messages: [],
+  renderMessage: false,
+  scrollEnd: false
 }
 
 // cấu trúc khi dispatch 
@@ -27,7 +29,7 @@ export const messageReducer = createSlice({
       state.messages = action.payload;
     },
     pushMessage: (state, action) => {
-      state.messages.push(action.payload);
+      state.messages = [action.payload, ...state.messages];
     },
     updateMessage: (state, action) => {
       state.messages = state.messages.map((message) => {
@@ -38,10 +40,16 @@ export const messageReducer = createSlice({
     deleteMessage: (state, action) => {
       const index = action.payload;
       state.messages.splice(index, 1);
+    },
+    reRenderMessge: (state) => {
+      state.renderMessage = !state.renderMessage;
+    },
+    setScrollEnd: (state) => {
+      state.scrollEnd = !state.scrollEnd;
     }
   },
 })
 
-export const { setChatInfo, setMessages, pushMessage, updateMessage, deleteMessage } = messageReducer.actions
+export const { setChatInfo, setMessages, pushMessage, updateMessage, deleteMessage, reRenderMessge, setScrollEnd } = messageReducer.actions
 
 export default messageReducer.reducer
