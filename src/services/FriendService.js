@@ -17,6 +17,14 @@ export const getFriendRequestBySender = async (email) => {
         return Promise.reject(error);
     }
 }
+export const getListFriend = async (email) => {
+    try {
+        const response = await requestApi("/users/getFriend?email=" + email, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
 
 export const rejectFriendRequest = async (data) => {
     try {

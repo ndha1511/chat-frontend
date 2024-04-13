@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import Search from "../../components/search/Search";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { friendIcon } from "../../configs/button-group-icon-config";
+import {  Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Button, Modal } from "react-bootstrap";
+
 import "./Header.scss";
 import Avatar from "../../components/avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
@@ -11,6 +13,12 @@ import AccountInfor from "../../components/modal/AccountInfor";
 import { sendFriendRequest } from "../../services/ChatService";
 import HelloMessage from "../../components/modal/HelloMessage";
 import ProfileModal from "../../components/modal/ProfileModal";
+import { getListFriend } from "../../services/FriendService";
+import { setFriendAccepted } from "../../redux/reducers/friendReducer";
+import { addGroup } from "../../services/GroupService";
+import { reRender } from "../../redux/reducers/renderReducer";
+import CreateGroupModal from "./CreateGroupModal";
+import AddFriendModal from "./AddFriendModal";
 
 
 
@@ -21,14 +29,19 @@ function Header() {
     const [showAccountInforModal, setShowAccountInforModal] = useState(false)
     const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
     const [userSearch, setUserSearch] = useState({});
-    const [invalid, setInvalid] = useState("");
+    
+    const [friendName, setFriendName] = useState('');
+    const [invalid, setInvalid] = useState('');
+    const [isValid, setIsValid] = useState(true);
     const buttons = friendIcon;
     const user = useSelector((state) => state.userInfo.user);
-
+    const friends = useSelector((state) => state.friend.friendsAccepted);
+    const dispatch = useDispatch()
     const handleCloseAddFriend = () => setShowModalAddFriend(false);
     const handleCloseAddGroup = () => setShowModalAddGroup(false);
     const handleCloseAccountInfor = () => setShowAccountInforModal(false)
- 
+    const [friendId,setFriendId] = useState([]);
+
     const handleCloseShowHelloMessageModal = () => setShowHelloMessageModal(false)
     const handleShowModalAddFriend = () => {
         handleCloseAccountInfor();
@@ -37,18 +50,19 @@ function Header() {
     const handleShowHelloMessageModal = () => {
         handleCloseAccountInfor()
         setShowHelloMessageModal(true)
-      
+
     }
     const handleShowAccountInfor = () => {
         handleCloseShowHelloMessageModal()
         setShowAccountInforModal(true)
-      
+
     }
 
     const searchUser = async () => {
         const email = document.getElementById('searchFriend').value;
-        if (!email) {
-            setInvalid("Vui lòng nhập email.");
+     
+        if (!email.trim()) {
+            setIsValid(false);
             return;
         }
         try {
@@ -80,18 +94,97 @@ function Header() {
             default: break;
         }
     }
-    const addFriend = async () => {
-        const email = user.email
+    // const addFriend = async () => {
+    //     const email = user.email
 
-        console.log(email)
+    //     console.log(email)
+    //     try {
+    //         const response = await sendFriendRequest(email);
+    //         alert(response.data);
+    //     } catch (error) {
+    //         console.error("Error sending friend request:", error);
+    //         alert("Không thể gửi yêu cầu kết bạn.");
+    //     }
+    // }
+
+    useEffect(() => {
+        const getListFriendRequet = async () => {
+            try {
+                const response = await getListFriend(user.email);
+                dispatch(setFriendAccepted(response));
+                console.log(friends)
+            } catch (error) {
+                console.error("", error);
+                alert("Error fetching friend requests.");
+            }
+        };
+
+        getListFriendRequet(); // Call the function to fetch friend requests
+
+    }, [dispatch]);
+
+    const addGroupRQ = async ()=>{
+
         try {
-            const response = await sendFriendRequest(email);
-            alert(response.data);
+            const request = new FormData();
+            request.append('')
         } catch (error) {
-            console.error("Error sending friend request:", error);
-            alert("Không thể gửi yêu cầu kết bạn.");
+            console.error("", error);
+            alert("tao nhom khong thanh cong.");
         }
     }
+    function createGroupFormData(groupData) {
+        const formData = new FormData();
+        formData.append('groupName', groupData.groupName);
+        formData.append('ownerId', groupData.ownerId);
+        formData.append('ownerName', groupData.ownerName);
+        // formData.append('avatar', groupData.avatar); // Đảm bảo rằng avatar là một MultipartFile
+        groupData.membersId.forEach((memberId, index) => {
+            formData.append(`membersId[${index}]`, memberId);
+        });
+        return formData;
+    }
+
+    const handleAddGroup = async ()=>{
+      try {
+        // setFriendId(()=>[...friendId,user.email])
+        console.log(friendId)
+        const groupData = {
+            groupName:friendName,
+            ownerId: user.email,
+            ownerName: user.name,
+            membersId:friendId,
+        }
+        const requets= createGroupFormData(groupData);
+        const res = await addGroup(requets)
+        setFriendId([]);
+        dispatch(reRender())
+      } catch (error) {
+            console.error("", error);
+            alert("tao nhom khong thanh cong.");
+      }
+    }
+    useEffect(() => {
+        console.log(friendId);
+        // Bạn có thể thực hiện bất kỳ hành động gì bạn muốn với friendId ở đây
+    }, [friendId]);
+
+    const handleChange = (event) => {
+        if(event.target.checked){
+            setFriendId(()=>[...friendId,event.target.value]);
+        }else{
+            const memberId = event.target.value
+            const newMemBer =[...friendId]
+            const aa=   newMemBer.filter(id=>id!==memberId)
+            setFriendId(aa)
+        }
+        
+    }
+    const renderTooltip = props => (
+        <Tooltip id="button-tooltip" {...props}>
+            Vui lòng nhập 
+        </Tooltip>
+    );
     return (
         <div className="d-flex w-100">
             <Search placeholder="Tìm kiếm" />
@@ -111,11 +204,24 @@ function Header() {
                 <Modal.Body className="modal-body-custom">
                     <div>
                         <label htmlFor='searchFriend'>
-                            <input type="email" id='searchFriend' placeholder='Email' />
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={renderTooltip}
+                            show={!isValid}
+                        >
+                            <Form.Control type="email" id='searchFriend'
+                             value={invalid}
+                             onChange={(e) => {
+                                 setInvalid(e.target.value);
+                                 setIsValid(true);
+                                
+                             }}
+                            placeholder='Email' isInvalid={!isValid} />
+                        </OverlayTrigger>
                         </label>
-                        {invalid && <span className="text-danger">{invalid}</span>}
-                        {/* Kết quả tìm kiếm hoặc thông báo lỗi */}
-                        {userSearch && <div>{userSearch.name}</div>}
+                        {/* {invalid && <span className="text-danger">{invalid}</span>} */}
+                
+                        {/* {userSearch && <div>{userSearch.name}</div>} */}
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="md-f">
@@ -127,47 +233,20 @@ function Header() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {/* <AddFriendModal
+                show={showModalAddFriend}
+                onClose={() => setShowModalAddFriend(false)}
+                onShowAccountInfo={handleShowAccountInfor}
+                user={user.email}
+                onShowHelloMessage={handleShowHelloMessageModal}
+            /> */}
             <AccountInfor show={showAccountInforModal} onClose={handleCloseAccountInfor} handleBack={handleShowModalAddFriend} user={userSearch} addFriend={handleShowHelloMessageModal} />
             <HelloMessage show={showHelloMessageModal} onClose={handleCloseShowHelloMessageModal} handleBack={handleShowAccountInfor} user={userSearch} />
             {/* Modal create group */}
-
-            <Modal show={showModalAddGroup} onHide={handleCloseAddGroup}  className="md-G" centered scrollable={true}>
-
-                <Modal.Header className="md-h" closeButton>
-                    <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>Tạo nhóm</Modal.Title>
-
-                </Modal.Header>
-                <Modal.Body className="md-bd" style={{ maxHeight: 500}} >
-                    <div className="body-top" >
-                        <div className="name">
-                            <i class="bi bi-camera"></i>
-                            <input className="ip-name" type="text" id="name" placeholder="Nhập tên nhóm" />
-                        </div>
-                        <div className="search">
-                            <i className="bi bi-search"></i>
-                            <input type="text" placeholder="Nhập tên, Email" />
-                        </div>
-                    </div>
-
-                    <div className="body-center">
-                        <table className="table table-hover">
-                            <tr className="tr-create-group">
-                                <td><input type="checkbox"/></td>
-                                <td><Avatar/></td>
-                                <td>hehe</td>
-                            </tr>
-                        </table>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer className="md-f">
-                    <Button variant="secondary" onClick={handleCloseAddGroup} className="modal-button-custom">
-                        Hủy
-                    </Button>
-                    <Button variant="primary" className="modal-button-custom" onClick={() => setShowModalAddGroup(true)}>
-                        Tạo nhóm
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <CreateGroupModal
+                show={showModalAddGroup}
+                handleClose={() => setShowModalAddGroup(false)}
+            />
         </div>
     );
 }

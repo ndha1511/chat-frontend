@@ -12,6 +12,9 @@ export const friendReducer = createSlice({
     setFriend: (state, action) => {
       state.friends = action.payload;
     },
+    setFriendAccepted: (state,action) =>{
+      state.friendsAccepted = action.payload
+    },
     destroy: (state) => {
         state.friends = [];
         state.friendsAccepted = [];
@@ -25,6 +28,6 @@ export const friendReducer = createSlice({
   },
 })
 
-export const { setFriend, destroy, deleteFriend } = friendReducer.actions
+export const { setFriend, destroy, deleteFriend,setFriendAccepted } = friendReducer.actions
 
 export default friendReducer.reducer

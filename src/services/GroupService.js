@@ -8,3 +8,12 @@ export const getGroupById = async (id) => {
         return Promise.reject(error);
     }
 }
+
+export const addGroup = async (data) => {
+    try {
+        const response = await requestApi("/groups", "POST", data, true,"multipart/form-data");
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

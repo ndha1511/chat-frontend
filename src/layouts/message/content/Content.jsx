@@ -109,7 +109,7 @@ function Content(props) {
 
             {loading ? <InfiniteScroll
                 dataLength={messageState.length}
-                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px" }} //To put endMessage and loader to the top.
+                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px",overflowX:'hidden' }} //To put endMessage and loader to the top.
                 inverse={true}
                 next={fetchMore}
                 hasMore={loadMore}

@@ -1,17 +1,50 @@
-// ChatInfoOffcanvas.js
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import Avatar from '../../../components/avatar/Avatar';
+import CreateGroupModal from '../../header/CreateGroupModal';
 
+const ChatInfoOffcanvas = ({ show, handleClose, user,handleShowManager  }) => {
+    const [showMember, setShowMember] = useState(false);
+    const [showContent, setShowContent] = useState(false);
+    const [showFile, setShowFile] = useState(false);
+    const [showSecurity, setShowSecurity] = useState(false);
+    const [showManager, setShowManager] = useState(false)
 
-const ChatInfoOffcanvas = ({ show, handleClose, images, files, showMember, setShowMember, showContent, setShowContent, showFile, setShowFile, showSecurity, setShowSecurity }) => {
+    const handleShowManagerModal = ()=>{
+        setShowManager(true)
+      
+    }
+
+    // Prepare images, files, and any other state or handlers that are solely related to this offcanvas
+    const images = [
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
+    ];
+    const files = [
+        { name: "document1.docx", size: "885B", date: "04/11/2024" },
+        { name: "summary.pdf", size: "1.2MB", date: "05/11/2024" },
+        { name: "presentation.pptx", size: "2.5MB", date: "06/11/2024" },
+        { name: "budget.xlsx", size: "932KB", date: "07/11/2024" },
+    ];
+
+  
+
     return (
-        <Offcanvas show={show} onHide={handleClose} style={{ width: '350px', margin: 0 }} placement="end" backdrop="static">
-             <Offcanvas.Header closeButton>
-                    <Offcanvas.Title style={{ textAlign: 'center' }}>Thông tin hội thoại</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body >
-                    <div className="Offcanva-tong">
+        <Offcanvas show={show} onHide={handleClose} style={{ width: '350px' }} placement="end" backdrop="static">
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Thông tin hội thoại</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+            <div className="Offcanva-tong">
                         <div className="Offcanva-top">
                             <Avatar />
                             <div className="Offcanva-name">
@@ -28,25 +61,16 @@ const ChatInfoOffcanvas = ({ show, handleClose, images, files, showMember, setSh
                                     <span>Ghim hội <br /> thoại</span>
                                 </div>
                                 <div className="item">
-                                    <Button> <i className="bi bi-person-add"></i></Button>
+                                    <Button onClick={handleShowManagerModal}> <i className="bi bi-person-add"></i></Button>
                                     <span>Tạo nhóm <br /> trò chuyện</span>
                                 </div>
+                                <CreateGroupModal show={showManager} handleClose={() => setShowManager(false)} />
                                 <div className="item">
-                                    <Button><i className="bi bi-gear"></i></Button>
+                                    <Button onClick={handleShowManager} ><i className="bi bi-gear"></i></Button>
                                     <span>Quản lí <br /> Công cộng</span>
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="Offcanva-center">
-                            <div className="Offcanva-btn-center">
-                                <Button><i className="bi bi-clock"></i></Button>
-                                <span>Danh sách nhắc hẹn</span>
-                            </div>
-                            <div className="Offcanva-btn-center">
-                                <Button><i className="bi bi-people"></i></Button>
-                                <span>17 nhóm chung</span>
-                            </div>
-                        </div> */}
                         <div className="Offcanva-center1">
                             <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowMember(!showMember)} >
                                 <h6>Thành viên</h6>
@@ -121,7 +145,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, images, files, showMember, setSh
                             )}
                         </div>
                     </div>
-                </Offcanvas.Body>
+            </Offcanvas.Body>
         </Offcanvas>
     );
 };
