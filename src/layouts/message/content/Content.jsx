@@ -14,16 +14,19 @@ import MessageVideo from "../../../components/messages/message-video/MessageVide
 import MessageRevoked from "../../../components/messages/message-revoked/MessageRevoked";
 
 import ImageGroup from "../../../components/messages/image-group/ImageGroup";
+import { setMessages } from "../../../redux/reducers/messageReducer";
+import MessageSystem from "../../../components/messages/message-system/MessageSystem";
 
 
 
 function Content(props) {
 
     const messages = useSelector(state => state.message.messages);
-    const [messageState, setMessagesSate] = useState([]);
+    const reRenderMessage = useSelector(state => state.message.renderMessage);
+    const scrollEnd = useSelector(state => state.message.scrollEnd);
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const [loading, setLoading] = useState(false);
     const [loadMore, setLoadMore] = useState(true);
+    
     const dispatch = useDispatch();
     const scrollableDivRef = useRef(null);
     const chatInfo = useSelector(state => state.message.chatInfo);
@@ -51,6 +54,8 @@ function Content(props) {
             case "IMAGE_GROUP":
                 component = <ImageGroup message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
                 return checkStatusMessage(message, index, isLatest, component);
+            case "SYSTEM":
+                return <MessageSystem message={message} key={index} lastMessage={false}/>
 
             default: break;
         }
@@ -71,21 +76,20 @@ function Content(props) {
             setCurrentPage(prev => prev + 1);
             const response = await getMessageByRoomId(userCurrent.email, props.roomId, currentPage);
             const messagesMore = response.messages.reverse();
-            setMessagesSate(prev => [...messagesMore, ...prev]);
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
+
         if (chatInfo.roomId != "") {
             const getMessages = async () => {
                 try {
                     const response = await getMessageByRoomId(userCurrent.email, props.roomId);
                     // dispatch(setMessages(response.messages.reverse()));
-                    setMessagesSate(() => response.messages.reverse());
+                    dispatch(setMessages(response.messages.reverse()));
                     setTotalPages(response.totalPage);
-                    setLoading(true);
                     if (currentPage === response.totalPage - 1) setLoadMore(false);
                     else setLoadMore(true);
                 } catch (error) {
@@ -93,13 +97,14 @@ function Content(props) {
                 }
             }
             getMessages();
-        } else { setMessagesSate(() => []); }
-    }, [chatInfo.roomId, messages]);
+        } else { dispatch(setMessages([])); }
+    }, [chatInfo.roomId, reRenderMessage]);
+    
     useEffect(() => {
         if (scrollableDivRef.current) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
         }
-    }, [messageState]);
+    }, [scrollEnd]);
     useEffect(() => {
 
     }, [currentPage])
@@ -107,15 +112,15 @@ function Content(props) {
     return (
         <div id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
 
-            {loading ? <InfiniteScroll
-                dataLength={messageState.length}
+            <InfiniteScroll
+                dataLength={messages.length}
                 style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px",overflowX:'hidden' }} //To put endMessage and loader to the top.
                 inverse={true}
                 next={fetchMore}
                 hasMore={loadMore}
                 scrollableTarget="scrollableDiv"
             >
-                {messageState.map((message, index) => {
+                {messages.map((message, index) => {
                     return index === 0 ? <div key={index}
                         className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
                         {renderMessage(message, index, true)}  </div> :
@@ -123,7 +128,7 @@ function Content(props) {
                             className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                         > {renderMessage(message, index)} </div>
                 })}
-            </InfiniteScroll> : <></>}
+            </InfiniteScroll> 
         </div>
     );
 }

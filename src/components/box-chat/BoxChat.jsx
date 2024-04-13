@@ -130,10 +130,10 @@ function BoxChat(props) {
                 {
                     props.room.numberOfUnreadMessage > 0 ?
                         <div className="d-flex row fixed-number-msg" style={{ justifyContent: "flex-end" }}>
-                            <span className="center number-msg" style={{
-                                fontSize: "8px",
-                                width: 30,
-                                height: 30,
+                            <span className="" style={{
+                                fontSize: "12px",
+                                width: 20,
+                                height: 20,
                                 textAlign: "center",
                                 alignContent: "center",
                                 paddingLeft: 5,

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import "./Footer.scss";
 import { sendImgaeGroup, sendMessageToUser } from "../../../services/ChatService";
 import { useEffect, useRef, useState } from "react";
-import { pushMessage, setChatInfo } from "../../../redux/reducers/messageReducer";
+import { pushMessage, reRenderMessge, setChatInfo } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 
@@ -115,6 +115,7 @@ function Footer(props) {
                     request.append("hiddenSenderSide", false);
                     const msg = await sendMessageToUser(request);
                     dispatch(pushMessage(msg));
+                    dispatch(reRenderMessge());
                     dispatch(reRenderRoom());
                     findRoomId();
                     fileInputRef.current.value = null;
@@ -197,11 +198,13 @@ function Footer(props) {
                 request.append("textContent", textContent);
                 request.append("messageType", "TEXT");
                 request.append("hiddenSenderSide", false);
+                setTextContent("");
                 const msg = await sendMessageToUser(request);
                 dispatch(pushMessage(msg));
+                dispatch(reRenderMessge());
                 dispatch(reRenderRoom());
                 findRoomId();
-                setTextContent("")
+                
             } catch (error) {
                 console.log(error);
             }

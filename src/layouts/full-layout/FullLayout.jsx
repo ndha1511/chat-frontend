@@ -5,7 +5,7 @@ import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { useDispatch, useSelector } from "react-redux";
-import { pushMessage } from "../../redux/reducers/messageReducer";
+import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate} from "react-router-dom";
@@ -75,15 +75,15 @@ function FullLayout(props) {
       switch (status) {
         case "SUCCESS":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           break;
         case "SENT":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           break;
         case "SEEN":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           break;
         case "CREATE_GROUP":
           dispatch(reRenderRoom());
@@ -95,30 +95,34 @@ function FullLayout(props) {
           break;
         case "ADD_MEMBER_GROUP":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           break;
         case "REMOVE_MEMBER":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           stompClient.unsubscribe(room.id);
           break;
         case "REMOVE_MEMBER_GROUP":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           break;
         case "REMOVE_GROUP": 
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           stompClient.unsubscribe(room.id);
           break;
         case "LEAVE":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
           stompClient.unsubscribe(room.id);
+          break;
+        case "MEMBER_LEAVE":
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
           break;
         case "REVOKED_MESSAGE":
           dispatch(reRenderRoom());
-          dispatch(pushMessage(payload.body));
+          dispatch(reRenderMessge());
         default:
           break;
       }
@@ -167,8 +171,12 @@ function FullLayout(props) {
         if(!connected) {
           if(rooms.length > 0) { 
             rooms.forEach(room => {
-              if(room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE")
+              if(room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE"){
                 stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
+                console.log(room)
+
+              }
+                
             })
             setConnected(true);
           }
