@@ -16,13 +16,13 @@ function ChatLayout() {
     }, [rooms]);
 
     return (
-        <div className="d-flex w-100" style={{ flexDirection: "column"}}>
+        <div className="d-flex w-100" style={{ flexDirection: "column", overflowY:'auto'}}>
             <div>
                 <Header />
             <div className="d-flex">
                 {rooms.length <= 0 ? 
                 <div className="d-flex w-100 justify-content-center align-items-center" 
-                style={{ textAlign: "center", height: "500px"}}>
+                style={{ textAlign: "center", height: '78vh', overflowY:'auto'}}>
                     <p>Bạn chưa có cuộc trò chuyện nào, <br></br> hãy kết thêm bạn mới để trò chuyện nhé</p>
                 </div>
                 :

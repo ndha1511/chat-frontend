@@ -30,6 +30,7 @@ function CreateGroupModal({ show, handleClose }) {
         try {
             const formData = createGroupFormData(groupData);
             const res = await addGroup(formData);
+            setFriendId([]);
             dispatch(reRender());
             handleClose(); // Close modal on successful group creation
             setFriendName('');
@@ -49,6 +50,10 @@ function CreateGroupModal({ show, handleClose }) {
         return formData;
     }
 
+    useEffect(() => {
+        console.log(friendId);
+        // Bạn có thể thực hiện bất kỳ hành động gì bạn muốn với friendId ở đây
+    }, [friendId]);
     const handleChange = (event) => {
         const memberId = event.target.value;
         if (event.target.checked) {

@@ -105,7 +105,12 @@
     border-top: 1px solid #f0f0f0;
     margin-top: 10px;
     padding-top: 20px;
-    overflow: auto;
+    // overflow: auto;
+    overflow: hidden; /* Mặc định ẩn overflow */
+    // position: relative; /* Quan trọng để tạo stacking context */
+}
+.body-center:hover {
+    overflow: auto; /* Khi hover thì cho phép cuộn */
 }
 .tr-create-group {
     display: flex;

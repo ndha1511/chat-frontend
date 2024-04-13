@@ -94,18 +94,7 @@ function Header() {
             default: break;
         }
     }
-    // const addFriend = async () => {
-    //     const email = user.email
-
-    //     console.log(email)
-    //     try {
-    //         const response = await sendFriendRequest(email);
-    //         alert(response.data);
-    //     } catch (error) {
-    //         console.error("Error sending friend request:", error);
-    //         alert("Không thể gửi yêu cầu kết bạn.");
-    //     }
-    // }
+ 
 
     useEffect(() => {
         const getListFriendRequet = async () => {
@@ -123,47 +112,7 @@ function Header() {
 
     }, [dispatch]);
 
-    const addGroupRQ = async ()=>{
 
-        try {
-            const request = new FormData();
-            request.append('')
-        } catch (error) {
-            console.error("", error);
-            alert("tao nhom khong thanh cong.");
-        }
-    }
-    function createGroupFormData(groupData) {
-        const formData = new FormData();
-        formData.append('groupName', groupData.groupName);
-        formData.append('ownerId', groupData.ownerId);
-        formData.append('ownerName', groupData.ownerName);
-        // formData.append('avatar', groupData.avatar); // Đảm bảo rằng avatar là một MultipartFile
-        groupData.membersId.forEach((memberId, index) => {
-            formData.append(`membersId[${index}]`, memberId);
-        });
-        return formData;
-    }
-
-    const handleAddGroup = async ()=>{
-      try {
-        // setFriendId(()=>[...friendId,user.email])
-        console.log(friendId)
-        const groupData = {
-            groupName:friendName,
-            ownerId: user.email,
-            ownerName: user.name,
-            membersId:friendId,
-        }
-        const requets= createGroupFormData(groupData);
-        const res = await addGroup(requets)
-        setFriendId([]);
-        dispatch(reRender())
-      } catch (error) {
-            console.error("", error);
-            alert("tao nhom khong thanh cong.");
-      }
-    }
     useEffect(() => {
         console.log(friendId);
         // Bạn có thể thực hiện bất kỳ hành động gì bạn muốn với friendId ở đây

@@ -13,12 +13,13 @@ import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 function Footer(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const fileInputRef = useRef(null);
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
+    const [isActive, setIsActive] = useState(false);
     const [textContent, setTextContent] = useState("");
     const dispatch = useDispatch();
     const emojiPickerRef = useRef(null);
-    const stickerIconRef = useRef(null); 
+    const stickerIconRef = useRef(null);
     const emoji_string = "😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🤩 🥳 🙂‍ 😏 😒 🙂‍ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾";
     const emojis = emoji_string.split(" ");
 
@@ -39,6 +40,10 @@ function Footer(props) {
     }, [emojiPickerRef, stickerIconRef]);
 
 
+    // const changeMessageContent = (event) => {
+    //     setTextContent(event.target.value);
+    //     if (!isActive) setIsActive(true);
+    // };
     // trường hợp 2 user chưa có chat room
     const findRoomId = async () => {
         if (chatInfo.roomId === "") {
@@ -60,25 +65,25 @@ function Footer(props) {
     const changeFile = async (event) => {
 
         if (event.target.files) {
-            if(event.target.files.length > 1) {
+            if (event.target.files.length > 1) {
                 try {
                     const fileList = event.target.files;
                     const request = new FormData();
-                    for(let i = 0; i < fileList.length; i++) {
+                    for (let i = 0; i < fileList.length; i++) {
                         const file = fileList[i];
                         const filename = file.name;
                         const fileExtension = filename.split(".").pop();
-                
-                        if(checkExtensionFile(fileExtension) !== "IMAGE") {
+
+                        if (checkExtensionFile(fileExtension) !== "IMAGE") {
                             alert("Bạn chỉ có thể upload nhiều file ảnh cùng lúc");
                             fileInputRef.current.value = null;
                             return;
                         }
-                
+
                         // Thêm từng file vào FormData
                         request.append("filesContent", file);
                     }
-                    
+
                     request.append("senderId", userCurrent.email);
                     request.append("receiverId", chatInfo.user.email);
                     request.append("messageType", "IMAGE_GROUP");
@@ -119,7 +124,7 @@ function Footer(props) {
                 }
             }
 
-            
+
 
         }
     }
@@ -131,9 +136,9 @@ function Footer(props) {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const textBefore = textContent.substring(0, start);
-        const textAfter  = textContent.substring(end, textContent.length);
+        const textAfter = textContent.substring(end, textContent.length);
         setTextContent(textBefore + emoji + textAfter);
-        
+
         // Đặt lại focus cho textarea và di chuyển con trỏ đến sau emoji vừa chèn
         setTimeout(() => {
             textarea.focus();
@@ -151,17 +156,17 @@ function Footer(props) {
             </div>
         );
     };
-    
+
     const actionChatIcon = [
         {
-            
+
             item: <img ref={stickerIconRef} src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
             title: "Gửi sticker"
 
         },
         {
             item: <label htmlFor="image" style={{ cursor: "pointer" }}>
-                <input ref={fileInputRef} id="image" type="file" accept="image/*" style={{ display: "none" }} onChange={changeFile} multiple/>
+                <input ref={fileInputRef} id="image" type="file" accept="image/*" style={{ display: "none" }} onChange={changeFile} multiple />
                 <i className="bi bi-image" style={{ fontSize: 20 }}></i>
             </label>,
             title: "Gửi hình ảnh"
@@ -169,7 +174,7 @@ function Footer(props) {
         {
 
             item: <label htmlFor="attachFile" style={{ cursor: "pointer" }}>
-                <input id="attachFile" type="file" style={{ display: "none" }} onChange={changeFile} multiple/>
+                <input id="attachFile" type="file" style={{ display: "none" }} onChange={changeFile} multiple />
                 <i className="bi bi-paperclip" style={{ fontSize: 20 }}></i>
             </label>,
             title: "Đính kèm file"
@@ -209,12 +214,21 @@ function Footer(props) {
 
     const changeMessageContent = (e) => {
         setTextContent(e.target.value);
+        // if (!isActive) setIsActive(true);
     }
+    const handleFocus = () => {
+        setIsActive(true);
+    };
 
+    const handleBlur = () => {
+        if (textContent.trim() === '') {
+            setIsActive(false);
+        }
+    };
 
     return (
         <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center", position:'relative' }}>
+            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center", position: 'relative' }}>
                 <ButtonGroup handle={handleButton} buttons={actionChatIcon} className="btn-hover"
                     marginRight={15}
                     width={40} height={40}
@@ -222,16 +236,32 @@ function Footer(props) {
                 />
                 {renderEmojiPicker()}
             </div>
-            <div className="d-flex w-100" style={{ height: "45%", borderTop: "1px solid gray" }}>
-                <label htmlFor="input-msg" style={{ width: "80%" }} className="border">
-                    <textarea onChange={changeMessageContent} id="input-msg" value={textContent}  placeholder={`Nhập tin nhắn gửi tới ${props.user.name}`} className="input-message w-100" />
+            <div className={`d-flex w-100 ${isActive ? "border-top-success" : "border-top-gray"}`} style={{ height: "45%" }}>
+                <label htmlFor="input-msg" style={{ width: "100%" }} className="border">
+                    <textarea
+                        onChange={changeMessageContent}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault(); // Ngăn chặn việc xuống dòng khi nhấn Enter
+                                sendMessage(); // Gửi tin nhắn khi nhấn Enter
+                            }
+                        }}
+                        id="input-msg"
+                        value={textContent}
+                        placeholder={`Nhập tin nhắn gửi tới ${props.user.name}`}
+                        className="input-message w-100"
+                    />
                 </label>
-                <button onClick={sendMessage}>Gửi</button>
+                <button className="btn btn-primary btn-send" onClick={sendMessage}>
+                    Gửi
+                </button>
             </div>
-        
-     
+
+
         </div>
-        
+
     );
 }
 

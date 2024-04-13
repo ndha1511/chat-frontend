@@ -2,11 +2,8 @@ import { useState } from "react";
 import Avatar from "../../../components/avatar/Avatar";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
-// import { chatIcon } from "../../../configs/button-group-icon-config";
 import Button from 'react-bootstrap/Button';
-import Offcanvas from 'react-bootstrap/Offcanvas';
 import "./Header.scss"
-
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 
@@ -38,38 +35,15 @@ function Header(props) {
         },
         {
 
-            item: <>
-                <Button variant="primary" onClick={handleShow} >
-                    <i className="bi bi-square-half"></i>
-                </Button>
-
-            </>,
+            item: <><i className="bi bi-square-half" onClick={handleShow}></i></>,
 
             title: "Thông tin hội thoại"
         }
     ]
     const buttons = chatIcon;
-    const images = [
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-        'https://bizweb.dktcdn.net/100/438/408/files/meme-meo-cute-yody-vn-1.jpg?v=1690276113335',
-    ];
-    const files = [
-        { name: "document1.docx", size: "885B", date: "04/11/2024" },
-        { name: "summary.pdf", size: "1.2MB", date: "05/11/2024" },
-        { name: "presentation.pptx", size: "2.5MB", date: "06/11/2024" },
-        { name: "budget.xlsx", size: "932KB", date: "07/11/2024" },
-    ];
 
     return (
-        <div className="d-flex w-100 p-3" style={{
+        <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",
             justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f0f0f0"
         }}>

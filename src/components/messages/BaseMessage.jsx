@@ -42,12 +42,14 @@ function BaseMessage(props) {
         try {
             
             const messageId = props.message.id;
+            const senderId = user.email
             const receiverId = props.message.receiverId
             const reques ={
                 messageId,
+                senderId,
                 receiverId
             }
-           
+            console.log(senderId)
             await revokeMessage(reques);
             dispatch(pushMessage(false));
             console.log("Tin nhắn đã được thu hồi thành công");
