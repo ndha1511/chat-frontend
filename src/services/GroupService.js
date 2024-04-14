@@ -52,3 +52,49 @@ export const removeGroup = async (data) => {
         return Promise.reject(error);
     }
 }
+
+export const addAdmin = async (data) => {
+    try {
+        const response = await requestApi("/groups/addAdmin", "PUT", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+
+}
+
+export const removeAdmin = async (data) => {
+    try {
+        const response = await requestApi("/groups/removeAdmin", "PUT", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export const removeMember = async (data) => {
+    try {
+        const response = await requestApi("/groups/removeMember", "POST", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export const updateSendMessagePermission = async (data) => {
+    try {
+        const response = await requestApi("/groups/updateSendMessagePermission", "PUT", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export const findGroupBySenderId = async (id) => {
+    try {
+        const response = await requestApi("/groups?senderId=" + id, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
