@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setFriend } from "../../redux/reducers/friendReducer";
 import { getFriendRequest } from "../../services/FriendService";
 
@@ -39,15 +39,15 @@ function FullLayout(props) {
   const [connection, setConnection] = useState(false);
   useEffect(() => {
     const getListFriends = async (email) => {
-        try {
-            const response = await getFriendRequest(email);
-            dispatch(setFriend(response));
-        } catch (error) {
-            console.log(error);
-        }
-        
+      try {
+        const response = await getFriendRequest(email);
+        dispatch(setFriend(response));
+      } catch (error) {
+        console.log(error);
+      }
+
     }
-    if(user)
+    if (user)
       getListFriends(user.email);
 
   }, []);
@@ -87,11 +87,11 @@ function FullLayout(props) {
           break;
         case "CREATE_GROUP":
           dispatch(reRenderRoom());
-          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
+          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
           break;
         case "ADD_MEMBER":
           dispatch(reRenderRoom());
-          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
+          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
           break;
         case "ADD_MEMBER_GROUP":
           dispatch(reRenderRoom());
@@ -109,7 +109,7 @@ function FullLayout(props) {
 
           dispatch(reRenderMessge());
           break;
-        case "REMOVE_GROUP": 
+        case "REMOVE_GROUP":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
 
@@ -139,7 +139,7 @@ function FullLayout(props) {
 
 
   }
-  
+
   useEffect(() => {
     const onConnected = () => {
       if (user)
@@ -173,13 +173,13 @@ function FullLayout(props) {
 
   useEffect(() => {
     try {
-      if(connection) {
-        if(!connected) {
-          if(rooms.length > 0) { 
+      if (connection) {
+        if (!connected) {
+          if (rooms.length > 0) {
             rooms.forEach(room => {
 
-              if(room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE"){
-                stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, {id: room.roomId});
+              if (room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE") {
+                stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
 
               }
 
@@ -208,7 +208,7 @@ function FullLayout(props) {
     };
   }, [windowSize]);
   return (
-    <div className="d-flex" style={{ height: "100vh" }}>
+    <div className="d-flex" style={{ height: "100vh", }}>
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />
       </div>
@@ -216,16 +216,19 @@ function FullLayout(props) {
         className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex col-12 col-md-3 `}
         style={{
           paddingTop: 30,
-          height: "100vh",
+          maxHeight: "100vh",
           borderRight: "0.5px solid #f0f0f0",
           flexDirection: "column",
-          flex: windowSize.width <= 768 ? 1 : ""
+          flex: windowSize.width <= 768 ? 1 : "",
+          // overflow:'hidden',
+          // border:'1px solid red',
+
         }}
       >
         <div className="d-flex w-100" style={{ paddingLeft: 15 }}>
           <Header />
         </div>
-        <div className="pt-3 ">
+        <div  >
           {props.sidebar}
         </div>
       </div>
