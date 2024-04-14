@@ -1,0 +1,49 @@
+.member-tong{
+    position: relative;
+
+    .rotate-45 {
+        position: absolute;
+        transform: rotate(130deg);
+        bottom: -5px;
+        left: 30px;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        width: 23px;
+        height: 23px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i{
+            color: rgb(209, 209, 111);
+        }
+    }
+   
+}
+.dots{
+    // border: 1px solid black;
+    // background-color: aquamarine;
+    width: 30px;
+    .btn-dots{
+        position: relative;
+     
+    }
+    .btn-dooot{
+        border: none;
+        // background-color: white;
+        &:hover{
+            background-color: gainsboro;
+        }
+        &:active{
+            background-color: gray;
+        }
+        i{
+            font-size: 15px;
+        }
+    }
+    .item-menu{
+        position: absolute;
+    }
+    
+}
+
+

@@ -8,6 +8,14 @@ export const getGroupById = async (id) => {
         return Promise.reject(error);
     }
 }
+export const getUserGroupById = async (id) => {
+    try {
+        const response = await requestApi(`/groups/members/${id}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
 
 export const addGroup = async (data) => {
     try {

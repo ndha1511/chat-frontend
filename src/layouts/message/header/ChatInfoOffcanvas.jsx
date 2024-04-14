@@ -5,6 +5,7 @@ import Avatar from '../../../components/avatar/Avatar';
 import CreateGroupModal from '../../header/CreateGroupModal';
 import { useSelector } from 'react-redux';
 import { leaveGroup } from '../../../services/GroupService';
+import MemberOffcanvas from './MemberOffcanvas';
 
 const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     const [showMember, setShowMember] = useState(false);
@@ -12,12 +13,21 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     const [showFile, setShowFile] = useState(false);
     const [showSecurity, setShowSecurity] = useState(false);
     const [showManager, setShowManager] = useState(false)
+    const [showMemBerOcv,setShowMemBerOcv] = useState(false)
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
 
     const handleShowManagerModal = () => {
         setShowManager(true)
 
+    }
+    const handleCloseMemBerOcv = () => {
+        setShowMemBerOcv(()=>false);
+        // console.log(showMemBerOcv)
+    }
+
+    const handleShowMemBerOcv =()=>{
+        setShowMemBerOcv(true)
     }
     const groupChat = chatInfo.user
     // console.log(groupChat);
@@ -100,14 +110,15 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                             <Button ><i className={`bi bi-caret-down-fill ${showMember ? 'rotate' : ''}`}></i></Button>
                         </Button>
                         {showMember && (
-                            <Button className="Offcanva-center">
+                            <Button onClick={handleShowMemBerOcv} className="Offcanva-center">
                                 <div className="Offcanva-btn-center">
                                     <Button><i className="bi bi-people"></i></Button>
                                     <span>{groupChat.numberOfMembers} thành viên</span>
                                 </div>
                             </Button>
+                          
                         )}
-
+                        <MemberOffcanvas show={showMemBerOcv} handleClose={handleCloseMemBerOcv}/>
                         <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowContent(!showContent)} >
                             <h6>Ảnh/Video</h6>
                             <Button ><i className={`bi bi-caret-down-fill ${showContent ? 'rotate' : ''}`}></i></Button>

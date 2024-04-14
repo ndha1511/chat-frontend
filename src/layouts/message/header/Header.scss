@@ -371,3 +371,52 @@
         }
     }
 }
+
+//MemberOffcanvas
+.bd-member{
+    max-width: 100%;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    // border: 1px solid black;
+    .btn-add-member{
+        width: 100%;
+        margin-bottom: 10px;
+        border: none;
+        height: 40px;
+    }
+    .center-member{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        // border: 1px solid black;
+        height: 50px;
+        .btn-center{
+            border: none;
+            background-color: white;
+            &:hover {
+                background-color: gray; // Change background on hover
+            }
+        
+            &:active {
+                background-color: darkgray; // Change background when active/clicked
+            }
+        }
+       
+    }
+    .btn-group{
+        display: flex;
+        justify-content: flex-start;
+        // position: relative;
+        // background-color: black;
+    }
+   
+  
+}
+.btn-hover-dots{
+    // display: none; /* Ẩn icon "three dots" mặc định */
+    // position: absolute;
+    right: 0; /* Ẩn icon "three dots" mặc định */
+    border: 1px solid black;
+}
