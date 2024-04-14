@@ -2,8 +2,10 @@ import { Button, Dropdown } from "react-bootstrap";
 import "./ContentLayout.scss"
 import React from "react";
 import Avatar from "../../components/avatar/Avatar";
+import { useSelector } from "react-redux";
 function ContentListFriend() {
-
+    const friends = useSelector((state) => state.friend.friendsAccepted);
+    console.log(friends)
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <a
             href="/"
@@ -17,19 +19,6 @@ function ContentListFriend() {
             {children}
         </a>
     ));
-    const data = [
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-    ]
     return (
         <div className="d-flex tong" >
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
@@ -78,11 +67,11 @@ function ContentListFriend() {
                         </div>
                     </div>
                     <div className="loc-center">
-                        {data.map((item) => (
+                        {friends.map((item) => (
                             <div className="loc-center-s">
                                 <div className="loc-center-item">
-                                    <Avatar />
-                                    <h6>{item.kh}</h6>
+                                    <Avatar user={item}/>
+                                    <h6>{item.name}</h6>
                                 </div>
                                 <div>
                                     <Dropdown className="">
