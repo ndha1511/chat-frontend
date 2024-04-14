@@ -175,7 +175,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
                                             id={`checkbox-${index}`} // Thêm ID cho mỗi checkbox
                                         />
                                     </td>
-                                    <td><Avatar user={friend} /></td>
+                                    <td><Avatar user={friend}  /></td>
                                     <td>{friend.name}</td>
                                 </tr>
                             ))}
