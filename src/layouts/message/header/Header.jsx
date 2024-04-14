@@ -2,7 +2,7 @@ import { useState } from "react";
 import Avatar from "../../../components/avatar/Avatar";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
-import Button from 'react-bootstrap/Button';
+import { useSelector } from "react-redux";
 import "./Header.scss"
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
@@ -12,6 +12,8 @@ function Header(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [showManager, setShowManager] = useState(false);
+    const chatInfo = useSelector(state => state.message.chatInfo);
+    const userCurrent = useSelector((state) => state.userInfo.user);
     const handleShowManager = () => {
         setShowManager(true);
         handleClose()
@@ -19,7 +21,7 @@ function Header(props) {
     const handleCloseManager = () => {
         setShowManager(false);
     };
- 
+
     const chatIcon = [
         {
             item: <i className="bi bi-search"></i>,
@@ -42,6 +44,24 @@ function Header(props) {
     ]
     const buttons = chatIcon;
 
+    const renderRight = () => {
+        if (chatInfo.room?.roomType === "GROUP_CHAT") {
+            if (chatInfo.user.groupStatus === "INACTIVE") {
+                return <></>;
+            }
+            if(!chatInfo.user.members.includes(userCurrent.email)) {
+                return <></>;
+            }
+            return <div className="action">
+                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" />
+            </div>
+        } else {
+            return <div className="action">
+                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" />
+            </div>
+        }
+    }
+
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",
@@ -62,19 +82,18 @@ function Header(props) {
                     ><i className="bi bi-pencil-square"></i></ButtonIcon>
                 </div>
             </div>
-            <div className="action">
-                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" />
-            </div>
+            {renderRight()}
+
             {/* Hiển thị Offcanvas 1 */}
-            
+
             <ChatInfoOffcanvas
                 show={show}
                 handleClose={handleClose}
                 user={props.user}
                 handleShowManager={handleShowManager}
             />
-             {/* Hiển thị Offcanvas 2 */}
-              {/* Using the new GroupManagerOffcanvas */}
+            {/* Hiển thị Offcanvas 2 */}
+            {/* Using the new GroupManagerOffcanvas */}
             <GroupManagerOffcanvas
                 show={showManager}
                 handleClose={handleCloseManager}

@@ -4,7 +4,8 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Avatar from '../../../components/avatar/Avatar';
 import CreateGroupModal from '../../header/CreateGroupModal';
 import { useSelector } from 'react-redux';
-import { leaveGroup } from '../../../services/GroupService';
+import { leaveGroup, removeGroup } from '../../../services/GroupService';
+import VerifyModal from '../../../components/dialogs/verify-dialog/VerifyModal';
 
 const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     const [showMember, setShowMember] = useState(false);
@@ -14,6 +15,14 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     const [showManager, setShowManager] = useState(false)
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
+
+    const [showVerifyModal, setShowVerifyModal] = useState(false);
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
+    const handleCloseRemoveModal = () => setShowRemoveModal(false);
+    const handleShowRemoveMoadl = () => setShowRemoveModal(true);
+
+    const handleCloseModal = () => setShowVerifyModal(false);
+    const handleShow = () => setShowVerifyModal(true);
 
     const handleShowManagerModal = () => {
         setShowManager(true)
@@ -42,18 +51,40 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
         { name: "budget.xlsx", size: "932KB", date: "07/11/2024" },
     ];
 
-    const handleLeaveGroup = async () => {
+    const handleLeaveGroup = () => {
+       handleShow();
+        
+    }
+
+    const leaveAction = async () => {
         const request = {
             memberId: user.email,
             groupId: chatInfo.roomId
         }
-        console.log(request);
         try {
             await leaveGroup(request);
+            handleClose();
         } catch (error) {
             console.log(error);
         }
-        
+    }
+    const handleRemoveGroup = () => {
+        handleShowRemoveMoadl();
+    }
+
+    // giải tán nhóm
+    const removeAction = async () => {
+        const request = {
+            ownerId: user.email,
+            groupId: chatInfo.roomId
+        }
+        try {
+            await removeGroup(request);
+            handleClose();
+        } catch (error) {
+            console.log(error);
+        }
+       
     }
 
 
@@ -88,10 +119,13 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                                 groupName={groupChat.name}
                                 selectedMembers={groupChat.members}
                             />
-                            <div className="item">
+                            {
+                                user.email === chatInfo.user.owner ?  <div className="item">
                                 <Button onClick={handleShowManager} ><i className="bi bi-gear"></i></Button>
-                                <span>Quản lí <br /> Công cộng</span>
-                            </div>
+                                <span>Quản lí <br /> nhóm</span>
+                            </div> : <></>
+                            }
+                           
                         </div>
                     </div>
                     <div className="Offcanva-center1">
@@ -161,7 +195,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                                     <span>Xóa lịch sử trò chuyện</span>
                                 </Button>
                                 {groupChat.owner === user.email ?
-                                    <Button className="Offcanva-btn-footer-cs">
+                                    <Button className="Offcanva-btn-footer-cs" onClick={handleRemoveGroup}>
                                         <i className="bi bi-arrow-right-square"></i>
                                         <span>Giải tán nhóm</span>
                                     </Button>
@@ -171,11 +205,20 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                                         <span>Rời nhóm</span>
                                     </Button>
                                     }
+                                    <VerifyModal content="Bạn có chắc chắn muốn rời nhóm" show={showVerifyModal}
+                                     handleClose={handleCloseModal}
+                                     action={leaveAction}
+                                    />
+                                     <VerifyModal content="Bạn có chắc chắn giải tán nhóm" show={showRemoveModal}
+                                     handleClose={handleCloseRemoveModal}
+                                     action={removeAction}
+                                    />
                             </div>
                         )}
                     </div>
                 </div>
             </Offcanvas.Body>
+            
         </Offcanvas>
     );
 };
