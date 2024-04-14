@@ -102,7 +102,7 @@ function FullLayout(props) {
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
 
-          stompClient.unsubscribe(room.id);
+          stompClient.unsubscribe(room.roomId);
           break;
         case "REMOVE_MEMBER_GROUP":
           dispatch(reRenderRoom());
@@ -112,14 +112,12 @@ function FullLayout(props) {
         case "REMOVE_GROUP":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
-
-          stompClient.unsubscribe(room.id);
+          stompClient.unsubscribe(room.roomId);
           break;
         case "LEAVE":
           dispatch(reRenderRoom());
-
           dispatch(reRenderMessge());
-          stompClient.unsubscribe(room.id);
+          stompClient.unsubscribe(room.roomId);
           break;
         case "MEMBER_LEAVE":
           dispatch(reRenderRoom());

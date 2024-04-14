@@ -35,3 +35,12 @@ export const leaveGroup = async (data) => {
         return Promise.reject(error);
     }
 }
+
+export const removeGroup = async (data) => {
+    try {
+        const response = await requestApi("/groups/remove", "DELETE", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

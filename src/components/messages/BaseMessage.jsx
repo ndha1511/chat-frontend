@@ -8,11 +8,21 @@ import { deleteMessage, revokeMessage } from "../../services/MessageService";
 import { pushMessage } from "../../redux/reducers/messageReducer";
 import Avatar from "../avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
+import FowardModal from "../modal/foward-modal/FowardModal";
 
 function BaseMessage(props) {
     const [hiddenBtn, setHiddenBtn] = useState(false);
     const user = useSelector((state) => state.userInfo.user);
     const dispatch = useDispatch();
+
+    const [showFowardModal, setShowFowardModal] = useState(false);
+
+    const closeFowardModal = () => {
+        setShowFowardModal(false);
+    }
+    const openFowardModal = () => {
+        setShowFowardModal(true);
+    }
     // const buttons = btnCT;
     const [statusMessage, setStatusMessage] = useState("");
 
@@ -63,7 +73,7 @@ function BaseMessage(props) {
 
     const btnCT = [
         { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', }}></i>, },
-        { item: <i className="bi bi-reply-fill" style={{ transform: 'scaleX(-1) ', }}></i>, },
+        { item: <i onClick={openFowardModal} className="bi bi-reply-fill" style={{ transform: 'scaleX(-1) ', }}></i>, },
 
         {
             item: <Dropdown>
@@ -132,7 +142,7 @@ function BaseMessage(props) {
                     </div> : <></>
             }
 
-
+            <FowardModal show={showFowardModal} handleClose={closeFowardModal}/>
 
         </div>
     );
