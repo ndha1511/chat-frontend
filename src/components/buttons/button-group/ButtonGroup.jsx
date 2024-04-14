@@ -11,7 +11,8 @@ function ButtonGroup(props) {
     return (
         <div className={`${props.vertical ? "btn-group-vertical" : "btn-group"}`}
             style={{ 
-                width: props.widthBtnGroup
+                width: props.widthBtnGroup,
+            
              }}
         >
             {
