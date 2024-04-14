@@ -5,8 +5,11 @@ import Avatar from '../avatar/Avatar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-const ProfileModal = ({ show, onClose, onOpenChangePassword, onOpenUpdateModal }) => {
-    const user = useSelector((state) => state.userInfo.user);
+const ProfileModal = ({ show, onClose,friend, onOpenChangePassword, onOpenUpdateModal }) => {
+    let user =  useSelector((state) => state.userInfo.user);
+    if(friend){
+        user = friend
+    }
     const navigate = useNavigate();
     useEffect(() => {
         if (!user) navigate("/auth/login");

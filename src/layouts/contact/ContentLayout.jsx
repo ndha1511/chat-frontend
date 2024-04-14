@@ -50,7 +50,7 @@ function ContentLayout(props) {
         contactIndex === 0 ? <ContentListFriend/> : contactIndex === 1 ? <ContentListGroup/> :
             <div className="d-flex tong" >
                 <div className=" d-flex w-100 border column ml-6 p-3 top " >
-                {props.backButton}
+               
                     <i className="bi bi-envelope-open-fill" style={{ color: "#67ACE3", }}  ></i>
                     <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Lời mời kết bạn</span>
 

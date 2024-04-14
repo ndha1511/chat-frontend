@@ -1,11 +1,22 @@
 import { Button, Dropdown } from "react-bootstrap";
 import "./ContentLayout.scss"
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "../../components/avatar/Avatar";
 import { useSelector } from "react-redux";
-function ContentListFriend() {
+import ProfileModal from "../../components/modal/ProfileModal";
+function ContentListFriend(props) {
     const friends = useSelector((state) => state.friend.friendsAccepted);
-    console.log(friends)
+    const [show,setshow]=useState(false)
+    const [friend,setFriend]= useState({})
+
+
+
+    const handleShowProfile=(item)=>{
+        setFriend(item)
+        setshow(true)
+        
+    }
+
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <a
             href="/"
@@ -24,7 +35,9 @@ function ContentListFriend() {
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
                 <i className="bi bi-person-lines-fill" style={{ color: "#67ACE3", }}  ></i>
                 <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Danh sách bạn bè</span>
+                {props.backButton}
             </div>
+          
             <div className="d-flex listFriend-center" >
                 <div className="txt-top">
                     <h6>Bạn bè (122)</h6>
@@ -80,7 +93,7 @@ function ContentListFriend() {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu className="list-item" >
-                                            <Dropdown.Item >Xem thông tin</Dropdown.Item>
+                                            <Dropdown.Item onClick={()=>handleShowProfile(item)} >Xem thông tin</Dropdown.Item>
                                             <Dropdown.Item >Phân loại </Dropdown.Item>
                                             <Dropdown.Item >Đặt tên gợi nhớ</Dropdown.Item>
                                             <Dropdown.Item >Chặn người này</Dropdown.Item>
@@ -93,6 +106,7 @@ function ContentListFriend() {
                     </div>
                 </div>
             </div>
+            <ProfileModal show={show} onClose={()=>setshow(false)} friend={friend} />
         </div>
     );
 }
