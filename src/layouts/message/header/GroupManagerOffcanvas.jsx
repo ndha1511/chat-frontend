@@ -1,7 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Offcanvas } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { updateSendMessagePermission } from '../../../services/GroupService';
 
 function GroupManagerOffcanvas({ show, handleClose }) {
+    const chatInfo = useSelector(state => state.message.chatInfo);
+    const user = useSelector((state) => state.userInfo.user);
+    const [isSendMsg, setIsSendMsg] = useState(chatInfo.user.sendMessagePermission === "PUBLIC");
+
+    const handleChangeIsSendMsg = async () => {
+        setIsSendMsg(!isSendMsg);
+        
+    }
+    useEffect(() => {
+        const updatePermission = async () => {
+            const request = {
+                ownerId: user.email,
+                groupId: chatInfo.roomId,
+                sendMessagePermission: "ONLY_ADMIN"
+            };
+    
+            try {
+                if (!isSendMsg) {
+                    await updateSendMessagePermission(request);
+                } else {
+                    request.sendMessagePermission = "PUBLIC";
+                    await updateSendMessagePermission(request);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    
+        updatePermission();
+    }, [isSendMsg]);
     return (
         <Offcanvas show={show} onHide={handleClose} placement="end" style={{ width: '350px' }}>
             <Offcanvas.Header closeButton>
@@ -28,7 +60,7 @@ function GroupManagerOffcanvas({ show, handleClose }) {
                         </div>
                         <div className="ql-content">
                             <span>Gửi tin nhắn</span>
-                            <input type="checkbox" />
+                            <input type="checkbox" checked={isSendMsg} onChange={handleChangeIsSendMsg}/>
                         </div>
                         <div className="ql-content1">
                             <h6>Chế độ phê duyệt thành viên mới <i className="bi bi-question-circle"></i></h6>
