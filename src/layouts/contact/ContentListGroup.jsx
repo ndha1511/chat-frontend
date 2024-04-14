@@ -2,6 +2,7 @@ import { Button, Dropdown } from "react-bootstrap";
 import "./ContentLayout.scss"
 import React from "react";
 import Avatar from "../../components/avatar/Avatar";
+import { useSelector } from "react-redux";
 
 function ContentListGroup() {
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -17,19 +18,7 @@ function ContentListGroup() {
             {children}
         </a>
     ));
-    const data = [
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-        { kh: 'A' },
-    ]
+    const groups = useSelector((state) => state.group.groups);
     return (
         <div className="d-flex tong" >
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
@@ -78,11 +67,14 @@ function ContentListGroup() {
                         </div>
                     </div>
                     <div className="loc-center">
-                        {data.map((item) => (
-                            <div className="loc-center-s">
+                        {groups.map((item, index) => (
+                            <div className="loc-center-s" key={index}>
                                 <div className="loc-center-item">
-                                    <Avatar />
-                                    <h6>{item.kh}</h6>
+                                    <Avatar user={{
+                                        avatar: item.avatar,
+                                        name: item.groupName
+                                    }}/>
+                                    <h6>{item.groupName}</h6>
                                 </div>
                                 <div>
                                     <Dropdown className="">

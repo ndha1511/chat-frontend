@@ -20,11 +20,20 @@ export const getMessageByRoomIdV2 = async (senderId, roomId, page = 0, limit = 4
     }
 }
 
-export const revokeMessage = async (oject) => {
+export const revokeMessage = async (object) => {
     try {
-        const response = await requestApi(`/messages/revokeMessage`, "POST", oject,true);
+        const response = await requestApi(`/messages/revokeMessage`, "POST", object,true);
         return response.data;
     } catch (error) {
         return Promise.reject(error);
     }
 };
+
+export const fowardMessage = async (object) => {
+    try {
+        const response = await requestApi(`/messages/forwardMessage`, "POST", object,true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

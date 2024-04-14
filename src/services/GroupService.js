@@ -92,6 +92,7 @@ export const updateSendMessagePermission = async (data) => {
 
 export const findGroupBySenderId = async (id) => {
     try {
+        console.log(id);
         const response = await requestApi("/groups?senderId=" + id, "GET", [], true);
         return response.data;
     } catch (error) {

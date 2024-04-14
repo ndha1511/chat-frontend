@@ -145,7 +145,7 @@ function BaseMessage(props) {
                     </div> : <></>
             }
 
-            <FowardModal show={showFowardModal} handleClose={closeFowardModal}/>
+            <FowardModal show={showFowardModal} handleClose={closeFowardModal} message={props.message}/>
       
          
 

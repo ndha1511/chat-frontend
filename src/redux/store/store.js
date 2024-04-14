@@ -6,6 +6,7 @@ import renderRoom from '../reducers/renderRoom';
 import userReducer from '../reducers/userReducer';
 import renderLayoutReducer from '../reducers/renderLayoutReducer';
 import friendReducer from '../reducers/friendReducer';
+import groupReducer from '../reducers/groupReducer';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     room: renderRoom,
     userInfo: userReducer,
     renderView: renderLayoutReducer,
-    friend: friendReducer
+    friend: friendReducer,
+    group: groupReducer
   },
 })
