@@ -10,6 +10,9 @@ import Avatar from "../avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
 import FowardModal from "../modal/foward-modal/FowardModal";
 
+
+
+
 function BaseMessage(props) {
     const [hiddenBtn, setHiddenBtn] = useState(false);
     const user = useSelector((state) => state.userInfo.user);
@@ -143,6 +146,8 @@ function BaseMessage(props) {
             }
 
             <FowardModal show={showFowardModal} handleClose={closeFowardModal}/>
+      
+         
 
         </div>
     );

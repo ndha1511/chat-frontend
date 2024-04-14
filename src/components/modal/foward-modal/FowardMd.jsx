@@ -7,7 +7,7 @@ import { addGroup, addMember } from '../../services/GroupService';
 
 // Your other code...
 
-function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
+function FowardMd({ show, handleClose,groupName, selectedMembers }) {
     const [friendName, setFriendName] = useState('');
     const [friendId, setFriendId] = useState([]);
     const[updateMemberId,setUpdateMemberId] = useState([]);
@@ -205,4 +205,4 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
     );
 }
 
-export default CreateGroupModal;
+export default FowardMd;

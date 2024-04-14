@@ -1,6 +1,9 @@
+import { useDispatch } from "react-redux";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
+import { setContactIndex } from "../../redux/reducers/renderLayoutReducer";
 
 function ContacLayoutMenu() {
+    const dispatch = useDispatch();
     const arrMenu = [
         {
             item:
@@ -18,13 +21,27 @@ function ContacLayoutMenu() {
         },
         {
             item:
-                <div className=" d-flex w-100 column "  >
-                    <i className="bi bi-envelope-open-fill col-2 " style={{color:"#67ACE3",}} ></i>
+                <div className=" d-flex w-100 column "   >
+                    <i  className="bi bi-envelope-open-fill col-2 " style={{color:"#67ACE3",}} ></i>
                     <span className="d-flex col-10"  style={{fontWeight:'500',}}>Lời mời kết bạn</span>
                 </div>
         }
 
     ]
+    const myFunction = (index) => {
+        switch (index) {
+            case 0:
+                dispatch(setContactIndex(index))
+                break;
+            case 1:
+                dispatch(setContactIndex(index))
+                break;
+            case 2:
+                dispatch(setContactIndex(index))
+                break;
+            default: break;
+        }
+    }
     return (
         <div className="d-flex" style={{ flexDirection: "column" }}>
             <ButtonGroup buttons={arrMenu}
@@ -35,6 +52,7 @@ function ContacLayoutMenu() {
                 className="btn-hover"
                 hoverColor="#eeeeee"
                 backgroundActive="#E5EFFF"
+                handle={myFunction}
             ></ButtonGroup>
         </div>
     );

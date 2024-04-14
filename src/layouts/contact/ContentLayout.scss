@@ -25,7 +25,7 @@
         // padding: 15px;
         padding-top: 15px;
         padding-left: 15px;
-        //    border: 1px solid black;
+           border: 1px solid black;
            display: flex;
            align-items: center;
     }
@@ -110,5 +110,96 @@
       
     }
     
+}
+
+
+/// ContentListFriend
+
+.listFriend-center{
+    padding: 15px;
+    max-width: 100%;
+    flex-direction: column;
+    background-color: rgb(238, 235, 235);
+    .loc{
+        // border: 1px solid black;
+        max-width: 100%;
+        height: 85vh;
+        padding: 10px;
+        background-color: white;
+        .loc-top{
+            max-width: 80%;
+            // border: 1px solid black;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .search{
+                max-width: 30%;
+                height: 40px;
+                border-radius: 8px;
+                margin-top: -10px;
+            }
+            .menu1{
+                max-width: 30%;
+                height: 40px;
+                border-radius: 8px;
+                // border: 1px solid black;  
+                .dropdown-menu1{
+                    display: flex;
+                    padding: 10px;
+                    background-color: gainsboro;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 250px;
+                    border: none;
+                    border-radius: 5px; 
+                    height: 40px;
+              
+                }
+                .list-item{
+               
+                    width: 250px;
+                }
+            }
+            
+            
+        }
+        .loc-center{
+            max-width: 100%;
+            // border: 1px solid black;
+            height:590px ;
+            overflow: auto;
+            .loc-center-s{
+                display: flex;
+                justify-content: space-between;
+                // border: 1px solid black;
+                align-items: center;
+                height: 80px;
+                border-bottom: 0.5px solid gainsboro;
+                
+                .loc-center-item{
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    h6{
+                        margin-left: 15px;
+                    }
+                }
+                button{
+                    border: none;
+                    background-color: white;
+                    &:hover{
+                        background-color: gainsboro;
+                    }
+                    &:active{
+                        background-color: grey;
+                    }
+                }
+            }
+           
+        }
+
+       
+    }
 }
 
