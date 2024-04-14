@@ -29,6 +29,10 @@ function HoverDots({ member }) {
         </a>
     ));
     // console.log(showHoverDots)
+    if(member.email === chatInfo.user.owner){
+        
+    }
+
     return (
         <div className="d-flex w-100 " style={{ justifyContent: 'flex-start',alignItems:'center' }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div className='d-flex member-tong' style={{ width: '100%', alignItems: 'center', }}  >
