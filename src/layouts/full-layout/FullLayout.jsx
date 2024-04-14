@@ -11,6 +11,8 @@ import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
 import { setFriend } from "../../redux/reducers/friendReducer";
 import { getFriendRequest } from "../../services/FriendService";
+import { findGroupBySenderId } from "../../services/GroupService";
+import { setGroup } from "../../redux/reducers/groupReducer";
 
 export var stompClient = null;
 
@@ -33,6 +35,8 @@ function FullLayout(props) {
   const user = useSelector((state) => state.userInfo.user);
   const rooms = useSelector((state) => state.room.rooms);
   const rerenderRoom = useSelector((state) => state.room.reRender);
+  const renderGroup = useSelector((state) => state.group.renderGroup);
+  const groups = useSelector((state) => state.group.groups);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
@@ -47,10 +51,21 @@ function FullLayout(props) {
       }
 
     }
-    if (user)
+    const getGroups = async (email) => {
+      try {
+        const response = await findGroupBySenderId(email);
+        dispatch(setGroup(response));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (user) {
       getListFriends(user.email);
+      getGroups(user.email);
+    }
+      
 
-  }, []);
+  }, [renderGroup]);
 
 
 
