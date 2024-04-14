@@ -106,7 +106,6 @@ function FullLayout(props) {
           break;
         case "REMOVE_MEMBER_GROUP":
           dispatch(reRenderRoom());
-
           dispatch(reRenderMessge());
           break;
         case "REMOVE_GROUP":
@@ -127,6 +126,22 @@ function FullLayout(props) {
         case "REVOKED_MESSAGE":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+        case "ADD_ADMIN":
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
+          break;
+        case "REMOVE_ADMIN":
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
+          break;
+        case "UPDATE_ADD_MEMBER_PERMISSION":
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
+          break;
+        case "UPDATE_ADD_SEND_MESSAGE_PERMISSION":
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
+          break;
         default:
           break;
       }
