@@ -37,3 +37,12 @@ export const fowardMessage = async (object) => {
         return Promise.reject(error);
     }
 }
+
+export const callRequest = async (data) => {
+    try {
+        const response = await requestApi(`/messages/callRequest`, "POST", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

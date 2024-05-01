@@ -13,7 +13,7 @@ function MessageLayout(props) {
                 <div className="d-flex w-100" style={{ flexDirection: "column" }}>
                     <div className="d-flex w-100" style={{ height: "12%", paddingTop: "18px", alignItems: 'center', paddingLeft: "15px" }}>
                         {props.backButton}
-                        <Header user={chatInfo.user}/>
+                        <Header user={chatInfo.user} showDragableRequest={props.showDragableRequest}/>
                     </div>
                     <div className="w-100" style={{ height: "70%",width:'100%'}}>
                         <Content roomId={chatInfo.roomId}/>

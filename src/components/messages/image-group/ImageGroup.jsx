@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import BaseMessage from "../BaseMessage";
-import { emojis } from "../../../configs/button-group-icon-config";
+import { emojis } from "../../../configs/button_group_icon_config";
 
 
 function ImageGroup(props) {

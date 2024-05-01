@@ -1,5 +1,5 @@
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
-import { filterMessageIcon } from "../../../configs/button-group-icon-config";
+import { filterMessageIcon } from "../../../configs/button_group_icon_config";
 
 function Header() {
     const buttons = filterMessageIcon;

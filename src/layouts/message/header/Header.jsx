@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import "./Header.scss"
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
+import { callRequest } from "../../../services/MessageService";
 
 function Header(props) {
     const [show, setShow] = useState(false);
@@ -14,6 +15,7 @@ function Header(props) {
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
+
     const handleShowManager = () => {
         setShowManager(true);
         handleClose()
@@ -37,12 +39,72 @@ function Header(props) {
         },
         {
 
-            item: <><i className="bi bi-square-half" onClick={handleShow}></i></>,
+            item: <><i className="bi bi-square-half"></i></>,
+
+            title: "Thông tin hội thoại"
+        }
+    ]
+    const chatIconGroup = [
+        {
+            item: <i className="bi bi-search"></i>,
+            title: "Tìm kiếm tin nhắn"
+        },
+        {
+            item: <i className="bi bi-camera-video"></i>,
+            title: "Gọi video"
+        },
+        {
+
+            item: <><i className="bi bi-square-half"></i></>,
 
             title: "Thông tin hội thoại"
         }
     ]
     const buttons = chatIcon;
+
+    const clickButtonRightGroup = (index) => {
+        switch(index) {
+            case 0: break;
+            case 1: 
+                break;
+            case 2: 
+                handleShow();
+                break;
+            default: break;
+
+        }
+    }
+
+    const clickButtonRight = (index) => {
+        switch(index) {
+            case 0: break;
+            case 1: 
+                const data = {
+                    senderId: userCurrent.email,
+                    receiverId: chatInfo.user.email,
+                    messageType: "AUDIO_CALL"
+                }
+                props.showDragableRequest();
+                // call api
+                handleCallRequest(data);
+                break;
+            case 2: 
+                break;
+            case 3: 
+                // open offcanvas for user info 
+                break;
+            default: break;
+
+        }
+    }
+
+    const handleCallRequest = async (data) => {
+        try {
+            await callRequest(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const renderRight = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
@@ -53,11 +115,11 @@ function Header(props) {
                 return <></>;
             }
             return <div className="action">
-                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" />
+                <ButtonGroup buttons={chatIconGroup} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" handle={clickButtonRightGroup}/>
             </div>
         } else {
             return <div className="action">
-                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" />
+                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" handle={clickButtonRight}/>
             </div>
         }
     }
@@ -83,6 +145,7 @@ function Header(props) {
                 </div>
             </div>
             {renderRight()}
+
 
             {/* Hiển thị Offcanvas 1 */}
 
