@@ -12,6 +12,7 @@ import VerifyModal from '../../../components/dialogs/verify-dialog/VerifyModal';
 
 
 const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
+    const memberList = useSelector(state => state.members.members);
     const [showMember, setShowMember] = useState(false);
     const [showContent, setShowContent] = useState(false);
     const [showFile, setShowFile] = useState(false);
@@ -150,7 +151,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                             <Button onClick={handleShowMemBerOcv} className="Offcanva-center">
                                 <div className="Offcanva-btn-center">
                                     <Button><i className="bi bi-people"></i></Button>
-                                    <span>{groupChat.numberOfMembers} thành viên</span>
+                                    <span>{memberList.length} thành viên</span>
                                 </div>
                             </Button>
                           

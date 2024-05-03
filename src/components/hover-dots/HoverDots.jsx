@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../avatar/Avatar";
 import "./HoverDots.scss"
 import { Dropdown,  } from "react-bootstrap";
 import { addAdmin, removeAdmin, removeMember } from "../../services/GroupService";
+import { deleteMember, reRenderMember, removeMember1 } from "../../redux/reducers/renderOffcanvas";
+import { setViewContent } from "../../redux/reducers/renderLayoutReducer";
 
 function HoverDots({ member }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector(state => state.userInfo.user);
+    const dispatch = useDispatch();
     const [showHoverDots, setShowHoverDots] = useState(false);
     const handleMouseEnter = () => {
         setShowHoverDots(true);
@@ -62,7 +65,6 @@ function HoverDots({ member }) {
             console.log(error);
         }
     }
-
     const handleRemoveMember = async () => {
         const request = {
             memberId: member.email,
@@ -72,6 +74,8 @@ function HoverDots({ member }) {
         try {
             await removeMember(request);
             alert("bạn đã xóa " + member.name + " ra khỏi nhóm");
+            dispatch(deleteMember(member.email));
+            console.log(member.email)
         } catch (error) {
             console.log(error);
         }

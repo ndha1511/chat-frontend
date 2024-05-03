@@ -4,6 +4,7 @@ import { reRender } from '../../redux/reducers/renderReducer';
 import Avatar from '../../components/avatar/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { addGroup, addMember } from '../../services/GroupService';
+import { createMember, reRenderMember } from '../../redux/reducers/renderOffcanvas';
 
 // Your other code...
 
@@ -13,6 +14,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
     const[updateMemberId,setUpdateMemberId] = useState([]);
     const[updateState,setUpdateState] = useState(false);
 
+    const memberList = useSelector(state => state.members.members);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const[title,setTitle] = useState('Tạo nhóm');
     const [isValid, setIsValid] = useState(true); // State to manage input validity
@@ -54,6 +56,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             }
             try {
                 await addMember(request);
+                dispatch(reRenderMember())
                 setUpdateMemberId([]);
                 handleClose();
             } catch (error) {
