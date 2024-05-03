@@ -15,8 +15,8 @@ import { findGroupBySenderId } from "../../services/GroupService";
 import { setGroup } from "../../redux/reducers/groupReducer";
 import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
 import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
-import { setDragableQuestion } from "../../redux/reducers/dragableReducer";
-import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
+import { getUserByEmail } from "../../services/UserService";
+
 
 export var stompClient = null;
 
@@ -41,16 +41,15 @@ function FullLayout(props) {
   const rerenderRoom = useSelector((state) => state.room.reRender);
   const renderGroup = useSelector((state) => state.group.renderGroup);
   const navigate = useNavigate();
-  const dragableQuestion = useSelector((state) => state.dragable.dragableQuestion);
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
   const [connection, setConnection] = useState(false);
   const [showDragableCallRequest, setShowDragableCallRequest] = useState(false);
-  const [showDragableCallQuestion, setShowDragableCallQuestion] = useState(dragableQuestion);
+  const [showDragableCallQuestion, setShowDragableCallQuestion] = useState(false);
+  const [callerInfo, setCallerInfo] = useState({});
+  const [messageCall, setMessageCall] = useState({});
 
-  useEffect(() => {
-    setShowDragableCallQuestion(dragableQuestion);
-  }, [dragableQuestion]); 
+
   useEffect(() => {
     const getListFriends = async (email) => {
       try {
@@ -98,18 +97,35 @@ function FullLayout(props) {
       const status = dataReceived.status;
       const room = dataReceived.room;
       switch (status) {
-        case "CREATE_GROUP" | "ADD_MEMBER":
+        case "CREATE_GROUP":
+        case "ADD_MEMBER":
           dispatch(reRenderRoom());
           stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
           break;
-        case "REMOVE_MEMBER" | "REMOVE_GROUP" | "LEAVE":
+        case "REMOVE_MEMBER":
+        case "REMOVE_GROUP":
+        case "LEAVE":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
-          dispatch(reRenderMember())
           stompClient.unsubscribe(room.roomId);
           break;
         case "CALL_REQUEST":
-          dispatch(setDragableQuestion(true))
+          getCallerInfo(dataReceived.senderId);
+          setMessageCall(dataReceived.message);
+          setShowDragableCallQuestion(true);
+          break;
+        case "REJECT_CALL":
+        case "MISSED_CALL":
+          setShowDragableCallQuestion(false);
+          setShowDragableCallRequest(false);
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
+          break;
+        case "ACCEPT_CALL":
+          setShowDragableCallQuestion(false);
+          setShowDragableCallRequest(false);
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
           break;
         default:
           dispatch(reRenderRoom());
@@ -118,6 +134,10 @@ function FullLayout(props) {
       }
     } 
 
+  }
+  const getCallerInfo =  async (senderId) => {
+    const caller = await getUserByEmail(senderId);
+    setCallerInfo(caller);
   }
 
   useEffect(() => {
@@ -197,12 +217,13 @@ function FullLayout(props) {
   }
 
   const showDragableRequest = () => {
-    console.log("heloo")
     setShowDragableCallRequest(true);
   }
   return (
     <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh"}}>
-      {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable}/>}
+      {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable} 
+        callerInfo={callerInfo}
+        message={messageCall}/>}
       {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest}/>}
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />
