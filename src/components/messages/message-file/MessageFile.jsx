@@ -5,7 +5,8 @@ import React, { useState } from "react";
 import { arrayToDateTime } from "../../../utils/DateTimeHandle";
 import { downFile } from "../../../services/FileService";
 import { Dropdown } from 'react-bootstrap';
-import { emojis } from '../../../configs/button-group-icon-config';
+import { emojis } from "../../../configs/button_group_icon_config";
+
 
 
 function MessageFile(props) {
