@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   viewIndex: 0,
   contactIndex:0,
+  viewContent: {}
 }
 
 export const renderLayoutReducer = createSlice({
@@ -14,10 +15,14 @@ export const renderLayoutReducer = createSlice({
     },
     setContactIndex:(state,action)=>{
       state.contactIndex=action.payload
+    },
+    setViewContent: (state, action) => {
+      state.viewContent = action.payload;
     }
+
   },
 })
 
-export const { setViewIndedx,setContactIndex } = renderLayoutReducer.actions
+export const { setViewIndedx,setContactIndex, setViewContent } = renderLayoutReducer.actions
 
 export default renderLayoutReducer.reducer

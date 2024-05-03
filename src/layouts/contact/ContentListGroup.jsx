@@ -4,7 +4,7 @@ import React from "react";
 import Avatar from "../../components/avatar/Avatar";
 import { useSelector } from "react-redux";
 
-function ContentListGroup() {
+function ContentListGroup(props) {
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <a
             href="/"
@@ -22,6 +22,7 @@ function ContentListGroup() {
     return (
         <div className="d-flex tong" >
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
+                {props.backButton}
                 <i className="bi bi-people-fill" style={{ color: "#67ACE3", }}  ></i>
                 <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Danh sách nhóm</span>
             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./BaseMessage.scss";
 import ButtonGroup from "../buttons/button-group/ButtonGroup";
-import { btnCT } from "../../configs/button-group-icon-config";
+import { btnCT } from "../../configs/button_group_icon_config";
 import { Button, Dropdown, Form, ListGroup, Modal } from "react-bootstrap";
 import { deleteMessage, revokeMessage } from "../../services/MessageService";
 import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer";

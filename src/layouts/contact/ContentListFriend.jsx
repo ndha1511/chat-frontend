@@ -33,9 +33,9 @@ function ContentListFriend(props) {
     return (
         <div className="d-flex tong" >
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
+                {props.backButton}
                 <i className="bi bi-person-lines-fill" style={{ color: "#67ACE3", }}  ></i>
                 <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Danh sách bạn bè</span>
-                {props.backButton}
             </div>
           
             <div className="d-flex listFriend-center" >

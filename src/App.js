@@ -9,6 +9,7 @@ import { setChatInfo } from "./redux/reducers/messageReducer";
 import ContacLayoutMenu from "./layouts/contact/ContactLayoutMenu";
 import ContentLayout from "./layouts/contact/ContentLayout";
 import { useEffect, useState } from "react";
+import { setViewContent } from "./redux/reducers/renderLayoutReducer";
 
 
 
@@ -16,6 +17,7 @@ function App() {
   
   const chatInfo = useSelector(state => state.message.chatInfo);
   const renderView = useSelector(state => state.renderView.viewIndex);
+  const viewContent = useSelector(state => state.renderView.viewContent);
   const [viewCurrent, setViewCurrent] = useState(0);
   useEffect(() => {
     setViewCurrent(() => renderView);
@@ -23,14 +25,21 @@ function App() {
   const rejectState = () => {
     return setChatInfo({});
   }
-  const data = [
+  const hiddenViewContent = () => {
+    return setViewContent({});
+  }
+  const page = [
     {
       sidebar: <ChatLayout/>,
-      content: <MessageLayout/>
+      content: <MessageLayout/>,
+      state: chatInfo,
+      action: rejectState
     },
     {
       sidebar: <ContacLayoutMenu/>,
-      content: <ContentLayout/>
+      content: <ContentLayout/>,
+      state: viewContent,
+      action: hiddenViewContent
     }
   ]
   return (
@@ -41,7 +50,12 @@ function App() {
             return (
                 <Route key={index} path={route.path} element={
                     route.path === "/chat" ?
-                    <Page sidebar={data[viewCurrent].sidebar} content={data[viewCurrent].content} state={chatInfo} action={rejectState}/>
+                    <Page
+                      sidebar={page[viewCurrent].sidebar} 
+                      content={page[viewCurrent].content} 
+                      state={page[viewCurrent].state} 
+                      action={page[viewCurrent].action}
+                    />
                     :
                     <Page/>
                 }></Route>

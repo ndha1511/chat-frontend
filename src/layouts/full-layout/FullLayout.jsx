@@ -5,7 +5,7 @@ import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { useDispatch, useSelector } from "react-redux";
-import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer";
+import { reRenderMessge } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,9 @@ import { setFriend } from "../../redux/reducers/friendReducer";
 import { getFriendRequest } from "../../services/FriendService";
 import { findGroupBySenderId } from "../../services/GroupService";
 import { setGroup } from "../../redux/reducers/groupReducer";
+import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
+import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
+import { setDragableQuestion } from "../../redux/reducers/dragableReducer";
 
 export var stompClient = null;
 
@@ -36,11 +39,17 @@ function FullLayout(props) {
   const rooms = useSelector((state) => state.room.rooms);
   const rerenderRoom = useSelector((state) => state.room.reRender);
   const renderGroup = useSelector((state) => state.group.renderGroup);
-  const groups = useSelector((state) => state.group.groups);
   const navigate = useNavigate();
+  const dragableQuestion = useSelector((state) => state.dragable.dragableQuestion);
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
   const [connection, setConnection] = useState(false);
+  const [showDragableCallRequest, setShowDragableCallRequest] = useState(false);
+  const [showDragableCallQuestion, setShowDragableCallQuestion] = useState(dragableQuestion);
+
+  useEffect(() => {
+    setShowDragableCallQuestion(dragableQuestion);
+  }, [dragableQuestion]); 
   useEffect(() => {
     const getListFriends = async (email) => {
       try {
@@ -88,83 +97,24 @@ function FullLayout(props) {
       const status = dataReceived.status;
       const room = dataReceived.room;
       switch (status) {
-        case "SUCCESS":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "SENT":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "SEEN":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "CREATE_GROUP":
+        case "CREATE_GROUP" | "ADD_MEMBER":
           dispatch(reRenderRoom());
           stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
           break;
-        case "ADD_MEMBER":
-          dispatch(reRenderRoom());
-          stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
-          break;
-        case "ADD_MEMBER_GROUP":
-          dispatch(reRenderRoom());
-
-          dispatch(reRenderMessge());
-          break;
-        case "REMOVE_MEMBER":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-
-          stompClient.unsubscribe(room.roomId);
-          break;
-        case "REMOVE_MEMBER_GROUP":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "REMOVE_GROUP":
+        case "REMOVE_MEMBER" | "REMOVE_GROUP" | "LEAVE":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
           stompClient.unsubscribe(room.roomId);
           break;
-        case "LEAVE":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          stompClient.unsubscribe(room.roomId);
-          break;
-        case "MEMBER_LEAVE":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-
-        case "REVOKED_MESSAGE":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-        case "ADD_ADMIN":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "REMOVE_ADMIN":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "UPDATE_ADD_MEMBER_PERMISSION":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          break;
-        case "UPDATE_ADD_SEND_MESSAGE_PERMISSION":
-          dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
+        case "CALL_REQUEST":
+          dispatch(setDragableQuestion(true))
           break;
         default:
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
           break;
       }
-    } else {
-
-    }
-
-
+    } 
 
   }
 
@@ -235,8 +185,23 @@ function FullLayout(props) {
       window.removeEventListener('resize', handleResize);
     };
   }, [windowSize]);
+
+  const hiddenDragable = () => {
+    setShowDragableCallQuestion(false);
+  }
+
+  const hiddenDragableRequest = () => {
+    setShowDragableCallRequest(false);
+  }
+
+  const showDragableRequest = () => {
+    console.log("heloo")
+    setShowDragableCallRequest(true);
+  }
   return (
-    <div className="d-flex" style={{ height: "100vh", }}>
+    <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh"}}>
+      {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable}/>}
+      {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest}/>}
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />
       </div>
@@ -266,6 +231,7 @@ function FullLayout(props) {
         flex: 1
       }}>
         {React.cloneElement(props.content, {
+          showDragableRequest: showDragableRequest,
           backButton: windowSize.width <= 768 ?
             <ButtonIcon
               clickButton={() => { changeShowComponent() }}

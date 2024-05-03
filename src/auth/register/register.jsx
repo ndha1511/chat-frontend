@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 // import {useState} from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './register.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock, faMobileScreenButton, faUser, faVenusMars, faBirthdayCake, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faLock,  faUser, faVenusMars, faBirthdayCake, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { register, sendOtp, verifyOtp } from '../../services/RegisterService';
+import { sendOtp, verifyOtp } from '../../services/RegisterService';
 
 const cx = classNames.bind(styles);
 

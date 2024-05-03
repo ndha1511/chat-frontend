@@ -3,7 +3,7 @@ import { Button, Dropdown, Form, ListGroup, Modal } from "react-bootstrap";
 import Avatar from "../../components/avatar/Avatar";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
-import { navbarIcon } from "../../configs/button-group-icon-config";
+import { navbarIcon } from "../../configs/button_group_icon_config";
 import "./Navbar.scss";
 
 import React, { useEffect, useState } from "react";

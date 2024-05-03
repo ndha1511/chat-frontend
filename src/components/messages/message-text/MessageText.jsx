@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import BaseMessage from '../BaseMessage';
 import { Dropdown } from 'react-bootstrap';
 import './MessageText.scss';
-import { emojis } from '../../../configs/button-group-icon-config';
+import { emojis } from '../../../configs/button_group_icon_config';
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 
 function MessageText(props) {

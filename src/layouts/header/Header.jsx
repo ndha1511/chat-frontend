@@ -2,23 +2,17 @@ import { useEffect, useState } from "react";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import Search from "../../components/search/Search";
 import { useDispatch, useSelector } from 'react-redux';
-import { friendIcon } from "../../configs/button-group-icon-config";
+import { friendIcon } from "../../configs/button_group_icon_config";
 import {  Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Button, Modal } from "react-bootstrap";
-
 import "./Header.scss";
-import Avatar from "../../components/avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
 import AccountInfor from "../../components/modal/AccountInfor";
-import { sendFriendRequest } from "../../services/ChatService";
 import HelloMessage from "../../components/modal/HelloMessage";
-import ProfileModal from "../../components/modal/ProfileModal";
 import { getListFriend } from "../../services/FriendService";
 import { setFriendAccepted } from "../../redux/reducers/friendReducer";
-import { addGroup } from "../../services/GroupService";
-import { reRender } from "../../redux/reducers/renderReducer";
 import CreateGroupModal from "./CreateGroupModal";
-import AddFriendModal from "./AddFriendModal";
+
 
 
 
@@ -29,8 +23,6 @@ function Header() {
     const [showAccountInforModal, setShowAccountInforModal] = useState(false)
     const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
     const [userSearch, setUserSearch] = useState({});
-    
-    const [friendName, setFriendName] = useState('');
     const [invalid, setInvalid] = useState('');
     const [isValid, setIsValid] = useState(true);
     const buttons = friendIcon;
@@ -99,7 +91,6 @@ function Header() {
             try {
                 const response = await getListFriend(user.email);
                 dispatch(setFriendAccepted(response));
-                console.log(friends)
             } catch (error) {
                 console.error("", error);
      

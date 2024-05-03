@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import BaseMessage from "../BaseMessage";
 import "./MessageImage.scss";
-import { emojis } from "../../../configs/button-group-icon-config";
+import { emojis } from "../../../configs/button_group_icon_config";
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 import { Dropdown } from 'react-bootstrap';
 import React, { useState } from "react";
