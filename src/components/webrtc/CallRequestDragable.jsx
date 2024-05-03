@@ -9,6 +9,9 @@ function CallRequestDragable(props) {
             zIndex: 999,
             cursor: "pointer"
         }}>
+            <audio controls autoPlay loop style={{ display: "none" }}>
+                <source src="assets/mp3/nhac_cho.mp3" type="audio/mpeg" />
+            </audio>
             <Draggable
             >
                 <div className="draggable-window">
