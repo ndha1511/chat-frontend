@@ -5,7 +5,7 @@ import ButtonGroup from "../buttons/button-group/ButtonGroup";
 import { btnCT } from "../../configs/button-group-icon-config";
 import { Button, Dropdown, Form, ListGroup, Modal } from "react-bootstrap";
 import { deleteMessage, revokeMessage } from "../../services/MessageService";
-import { pushMessage } from "../../redux/reducers/messageReducer";
+import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer";
 import Avatar from "../avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
 import FowardModal from "../modal/foward-modal/FowardModal";
@@ -66,7 +66,7 @@ function BaseMessage(props) {
             }
             console.log(senderId)
             await revokeMessage(reques);
-            dispatch(pushMessage(false));
+            dispatch(reRenderMessge());
             console.log("Tin nhắn đã được thu hồi thành công");
         } catch (error) {
             console.error("Xảy ra lỗi khi thu hồi tin nhắn", error);

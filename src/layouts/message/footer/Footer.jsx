@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import "./Footer.scss";
 import { sendImgaeGroup, sendMessageToUser } from "../../../services/ChatService";
 import { useEffect, useRef, useState } from "react";
-import { pushMessage, reRenderMessge, setChatInfo } from "../../../redux/reducers/messageReducer";
+import { pushMessage, reRenderMessge, setChatInfo, setScrollEnd } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 
@@ -203,6 +203,7 @@ function Footer(props) {
                 dispatch(pushMessage(msg));
                 dispatch(reRenderMessge());
                 dispatch(reRenderRoom());
+                dispatch(setScrollEnd())
                 findRoomId();
 
             } catch (error) {
@@ -239,7 +240,7 @@ function Footer(props) {
             {renderEmojiPicker()}
         </div>
         <div className={`d-flex w-100 ${isActive ? "border-top-success" : "border-top-gray"}`} style={{ height: "45%" }}>
-            <label htmlFor="input-msg" style={{ width: "100%" }} className="border">
+            <label htmlFor="input-msg" style={{ width: "100%" }} className="">
                 <textarea
                     onChange={changeMessageContent}
                     onFocus={handleFocus}

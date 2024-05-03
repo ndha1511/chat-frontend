@@ -1,4 +1,4 @@
-.btn-icon-custom {
+.btn-icon-custom-img {
     width: 30px;
     height: 30px;
     display: flex;
@@ -7,7 +7,29 @@
     border: none;
     position: absolute;
     border-radius: 50%;
-    bottom: -10px;
+    // bottom: -10px;
+    bottom: 0;
     right: 10px;
     background-color: #f0f0f0;
+}
+.dropd-menu{
+    margin-top: -50px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 30px;
+    margin-left: 100px;
+    padding: 2px;
+    position: absolute;
+   
+    .btn-emoji{
+        display: flex;
+        flex-direction: row; 
+        gap: 5px;
+        .emoji-item {
+            padding: 5px; /* Đệm cho mỗi emoji */
+            cursor: pointer;
+            border-radius: 20px;
+        }
+    }
+
 }

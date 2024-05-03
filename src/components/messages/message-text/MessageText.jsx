@@ -13,7 +13,7 @@ function MessageText(props) {
     const [showContent, setShowContent] = useState(false);
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [emojiCount, setEmojiCount] = useState(0);
-    
+
     const handleSelectEmoji = (emoji) => {
         setEmojiCount(prevCount => prevCount + 1);
         setSelectedEmojis(prevEmojis => {

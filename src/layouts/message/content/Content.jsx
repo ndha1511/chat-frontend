@@ -110,7 +110,7 @@ function Content(props) {
     }, [currentPage])
 
     return (
-        <div id="scrollableDiv" className="d-flex content-chat w-100 " style={{ height: "100%" }}>
+        <div id="scrollableDiv" ref={scrollableDivRef} className="d-flex content-chat w-100 " style={{ height: "100%" }}>
 
             <InfiniteScroll
                 dataLength={messages.length}

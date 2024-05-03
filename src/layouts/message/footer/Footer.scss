@@ -25,21 +25,31 @@
 
 .emoji-picker{
     background: none;
-    border: 1px solid #ccc; /* Thay đổi màu sắc và kích thước của border tại đây */
+    border: none; /* Thay đổi màu sắc và kích thước của border tại đây */
     border-radius: 4px; /* Tuỳ chỉnh việc bo tròn góc của border */
-    font-size: 12px;
+    font-size: 20px;
     position: absolute;
     cursor: pointer;
     margin: 5px;
+    margin-top: -40px;
     padding: 5px; /* Thêm padding để tạo khoảng cách xung quanh emoji */
     background-color: white;
     margin-bottom: 255px;
     max-height: 200px;
-    max-width: 30%;
+    max-width: 360px;
     overflow: auto;
+    border-radius: 10px;
     button{
         border: none;
         background-color: white;
+        &:hover{
+            background-color: gainsboro;
+            border-radius: 5px;
+        }
+        &:active{
+            background-color: rgb(80, 76, 76);
+            border-radius: 5px;
+        }
     }
   
 }
