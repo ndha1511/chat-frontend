@@ -1,40 +1,13 @@
 import Draggable from "react-draggable";
-import "./AudioCallDragable.scss";
 import Avatar from "../avatar/Avatar";
-import { acceptCallRequest, rejectCallRequest } from "../../services/MessageService";
 
-function AudioCallDragable(props) {
-
-    const accept = async () => {
-        try {
-            await acceptCallRequest(props.message.id);
-            props.hiddenDragable();
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const reject = async () => {
-        try {
-            await rejectCallRequest(props.message.id);
-            props.hiddenDragable();
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-
+function AudioCallingView() {
     return (
         <div style={{
             position: "fixed",
-            bottom: "0",
-            right: "0",
             zIndex: 999,
             cursor: "pointer"
         }}>
-            <audio controls autoPlay loop style={{display: "none"}}>
-                <source src="assets/mp3/nhac_chuong.mp3" type="audio/mpeg" />
-            </audio>
             <Draggable defaultPosition={{
                 x: 0,
                 y: 0
@@ -49,7 +22,6 @@ function AudioCallDragable(props) {
                     }} onClick={props.hiddenDragable}><i className="bi bi-x-lg"></i></button>
                     <Avatar user={props.callerInfo} />
                     <h6>{props.callerInfo.name}</h6>
-                    <span>Cuộc gọi đến</span>
                     <div className="group-btn-audio-call">
                         <button onClick={reject}
                             className="btn-audio-call btn-reject"><i className="bi bi-telephone-fill"></i></button>
@@ -61,6 +33,4 @@ function AudioCallDragable(props) {
         </div>
     );
 }
-
-export default AudioCallDragable;
-
+export default AudioCallingView;

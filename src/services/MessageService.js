@@ -46,3 +46,30 @@ export const callRequest = async (data) => {
         return Promise.reject(error);
     }
 }
+
+export const acceptCallRequest = async (data) => {
+    try {
+        const response = await requestApi(`/messages/acceptCallRequest/${data}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export const rejectCallRequest = async (data) => {
+    try {
+        const response = await requestApi(`/messages/rejectCallRequest/${data}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export const closeCall = async (data) => {
+    try {
+        const response = await requestApi(`/messages/closeCall/${data}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
