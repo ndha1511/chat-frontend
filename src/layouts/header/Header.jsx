@@ -3,7 +3,7 @@ import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import Search from "../../components/search/Search";
 import { useDispatch, useSelector } from 'react-redux';
 import { friendIcon } from "../../configs/button_group_icon_config";
-import {  Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Button, Modal } from "react-bootstrap";
 import "./Header.scss";
 import { getUserByEmail } from "../../services/UserService";
@@ -12,6 +12,8 @@ import HelloMessage from "../../components/modal/HelloMessage";
 import { getListFriend } from "../../services/FriendService";
 import { setFriendAccepted } from "../../redux/reducers/friendReducer";
 import CreateGroupModal from "./CreateGroupModal";
+import { Icon } from "zmp-ui";
+import VideoIcon from "../../components/icons/Icons";
 
 
 
@@ -50,7 +52,7 @@ function Header() {
 
     const searchUser = async () => {
         const email = document.getElementById('searchFriend').value;
-     
+
         if (!email.trim()) {
             setIsValid(false);
             return;
@@ -84,7 +86,7 @@ function Header() {
             default: break;
         }
     }
- 
+
 
     useEffect(() => {
         const getListFriendRequet = async () => {
@@ -93,7 +95,7 @@ function Header() {
                 dispatch(setFriendAccepted(response));
             } catch (error) {
                 console.error("", error);
-     
+
             }
         };
 
@@ -102,22 +104,25 @@ function Header() {
     }, [dispatch]);
 
 
-  
+
     const renderTooltip = props => (
         <Tooltip id="button-tooltip" {...props}>
-            Vui lòng nhập 
+            Vui lòng nhập
         </Tooltip>
     );
     return (
         <div className="d-flex w-100">
             <Search placeholder="Tìm kiếm" />
-            <ButtonGroup buttons={buttons}
+            {/* <img color="blue" style={{ zIndex: 999, color:'blue' }} src="assets/icons/Vector.svg" alt="aaaa" ></img>
+          <div style={{zIndex:999}}>  <VideoIcon  fillColor={'red'}/></div> */}
+            <div style={{ marginLeft: 60 }}> <ButtonGroup buttons={buttons}
                 className="btn-hover"
                 hoverColor="#f0f0f0"
                 width={40}
                 height={40}
+                fontSize={20}
                 showModal={showModal}
-            />
+            /></div>
 
             {/* Modal add friend */}
             <Modal show={showModalAddFriend} onHide={handleCloseAddFriend} scrollable={true} centered>
@@ -127,23 +132,23 @@ function Header() {
                 <Modal.Body className="modal-body-custom">
                     <div>
                         <label htmlFor='searchFriend'>
-                        <OverlayTrigger
-                            placement="bottom"
-                            overlay={renderTooltip}
-                            show={!isValid}
-                        >
-                            <Form.Control type="email" id='searchFriend'
-                             value={invalid}
-                             onChange={(e) => {
-                                 setInvalid(e.target.value);
-                                 setIsValid(true);
-                                
-                             }}
-                            placeholder='Email' isInvalid={!isValid} />
-                        </OverlayTrigger>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={renderTooltip}
+                                show={!isValid}
+                            >
+                                <Form.Control type="email" id='searchFriend'
+                                    value={invalid}
+                                    onChange={(e) => {
+                                        setInvalid(e.target.value);
+                                        setIsValid(true);
+
+                                    }}
+                                    placeholder='Email' isInvalid={!isValid} />
+                            </OverlayTrigger>
                         </label>
                         {/* {invalid && <span className="text-danger">{invalid}</span>} */}
-                
+
                         {/* {userSearch && <div>{userSearch.name}</div>} */}
                     </div>
                 </Modal.Body>

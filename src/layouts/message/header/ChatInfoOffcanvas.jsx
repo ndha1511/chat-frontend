@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Avatar from '../../../components/avatar/Avatar';
@@ -9,6 +9,7 @@ import MemberOffcanvas from './MemberOffcanvas';
 
 import { leaveGroup, removeGroup } from '../../../services/GroupService';
 import VerifyModal from '../../../components/dialogs/verify-dialog/VerifyModal';
+import UpdateGroupModal from '../../header/UpdateGroupModal';
 
 
 const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
@@ -21,7 +22,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     const [showMemBerOcv,setShowMemBerOcv] = useState(false)
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
-
+    // const [members, setMembers] = useState(memberList)
     const [showVerifyModal, setShowVerifyModal] = useState(false);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const handleCloseRemoveModal = () => setShowRemoveModal(false);
@@ -70,6 +71,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
         
     }
 
+    // useEffect(()=>{setMembers(memberList)},[memberList])
     const leaveAction = async () => {
         const request = {
             memberId: user.email,
@@ -129,9 +131,9 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                                 <Button onClick={handleShowManagerModal}> <i className="bi bi-person-add"></i></Button>
                                 <span>Thêm <br /> thành viên</span>
                             </div>
-                            <CreateGroupModal show={showManager} handleClose={() => setShowManager(false)}
+                            <UpdateGroupModal show={showManager} handleClose={() => setShowManager(false)}
                                 groupName={groupChat.name}
-                                selectedMembers={groupChat.members}
+                                // selectedMembers={groupChat.members}
                             />
                             {
                                 user.email === chatInfo.user.owner ?  <div className="item">

@@ -4,7 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './redux/store/store';
-
+import "zmp-ui/icon/styles/icon.css";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

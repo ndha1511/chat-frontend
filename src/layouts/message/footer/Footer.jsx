@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { pushMessage, reRenderMessge, setChatInfo, setScrollEnd } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
-
+import { Icon } from "zmp-ui"
+import Icons from "../../../components/icons/Icons";
 
 
 function Footer(props) {
@@ -16,6 +17,7 @@ function Footer(props) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [isActive, setIsActive] = useState(false);
+    const [isActive1, setIsActive1] = useState(false);
     const [textContent, setTextContent] = useState("");
     const dispatch = useDispatch();
     const emojiPickerRef = useRef(null);
@@ -27,8 +29,13 @@ function Footer(props) {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target) && !stickerIconRef.current.contains(event.target)) {
+            // Kiểm tra xem emojiPickerRef.current đã tồn tại và event.target không nằm trong emojiPickerRef.current
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
                 setShowEmojiPicker(false);
+            }
+            // Kiểm tra xem stickerIconRef.current đã tồn tại và event.target không nằm trong stickerIconRef.current
+            if (stickerIconRef.current && !stickerIconRef.current.contains(event.target)) {
+                // Thêm code xử lý khi click ra ngoài cho phần stickerIconRef.current ở đây
             }
         }
 
@@ -61,7 +68,6 @@ function Footer(props) {
         }
         return;
     }
-
     const changeFile = async (event) => {
 
         if (event.target.files) {
@@ -161,14 +167,14 @@ function Footer(props) {
     const actionChatIcon = [
         {
 
-            item: <img ref={stickerIconRef} src="/assets/icons/sticker-icon.png" alt="sticker" width={20} height={20} onClick={() => setShowEmojiPicker(!showEmojiPicker)} />,
+            item: <div onClick={() => setShowEmojiPicker(!showEmojiPicker)}><Icons type='Sticker' size={25} /></div>,
             title: "Gửi sticker"
 
         },
         {
             item: <label htmlFor="image" style={{ cursor: "pointer" }}>
                 <input ref={fileInputRef} id="image" type="file" accept="image/*" style={{ display: "none" }} onChange={changeFile} multiple />
-                <i className="bi bi-image" style={{ fontSize: 20 }}></i>
+                <Icon icon='zi-photo' />
             </label>,
             title: "Gửi hình ảnh"
         },
@@ -191,6 +197,7 @@ function Footer(props) {
     }
     const sendMessage = async () => {
         if (textContent !== "") {
+
             try {
                 const request = new FormData();
                 request.append("senderId", userCurrent.email);
@@ -219,50 +226,82 @@ function Footer(props) {
     const changeMessageContent = (e) => {
         setTextContent(e.target.value);
         // if (!isActive) setIsActive(true);
+        setIsActive1(e.target.value.trim() !== '');
     }
     const handleFocus = () => {
         setIsActive(true);
+        setIsActive1(textContent.trim() !== '');
     };
 
     const handleBlur = () => {
         if (textContent.trim() === '') {
             setIsActive(false);
+            setIsActive1(false);
         }
     };
 
-    const chatField = ()  => { return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-        <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center", position: 'relative' }}>
-            <ButtonGroup handle={handleButton} buttons={actionChatIcon} className="btn-hover"
-                marginRight={15}
-                width={40} height={40}
-                hoverColor="#f0f0f0"
-            />
-            {renderEmojiPicker()}
-        </div>
-        <div className={`d-flex w-100 ${isActive ? "border-top-success" : "border-top-gray"}`} style={{ height: "45%" }}>
-            <label htmlFor="input-msg" style={{ width: "100%" }} className="">
-                <textarea
-                    onChange={changeMessageContent}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault(); // Ngăn chặn việc xuống dòng khi nhấn Enter
-                            sendMessage(); // Gửi tin nhắn khi nhấn Enter
-                        }
-                    }}
-                    id="input-msg"
-                    value={textContent}
-                    placeholder={`Nhập tin nhắn gửi tới ${props.user.name}`}
-                    className="input-message w-100"
+    const chatField = () => {
+        return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
+            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center", position: 'relative' }}>
+                <ButtonGroup handle={handleButton} buttons={actionChatIcon} className="btn-hover"
+                    marginRight={15}
+                    width={40} height={40}
+                    hoverColor="#f0f0f0"
                 />
-            </label>
-            <button className="btn btn-primary btn-send" onClick={sendMessage}>
-                Gửi
-            </button>
+                {renderEmojiPicker()}
+            </div>
+            <div className={`d-flex w-100 ${isActive ? "border-top-success" : "border-top-gray"}`} style={{ height: "54%", alignItems: 'center' }}>
+                <label htmlFor="input-msg" style={{ width: "100%" }} className="">
+                    <textarea
+                        onChange={changeMessageContent}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault(); // Ngăn chặn việc xuống dòng khi nhấn Enter
+                                sendMessage(); // Gửi tin nhắn khi nhấn Enter
+                            }
+                        }}
+                        id="input-msg"
+                        value={textContent}
+                        placeholder={`Nhập tin nhắn gửi tới ${props.user.name}`}
+                        className="input-message w-100"
+                    />
+                </label>
+                <button className="btn-smile" onClick={() => setShowEmojiPicker(!showEmojiPicker)} ><i className="bi bi-emoji-smile"></i></button>
+                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ fontSize: 26,paddingBottom:6 }}>👍</button>}
+                {isActive1 ? (
+                    <button className=" btn-send" onClick={sendMessage}>
+                        <Icon icon='zi-send-solid' size={30} />
+                    </button>
+                ) : null}
+            </div>
         </div>
-    </div>
     }
+    const sendLike = () => {
+        const likeMessage = "👍";
+        const request = new FormData();
+        request.append("senderId", userCurrent.email);
+        request.append("receiverId", chatInfo.user.email);
+        request.append("textContent", likeMessage);
+        request.append("messageType", "TEXT");
+        request.append("hiddenSenderSide", false);
+
+        // Gửi tin nhắn ngay lập tức
+        try {
+            const sendMessageAsync = async () => {
+                const msg = await sendMessageToUser(request);
+                dispatch(pushMessage(msg));
+                dispatch(reRenderMessge());
+                dispatch(reRenderRoom());
+                dispatch(setScrollEnd());
+                findRoomId();
+            };
+            sendMessageAsync();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const groupRemoved = () => {
         return <div lassName="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
@@ -272,14 +311,14 @@ function Footer(props) {
 
     const groupNotPermission = () => {
         return <div lassName="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-        <p>Chỉ trưởng nhóm hoặc phó nhóm mới có thể gửi tin nhắn</p>
-    </div>
+            <p>Chỉ trưởng nhóm hoặc phó nhóm mới có thể gửi tin nhắn</p>
+        </div>
     }
 
     const groupNotMember = () => {
         return <div lassName="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-        <p>Bạn không phải thành viên của nhóm này</p>
-    </div>
+            <p>Bạn không phải thành viên của nhóm này</p>
+        </div>
     }
 
     const renderFooter = () => {
@@ -291,7 +330,7 @@ function Footer(props) {
                 (userCurrent.email !== chatInfo.user.owner && !chatInfo.user.admins.includes(userCurrent.email))) {
                 return groupNotPermission();
             }
-            if(!chatInfo.user.members.includes(userCurrent.email)) {
+            if (!chatInfo.user.members.includes(userCurrent.email)) {
                 return groupNotMember();
             }
             return chatField();

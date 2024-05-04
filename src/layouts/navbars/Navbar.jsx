@@ -76,12 +76,12 @@ function Navbar() {
 
     return (
         <nav className="bg-info navbar-vertical">
-            <div className="d-flex flex-column justify-content-between h-100">
+            <div className="d-flex flex-column justify-content-between navbar-backgroup-color h-100">
                 <div>
                     <div className="d-flex justify-content-center align-items-center m-2  mb-4 mt-4">
                         <Dropdown>
                             <Dropdown.Toggle as={CustomToggle}>
-                                <Avatar user={user} title={user && user.name ? user.name : ""} />
+                                <Avatar  user={user} title={user && user.name ? user.name : ""} />
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu className="dropdown-menu-right custom-dropdown-menu">
@@ -104,8 +104,8 @@ function Navbar() {
                             className="btn-hover"
                             width={68}
                             height={65}
-                            backgroundActive="#6495ed"
-                            hoverColor="#87cefa"
+                            backgroundActive="#006EDC"
+                            hoverColor="#0082E5"
                             active={0}
                             textHoverColor="blue"
                         />
@@ -121,7 +121,7 @@ function Navbar() {
                         hoverColor="#87cefa"
 
                     >
-                        <i className="bi bi-gear" style={{ fontSize: "25px" }}></i>
+                        <i className="bi bi-gear" style={{ fontSize: "27px",color:'white' }}></i>
                     </ButtonIcon>
                 </div>
             </div>

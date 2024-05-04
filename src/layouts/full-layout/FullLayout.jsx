@@ -16,6 +16,7 @@ import { setGroup } from "../../redux/reducers/groupReducer";
 import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
 import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
 import { getUserByEmail } from "../../services/UserService";
+import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
 
 
 export var stompClient = null;
@@ -72,7 +73,7 @@ function FullLayout(props) {
       getListFriends(user.email);
       getGroups(user.email);
     }
-      
+
 
   }, [renderGroup]);
 
@@ -100,13 +101,22 @@ function FullLayout(props) {
         case "CREATE_GROUP":
         case "ADD_MEMBER":
           dispatch(reRenderRoom());
+
           stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
+          break;
+        case "ADD_ADMIN":
+        case "REMOVE_ADMIN":
+        case "ADD_MEMBER_GROUP":
+          dispatch(reRenderMember());
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
         case "LEAVE":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+          dispatch(reRenderMember());
           stompClient.unsubscribe(room.roomId);
           break;
         case "CALL_REQUEST":
@@ -132,10 +142,10 @@ function FullLayout(props) {
           dispatch(reRenderMessge());
           break;
       }
-    } 
+    }
 
   }
-  const getCallerInfo =  async (senderId) => {
+  const getCallerInfo = async (senderId) => {
     const caller = await getUserByEmail(senderId);
     setCallerInfo(caller);
   }
@@ -220,11 +230,11 @@ function FullLayout(props) {
     setShowDragableCallRequest(true);
   }
   return (
-    <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh"}}>
-      {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable} 
+    <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh" }}>
+      {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable}
         callerInfo={callerInfo}
-        message={messageCall}/>}
-      {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest}/>}
+        message={messageCall} />}
+      {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest} />}
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />
       </div>

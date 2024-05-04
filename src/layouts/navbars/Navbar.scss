@@ -8,6 +8,9 @@
     justify-content: space-between;
     
     position: relative;
+    .navbar-backgroup-color{
+      background-color: #0091FF;
+    }
   }
   .navbar-vertical .navbar-nav {
     width: 100%; /* Chiều rộng của navbar-nav */
@@ -27,7 +30,8 @@
 .avatar-dropdown {
   display: inline-block;
   text-decoration: none;
-  border-radius: 50px; /* Bo góc */
+  border: 0.2px solid white;
+  border-radius: 50%; /* Bo góc */
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 

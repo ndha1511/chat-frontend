@@ -4,23 +4,25 @@ import { reRender } from '../../redux/reducers/renderReducer';
 import Avatar from '../../components/avatar/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { addGroup, addMember } from '../../services/GroupService';
+import { createMember, reRenderMember } from '../../redux/reducers/renderOffcanvas';
 
 // Your other code...
 
-function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
+function UpdateGroupModal({ show, handleClose, groupName, }) {
     const [friendName, setFriendName] = useState('');
     const [friendId, setFriendId] = useState([]);
-    const[updateMemberId,setUpdateMemberId] = useState([]);
-    const[updateState,setUpdateState] = useState(false);
-
+    const [updateMemberId, setUpdateMemberId] = useState([]);
+    const [updateState, setUpdateState] = useState(false);
+    const [memberId, setmemberId] = useState([]);
+    const memberList = useSelector(state => state.members.members);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
-    const[title,setTitle] = useState('Tạo nhóm');
+    const [title, setTitle] = useState('Tạo nhóm');
     const [isValid, setIsValid] = useState(true); // State to manage input validity
     const friends = useSelector((state) => state.friend.friendsAccepted);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
     const dispatch = useDispatch();
-    
+
     const handleAddGroup = async () => {
         if (!friendName.trim()) {
             setIsValid(false);
@@ -46,7 +48,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
     };
 
     const handleAddMemberToGroup = async () => {
-        if(updateMemberId.length > 0) {
+        if (updateMemberId.length > 0) {
             const request = {
                 adderId: user.email,
                 membersId: updateMemberId,
@@ -54,6 +56,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             }
             try {
                 await addMember(request);
+                dispatch(reRenderMember())
                 setUpdateMemberId([]);
                 handleClose();
             } catch (error) {
@@ -61,8 +64,8 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             }
 
         }
-        
-        
+
+
     }
 
     function createGroupFormData(groupData) {
@@ -108,19 +111,21 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
         </Tooltip>
     );
 
-    
-    
+
+
     useEffect(() => {
-        if (selectedMembers && selectedMembers.length > 0) {
+        if (memberList && memberList.length > 0) {
             // Chuyển đổi danh sách selectedMembers thành mảng các email
-            const selectedEmails = selectedMembers.map(member => member);
+            const selectedEmails = memberList.map(member => member);
+            const selectedEmails1 = memberList.map(member => member.email);
             setFriendId(selectedEmails);
+            setmemberId(selectedEmails1)
             console.log(selectedEmails)
             setIsUpdateMode(true)
             setTitle('Thêm thành viên')
         }
-    }, [selectedMembers,updateState]);
-  
+    }, [memberList, updateState]);
+
     useEffect(() => {
         if (groupName) {
             setFriendName(groupName);
@@ -161,34 +166,38 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
                 <div className="body-center">
                     <table className="table table-hover">
                         <tbody>
-                            {friends.map((friend, index) => (
-                                <tr key={index} className="tr-create-group">
-                                    <td>
-                                        <Form.Check
-                                            type="checkbox"
-                                            onChange={(e) => {
-                                                handleChange(e, friend.email)
-                                                handleUpdate(e,friend.email)
-                                            }}
-                                            value={friend.email}
-                                            checked={friendId.includes(friend.email)}
-                                            disabled={chatInfo.user?.members?.includes(friend.email)?true:false}
-                                            id={`checkbox-${index}`} // Thêm ID cho mỗi checkbox
-                                        />
-                                    </td>
-                                    <td><Avatar user={friend}  /></td>
-                                    <td>{friend.name}</td>
-                                </tr>
-                            ))}
+                            {
+                                friends
+                                    .filter(friend => !memberId.includes(friend.email)) // Lọc ra những người không phải là thành viên đã có
+                                    .map((friend, index) => (
+                                        <tr key={index} className="tr-create-group">
+                                            <td>
+                                                <Form.Check
+                                                    type="checkbox"
+                                                    onChange={(e) => {
+                                                        handleChange(e, friend.email)
+                                                        handleUpdate(e, friend.email)
+                                                    }}
+                                                    value={friend.email}
+                                                    checked={friendId.includes(friend.email)}
+                                                    id={`checkbox-${index}`} // Giữ ID cho mỗi checkbox
+                                                />
+                                            </td>
+                                            <td><Avatar user={friend} /></td>
+                                            <td>{friend.name}</td>
+                                        </tr>
+                                    ))
+                            }
+
                         </tbody>
                     </table>
                 </div>
             </Modal.Body>
             <Modal.Footer className="md-f">
-                <Button variant="secondary" onClick={()=>{
+                <Button variant="secondary" onClick={() => {
                     handleClose()
                     setUpdateMemberId([])
-                    setUpdateState(prev=> !prev)
+                    setUpdateState(prev => !prev)
                 }} className="modal-button-custom">
                     Hủy
                 </Button>
@@ -206,4 +215,4 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
     );
 }
 
-export default CreateGroupModal;
+export default UpdateGroupModal;

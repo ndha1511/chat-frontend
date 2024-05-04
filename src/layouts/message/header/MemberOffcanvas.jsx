@@ -3,13 +3,14 @@ import { Offcanvas } from 'react-bootstrap';
 import ButtonGroup from '../../../components/buttons/button-group/ButtonGroup';
 import "./Header.scss"
 import { useDispatch, useSelector } from 'react-redux';
-import {  getUserGroupById } from '../../../services/GroupService';
+import {  getGroupById, getUserGroupById } from '../../../services/GroupService';
 import HoverDots from '../../../components/hover-dots/HoverDots';
-import { createMember } from '../../../redux/reducers/renderOffcanvas';
+import { createAdmin, createMember } from '../../../redux/reducers/renderOffcanvas';
 
 
 function MemberOffcanvas({ show, handleClose }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
+    const admins1 = useSelector(state => state.members.admins);
     const memberList = useSelector(state => state.members.members);
     const reRenderMember = useSelector(state => state.members.reRender);
     const [members, setMembers] = useState([])
@@ -30,6 +31,8 @@ function MemberOffcanvas({ show, handleClose }) {
                 const res = await getUserGroupById(roomId)
                 setMembers(res)
                 dispatch(createMember(res))
+                const group = await getGroupById(roomId)
+                dispatch(createAdmin(group.admins))
                 console.log(res)
             } catch (error) {
                 alert('lỗi không láy được user')
@@ -46,8 +49,8 @@ function MemberOffcanvas({ show, handleClose }) {
     useEffect(() => {
         const owner = members.filter(member=>member.email === chatInfo.user.owner)
         // console.log(owner)
-        const admins = members.filter(member=>chatInfo.user.admins.includes(member.email))
-        const memberList = members.filter(member=>!chatInfo.user.admins.includes(member.email)&&!(member.email === chatInfo.user.owner))
+        const admins = members.filter(member=>admins1.includes(member.email))
+        const memberList = members.filter(member=>!admins1.includes(member.email)&&!(member.email === chatInfo.user.owner))
         const listRs = [...owner,...admins,...memberList]
         const listMember = listRs.map(member => ({
             item: <HoverDots key={member.email} member={member} />

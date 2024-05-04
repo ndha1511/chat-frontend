@@ -41,17 +41,17 @@ function BaseMessage(props) {
     }
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-        <a
-            href="/"
+        <span
+           
             ref={ref}
             onClick={(e) => {
                 e.preventDefault();
                 onClick(e);
             }}
-            className="avatar-dropdown" // Thêm class cho avatar dropdown
+            className="" // Thêm class cho avatar dropdown
         >
             {children}
-        </a>
+        </span>
     ));
     const handleDeleteMessage = async () => {
         try {
