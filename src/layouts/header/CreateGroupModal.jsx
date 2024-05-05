@@ -172,7 +172,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
                                             }}
                                             value={friend.email}
                                             checked={friendId.includes(friend.email)}
-                                            disabled={chatInfo.user?.members?.includes(friend.email)?true:false}
+                                
                                             id={`checkbox-${index}`} // Thêm ID cho mỗi checkbox
                                         />
                                     </td>

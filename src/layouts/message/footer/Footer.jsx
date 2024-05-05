@@ -9,6 +9,7 @@ import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
+import { getGroupById } from "../../../services/GroupService";
 
 
 function Footer(props) {
@@ -321,16 +322,32 @@ function Footer(props) {
         </div>
     }
 
+    const renderMessage = useSelector(state=>state.renderMessage.renderMessage)
+    const [groupState,setGroupState] =useState(null)
+    useEffect(()=>{
+        const getGroup = async ()=>{
+            if(chatInfo && chatInfo.room?.roomType === "GROUP_CHAT"){
+               try {
+                const group = await getGroupById(chatInfo.user.id);
+                setGroupState(group)
+               } catch (error) {
+                
+               }
+         
+            }
+        }
+        getGroup();
+    },[renderMessage])
     const renderFooter = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
-            if (chatInfo.user.groupStatus === "INACTIVE") {
+            if (groupState?.groupStatus === "INACTIVE") {
                 return groupRemoved();
             }
-            if (chatInfo.user.sendMessagePermission !== "PUBLIC" &&
-                (userCurrent.email !== chatInfo.user.owner && !chatInfo.user.admins.includes(userCurrent.email))) {
+            if (groupState?.sendMessagePermission !== "PUBLIC" &&
+                (userCurrent.email !== groupState?.owner && !groupState?.admins.includes(userCurrent.email))) {
                 return groupNotPermission();
             }
-            if (!chatInfo.user.members.includes(userCurrent.email)) {
+            if (!groupState?.members.includes(userCurrent.email)) {
                 return groupNotMember();
             }
             return chatField();

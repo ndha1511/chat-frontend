@@ -123,10 +123,19 @@ function Content(props) {
         return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
     }
     return (
-        <div id="scrollableDiv" ref={scrollableDivRef} className="d-flex content-chat w-100 " style={{
-            height: "100%",
-            background: `linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.4) 0%, rgba(${hexToRgb(baseColor)}, 0.4) 50%, rgba(${hexToRgb(darkerColor)}, 0.4) 100%)`
-        }}>
+        <div id="scrollableDiv" ref={scrollableDivRef} className="d-flex content-chat w-100 "
+            style={{
+                height: "100%",
+                backgroundImage: chatInfo.user.avatar ?
+                    `linear-gradient(-45deg,rgba(199, 194, 194, 0.6), rgba(226, 218, 218, 0.7),rgba(169, 149, 149, 0.6)), url(${chatInfo.user.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 1) 0%, rgba(${hexToRgb(baseColor)}, 1) 50%, rgba(${hexToRgb(darkerColor)}, 1) 100%)` :
+                    `linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.6) 0%, rgba(${hexToRgb(baseColor)}, 0.6) 50%, rgba(${hexToRgb(darkerColor)}, 0.6) 100%)`,
+                backgroundSize: 'cover', // Set the size for each background
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+                // backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(${chatInfo.user.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.4) 0%, rgba(${hexToRgb(baseColor)}, 0.
+            }}
+
+        >
 
             <InfiniteScroll
                 dataLength={messages.length}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "../../../components/avatar/Avatar";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
@@ -12,6 +12,7 @@ import { setMessageCall } from "../../../redux/reducers/messageReducer";
 import FriendInfor from "../../../components/modal/FriendInfor";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
+import { getGroupById } from "../../../services/GroupService";
 
 
 function Header(props) {
@@ -149,10 +150,10 @@ function Header(props) {
 
     const renderRight = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
-            if (chatInfo.user.groupStatus === "INACTIVE") {
+            if (groupState?.groupStatus === "INACTIVE") {
                 return <></>;
             }
-            if (!chatInfo.user.members.includes(userCurrent.email)) {
+            if (!groupState?.members.includes(userCurrent.email)) {
                 return <></>;
             }
             return <div className="action">
@@ -164,7 +165,22 @@ function Header(props) {
             </div>
         }
     }
-
+    const renderMessage = useSelector(state=>state.renderMessage.renderMessage)
+    const [groupState,setGroupState] =useState(null)
+    useEffect(()=>{
+        const getGroup = async ()=>{
+            if(chatInfo && chatInfo.room?.roomType === "GROUP_CHAT"){
+               try {
+                const group = await getGroupById(chatInfo.user.id);
+                setGroupState(group)
+               } catch (error) {
+                
+               }
+         
+            }
+        }
+        getGroup();
+    },[renderMessage])
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",

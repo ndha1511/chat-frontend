@@ -21,6 +21,7 @@ import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
 import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
 import VideoCallDragable from "../../components/webrtc/VideoCallDragable";
 import VideoCallingView from "../../components/webrtc/VideoCallingView";
+import { reRenderMessageHF } from "../../redux/reducers/renderMessage";
 
 
 
@@ -287,6 +288,7 @@ function FullLayout(props) {
           dispatch(reRenderMember());
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+          dispatch(reRenderMessageHF());
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
@@ -294,6 +296,7 @@ function FullLayout(props) {
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
           dispatch(reRenderMember());
+          dispatch(reRenderMessageHF());
           stompClient.unsubscribe(room.roomId);
           break;
         case "CALL_REQUEST":
