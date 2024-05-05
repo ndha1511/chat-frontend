@@ -11,6 +11,7 @@ import dragableReducer from '../reducers/dragableReducer';
 import  renderMember  from '../reducers/renderOffcanvas';
 
 
+
 export const store = configureStore({
   reducer: {
     message: messageReducer,
@@ -23,5 +24,6 @@ export const store = configureStore({
     group: groupReducer,
     dragable: dragableReducer,
     members: renderMember
+
   },
 })

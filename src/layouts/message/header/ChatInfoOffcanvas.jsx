@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Avatar from '../../../components/avatar/Avatar';
-import CreateGroupModal from '../../header/CreateGroupModal';
 import { useSelector } from 'react-redux';
 
 import MemberOffcanvas from './MemberOffcanvas';
@@ -19,7 +18,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     const [showFile, setShowFile] = useState(false);
     const [showSecurity, setShowSecurity] = useState(false);
     const [showManager, setShowManager] = useState(false)
-    const [showMemBerOcv,setShowMemBerOcv] = useState(false)
+    const [showMemBerOcv, setShowMemBerOcv] = useState(false)
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
     // const [members, setMembers] = useState(memberList)
@@ -36,11 +35,11 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
 
     }
     const handleCloseMemBerOcv = () => {
-        setShowMemBerOcv(()=>false);
+        setShowMemBerOcv(() => false);
         // console.log(showMemBerOcv)
     }
 
-    const handleShowMemBerOcv =()=>{
+    const handleShowMemBerOcv = () => {
         setShowMemBerOcv(true)
     }
     const groupChat = chatInfo.user
@@ -67,8 +66,8 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     ];
 
     const handleLeaveGroup = () => {
-       handleShow();
-        
+        handleShow();
+
     }
 
     // useEffect(()=>{setMembers(memberList)},[memberList])
@@ -100,7 +99,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
         } catch (error) {
             console.log(error);
         }
-       
+
     }
 
 
@@ -136,32 +135,33 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                                 // selectedMembers={groupChat.members}
                             />
                             {
-                                user.email === chatInfo.user.owner ?  <div className="item">
-                                <Button onClick={handleShowManager} ><i className="bi bi-gear"></i></Button>
-                                <span>Quản lí <br /> nhóm</span>
-                            </div> : <></>
+                                user.email === chatInfo.user.owner ? <div className="item">
+                                    <Button onClick={handleShowManager} ><i className="bi bi-gear"></i></Button>
+                                    <span>Quản lí <br /> nhóm</span>
+                                </div> : <></>
                             }
-                           
+
                         </div>
                     </div>
                     <div className="Offcanva-center1">
                         <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowMember(!showMember)} >
                             <h6>Thành viên</h6>
-                            <Button ><i className={`bi bi-caret-down-fill ${showMember ? 'rotate' : ''}`}></i></Button>
+                            <i className={`bi bi-caret-down-fill ${showMember ? 'rotate' : ''}`}></i>
                         </Button>
                         {showMember && (
                             <Button onClick={handleShowMemBerOcv} className="Offcanva-center">
                                 <div className="Offcanva-btn-center">
-                                    <Button><i className="bi bi-people"></i></Button>
+                                    <i className="bi bi-people"></i>
                                     <span>{memberList.length} thành viên</span>
+
                                 </div>
                             </Button>
-                          
+
                         )}
-                        <MemberOffcanvas show={showMemBerOcv} handleClose={handleCloseMemBerOcv}/>
+                        <MemberOffcanvas show={showMemBerOcv} handleClose={handleCloseMemBerOcv} />
                         <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowContent(!showContent)} >
                             <h6>Ảnh/Video</h6>
-                            <Button ><i className={`bi bi-caret-down-fill ${showContent ? 'rotate' : ''}`}></i></Button>
+                            <i className={`bi bi-caret-down-fill ${showContent ? 'rotate' : ''}`}></i>
                         </Button>
                         {showContent && (
                             <div className="Offcanva-center1-content">
@@ -177,9 +177,9 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                         )}
                         <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowFile(!showFile)}  >
                             <h6>File</h6>
-                            <Button >
-                                <i className={`bi bi-caret-down-fill ${showFile ? "rotate" : ""}`}></i>
-                            </Button>
+
+                            <i className={`bi bi-caret-down-fill ${showFile ? "rotate" : ""}`}></i>
+
                         </Button>
                         {showFile && (
                             <div className="file">
@@ -202,7 +202,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                         )}
                         <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowSecurity(!showSecurity)} >
                             <h6>Thiết lập bảo mật</h6>
-                            <Button ><i className={`bi bi-caret-down-fill ${showSecurity ? 'rotate' : ''}`}></i></Button>
+                            <i className={`bi bi-caret-down-fill ${showSecurity ? 'rotate' : ''}`}></i>
                         </Button>
 
                         {showSecurity && (
@@ -221,21 +221,21 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                                         <i className="bi bi-arrow-right-square"></i>
                                         <span>Rời nhóm</span>
                                     </Button>
-                                    }
-                                    <VerifyModal content="Bạn có chắc chắn muốn rời nhóm" show={showVerifyModal}
-                                     handleClose={handleCloseModal}
-                                     action={leaveAction}
-                                    />
-                                     <VerifyModal content="Bạn có chắc chắn giải tán nhóm" show={showRemoveModal}
-                                     handleClose={handleCloseRemoveModal}
-                                     action={removeAction}
-                                    />
+                                }
+                                <VerifyModal content="Bạn có chắc chắn muốn rời nhóm" show={showVerifyModal}
+                                    handleClose={handleCloseModal}
+                                    action={leaveAction}
+                                />
+                                <VerifyModal content="Bạn có chắc chắn giải tán nhóm" show={showRemoveModal}
+                                    handleClose={handleCloseRemoveModal}
+                                    action={removeAction}
+                                />
                             </div>
                         )}
                     </div>
                 </div>
             </Offcanvas.Body>
-            
+
         </Offcanvas>
     );
 };

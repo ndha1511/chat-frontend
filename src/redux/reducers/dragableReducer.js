@@ -1,19 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  dragableQuestion: false,
+  dragableAudioCall: false,
 }
 
 export const dragableReducer = createSlice({
   name: 'dragable',
   initialState,
   reducers: {
-    setDragableQuestion: (state, action) => {
-      state.dragableQuestion = action.payload;
+    setDragableAudioCall: (state, action) => {
+      state.dragableAudioCall = action.payload;
     },
   },
 })
 
-export const { setDragableQuestion } = dragableReducer.actions
+export const { setDragableAudioCall } = dragableReducer.actions
 
 export default dragableReducer.reducer

@@ -4,11 +4,11 @@ import Avatar from "../avatar/Avatar";
 import { acceptCallRequest, rejectCallRequest } from "../../services/MessageService";
 
 
-function AudioCallDragable(props) {
+function VideoCallDragable(props) {
 
     const accept = async () => {
         props.setLocalPeer();
-        props.setLocalStream({video: false, audio: true});
+        props.setLocalStream({video: true, audio: true});
         try {
             await acceptCallRequest(props.message.id);
             props.sendCall();
@@ -59,7 +59,7 @@ function AudioCallDragable(props) {
                         <button onClick={reject}
                             className="btn-audio-call btn-reject"><i className="bi bi-telephone-fill"></i></button>
                         <button onClick={accept}
-                            className="btn-audio-call btn-accept"><i className="bi bi-telephone-fill"></i></button>
+                            className="btn-audio-call btn-accept"><i className="bi bi-camera-video-fill"></i></button>
                     </div>
                 </div>
             </div>
@@ -68,5 +68,5 @@ function AudioCallDragable(props) {
     );
 }
 
-export default AudioCallDragable;
+export default VideoCallDragable;
 

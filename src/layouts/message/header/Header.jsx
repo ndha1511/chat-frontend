@@ -2,13 +2,13 @@ import { useState } from "react";
 import Avatar from "../../../components/avatar/Avatar";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./Header.scss"
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 import { callRequest } from "../../../services/MessageService";
-import AccountInfor from "../../../components/modal/AccountInfor";
-import ProfileModal from "../../../components/modal/ProfileModal";
+
+import { setMessageCall } from "../../../redux/reducers/messageReducer";
 import FriendInfor from "../../../components/modal/FriendInfor";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
@@ -22,15 +22,17 @@ function Header(props) {
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const [friend, setFriend] = useState({})
+
+    const dispatch = useDispatch();
+
     const [showInfor, setshowInfor] = useState(false)
 
-    console.log(props.user)
     const handleShowProfile = () => {
         // setFriend(item)
         setshowInfor(true)
 
     }
+
 
     const handleShowManager = () => {
         setShowManager(true);
@@ -82,6 +84,15 @@ function Header(props) {
         switch (index) {
             case 0: break;
             case 1:
+                const dataVideo = {
+                    senderId: userCurrent?.email,
+                    receiverId: chatInfo?.user?.id,
+                    messageType: "VIDEO_CALL"
+                }
+                props.showDragableRequest();
+                // call api
+                const mediaVideo = { video: true, audio: true };
+                handleCallRequest(dataVideo, mediaVideo);
                 break;
             case 2:
                 handleShow();
@@ -96,15 +107,25 @@ function Header(props) {
             case 0: break;
             case 1:
                 const data = {
-                    senderId: userCurrent.email,
-                    receiverId: chatInfo.user.email,
+                    senderId: userCurrent?.email,
+                    receiverId: chatInfo?.user?.email,
                     messageType: "AUDIO_CALL"
                 }
                 props.showDragableRequest();
                 // call api
-                handleCallRequest(data);
+                const media = {video: false, audio: true};
+                handleCallRequest(data, media);
                 break;
             case 2:
+                const dataVideo = {
+                    senderId: userCurrent?.email,
+                    receiverId: chatInfo?.user?.email,
+                    messageType: "VIDEO_CALL"
+                }
+                props.showDragableRequest();
+                // call api
+                const mediaVideo = { video: true, audio: true };
+                handleCallRequest(dataVideo, mediaVideo);
                 break;
             case 3:
                 // open offcanvas for user info 
@@ -114,9 +135,13 @@ function Header(props) {
         }
     }
 
-    const handleCallRequest = async (data) => {
+    const handleCallRequest = async (data, media) => {
+        props.setLocalPeer();
+        props.setLocalStream(media);
         try {
-            await callRequest(data);
+            const response = await callRequest(data);
+            dispatch(setMessageCall(response));
+
         } catch (error) {
             console.log(error);
         }
@@ -176,21 +201,23 @@ function Header(props) {
 
             {/* Hiển thị Offcanvas 1 */}
 
-            <ChatInfoOffcanvas
+            {show && <ChatInfoOffcanvas
                 show={show}
                 handleClose={handleClose}
                 user={props.user}
                 handleShowManager={handleShowManager}
-            />
+            />}
             {/* Hiển thị Offcanvas 2 */}
             {/* Using the new GroupManagerOffcanvas */}
-            <GroupManagerOffcanvas
+            {showManager && <GroupManagerOffcanvas
                 show={showManager}
                 handleClose={handleCloseManager}
-            />
+            />}
 
             {/* Modal accontInfor */}
-            <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+            {
+              showInfor &&  <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+            }    
 
         </div>
     );

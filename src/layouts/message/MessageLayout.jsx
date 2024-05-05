@@ -10,6 +10,7 @@ function MessageLayout(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
 
     const images = [
+
         {src:"/assets/images/slide1.png",caption: "Nhắn tin nhiều hơn, soạn thảo ít hơn", text: "Sử dụng tin nhắn nhanh để lưu sẵn các tin nhắn thường  dùng và gửi nhanh trong hội thoại bất kì. " },
         {src:"/assets/images/slide2.png",caption:"Tin nhắn tự xóa",text:"Từ giờ tin nhắn đã có thể tự độn xóa sau khoảng thời gian nhất định"},
         {src:"/assets/images/slide3.jpg",caption:"Gọi nhóm và làm việc hiệu quả với Zalo Group Call",text:"Trao đổi công việc mọi lúc mọi nơi"},
@@ -17,15 +18,18 @@ function MessageLayout(props) {
         {src:"/assets/images/slide5.png",caption:"Gửi File nặng?",text:"Đã có Zalo PC 'xử' hết"},
         {src:"/assets/images/slide6.jpg",caption:"Chát nhóm với đồng nghiệp",text:"Tiện lợi hơn, nhờ các công cụ hỗ trợ trên máy tính"},
         {src:"/assets/images/slide7.jpg",caption:"Giải quyết công việc hiệu quả hơn, lên đến 40%",text:"Với Zalo PC"},
+
     ];
     const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((currentSlide + 1) % images.length); // Cập nhật slide tiếp theo
-        }, 3000); // Thay đổi slide mỗi 3 giây
-        return () => clearInterval(interval);
-    }, [currentSlide, images.length]);
+        if(Object.keys(chatInfo).length <= 0 ) {
+            const interval = setInterval(() => {
+                setCurrentSlide((currentSlide + 1) % images.length); // Cập nhật slide tiếp theo
+            }, 3000);
+            return () => clearInterval(interval);
+        } // Thay đổi slide mỗi 3 giây
+    }, [currentSlide, images.length, chatInfo]);
     // console.log(chatInfo);
     const handlePrevSlide = () => {
         setCurrentSlide((currentSlide - 1 + images.length) % images.length);
@@ -40,7 +44,12 @@ function MessageLayout(props) {
                 <div className="d-flex w-100" style={{ flexDirection: "column" }}>
                     <div className="d-flex w-100" style={{ height: "12%", paddingTop: "18px", alignItems: 'center', paddingLeft: "15px" }}>
                         {props.backButton}
-                        <Header user={chatInfo.user} showDragableRequest={props.showDragableRequest} />
+
+                        <Header user={chatInfo.user} showDragableRequest={props.showDragableRequest}
+                            setLocalStream={props.setLocalStream}
+                            setLocalPeer={props.setLocalPeer}
+                        />
+
                     </div>
                     <div className="w-100" style={{ height: "70%", width: '100%' }}>
                         <Content roomId={chatInfo.roomId} />
@@ -52,8 +61,8 @@ function MessageLayout(props) {
                 <div className="d-flex w-100 carousel" style={{ height: "100%" }}>
                     <div className="title" style={{ color: '#236DDC', textAlign: 'center', position: 'absolute', width: '100%' }}>
                         <p>Chào mừng đến với <span>Zalo PC!</span></p>
-                        <span>Khám phá những tiện ích hỗ trợ việc làm và trò chuyện cùng người <br /> 
-                        thân, bạn bè được tối ưu hóa cho máy tính của bạn.</span>
+                        <span>Khám phá những tiện ích hỗ trợ việc làm và trò chuyện cùng người <br />
+                            thân, bạn bè được tối ưu hóa cho máy tính của bạn.</span>
                     </div>
                     <div className="slide" style={{ backgroundImage: `url(${images[currentSlide].src})` }}></div>
                     <div className="caption" style={{ color: '#236DDC', textAlign: 'center', position: 'absolute', width: '100%' }}>
@@ -62,11 +71,11 @@ function MessageLayout(props) {
                     <div className="text" style={{ color: 'black', textAlign: 'center', position: 'absolute', width: '100%' }}>
                         {images[currentSlide].text}
                     </div>
-                    <button className="prev-button" onClick={handlePrevSlide}><Icon icon="zi-chevron-left" size={50}/></button>
-                    <button className="next-button" onClick={handleNextSlide}><Icon icon="zi-chevron-right" size={50}/></button>
+                    <button className="prev-button" onClick={handlePrevSlide}><Icon icon="zi-chevron-left" size={50} /></button>
+                    <button className="next-button" onClick={handleNextSlide}><Icon icon="zi-chevron-right" size={50} /></button>
                     <div className="dots">
                         {images.map((_, index) => (
-                            <span key={index} className={`dot ${index === currentSlide ? 'active' : ''}`}  />
+                            <span key={index} className={`dot ${index === currentSlide ? 'active' : ''}`} />
                         ))}
                     </div>
                 </div>
