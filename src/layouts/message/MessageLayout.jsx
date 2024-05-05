@@ -10,7 +10,7 @@ function MessageLayout(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
 
     const images = [
-        { src: "/assets/images/slide1.png", caption: "Nhắn tin nhiều hơn, soạn thảo ít hơn", text: "Sử dụng tin nhắn nhanh để lưu sẵn các tin nhắn thường  dùng và gửi nhanh trong hội thoại bất kì. " },
+        {src:"/assets/images/slide1.png",caption: "Nhắn tin nhiều hơn, soạn thảo ít hơn", text: "Sử dụng tin nhắn nhanh để lưu sẵn các tin nhắn thường  dùng và gửi nhanh trong hội thoại bất kì. " },
         {src:"/assets/images/slide2.png",caption:"Tin nhắn tự xóa",text:"Từ giờ tin nhắn đã có thể tự độn xóa sau khoảng thời gian nhất định"},
         {src:"/assets/images/slide3.jpg",caption:"Gọi nhóm và làm việc hiệu quả với Zalo Group Call",text:"Trao đổi công việc mọi lúc mọi nơi"},
         {src:"/assets/images/slide4.jpg",caption:"Trải nghiệm xuyên suốt",text:"Kết nối và giải quyết công việc trên mọi thiết bị với dữ liệu luôn được đồng bộ"},
@@ -33,9 +33,6 @@ function MessageLayout(props) {
 
     const handleNextSlide = () => {
         setCurrentSlide((currentSlide + 1) % images.length);
-    };
-    const handleDotClick = (index) => {
-        setCurrentSlide(index);
     };
     return (
         <div className="d-flex w-100">

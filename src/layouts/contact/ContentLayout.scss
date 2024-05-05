@@ -116,10 +116,11 @@
 /// ContentListFriend
 
 .listFriend-center{
-    padding: 15px;
+    padding-left: 15px;
     max-width: 100%;
     flex-direction: column;
     background-color: rgb(238, 235, 235);
+    height: 100%;
     .loc{
         // border: 1px solid black;
         max-width: 100%;
@@ -167,7 +168,7 @@
         .loc-center{
             max-width: 100%;
             // border: 1px solid black;
-            height:590px ;
+            height:490px ;
             overflow: auto;
             .loc-center-s{
                 display: flex;

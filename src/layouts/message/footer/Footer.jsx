@@ -182,7 +182,7 @@ function Footer(props) {
 
             item: <label htmlFor="attachFile" style={{ cursor: "pointer" }}>
                 <input id="attachFile" type="file" style={{ display: "none" }} onChange={changeFile} multiple />
-                <i className="bi bi-paperclip" style={{ fontSize: 20 }}></i>
+                <Icon icon="zi-link" />
             </label>,
             title: "Đính kèm file"
         }
@@ -242,7 +242,7 @@ function Footer(props) {
 
     const chatField = () => {
         return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "45%", alignItems: "center", position: 'relative' }}>
+            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "40%", alignItems: "center", position: 'relative', borderTop: '1px solid rgb(200, 220, 220)' }}>
                 <ButtonGroup handle={handleButton} buttons={actionChatIcon} className="btn-hover"
                     marginRight={15}
                     width={40} height={40}
@@ -269,7 +269,7 @@ function Footer(props) {
                     />
                 </label>
                 <button className="btn-smile" onClick={() => setShowEmojiPicker(!showEmojiPicker)} ><i className="bi bi-emoji-smile"></i></button>
-                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ fontSize: 26,paddingBottom:6 }}>👍</button>}
+                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ paddingBottom: 4 }}><Icons type="like" fillColor="#F7CE6C" size={28}/></button>}
                 {isActive1 ? (
                     <button className=" btn-send" onClick={sendMessage}>
                         <Icon icon='zi-send-solid' size={30} />

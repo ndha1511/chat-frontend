@@ -85,14 +85,14 @@ function HoverDots({ member }) {
     }
 
     return (
-        <div className="d-flex w-100 " style={{ justifyContent: 'flex-start',alignItems:'center' }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <div className="d-flex w-100 container-member "  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div className='d-flex member-tong' style={{ width: '100%', alignItems: 'center', }}  >
                 <Avatar user={member} /> {member.email === chatInfo.user.owner ? <div className="rotate-45"><i className="bi bi-key-fill"></i></div> : 
                 (admins.includes(member.email)) ? <div className="rotate-45"><i className="bi bi-key-fill" style={{ color: "#00ff7f" }}></i></div> :
                 <></>}
                 <div style={{ marginLeft: '15px' }}>{member.name}</div>
             </div>
-            <div className="dots"
+            <div className="dotss"
                 style={{
                     display: showHoverDots ? 'block' : 'none', justifyContent: 'center',
                     alignItems: 'center'
@@ -109,7 +109,7 @@ function HoverDots({ member }) {
                     user.email === chatInfo.user.owner?
                     admins.includes(member.email)? 
                     <Dropdown.Item onClick={handleRemoveAdmin}>Xóa phó nhóm</Dropdown.Item>:
-                    <Dropdown.Item onClick={handleAddAdmin}>Phong làm phó nhóm</Dropdown.Item>
+                    <Dropdown.Item onClick={handleAddAdmin}>Thêm phó nhóm</Dropdown.Item>
                     : <></>
                     }
                     {

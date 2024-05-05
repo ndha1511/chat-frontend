@@ -16,6 +16,7 @@ import MessageRevoked from "../../../components/messages/message-revoked/Message
 import ImageGroup from "../../../components/messages/image-group/ImageGroup";
 import { setMessages } from "../../../redux/reducers/messageReducer";
 import MessageSystem from "../../../components/messages/message-system/MessageSystem";
+import { getColorForName } from "../../../utils/ExtractUsername";
 
 
 
@@ -26,7 +27,7 @@ function Content(props) {
     const scrollEnd = useSelector(state => state.message.scrollEnd);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [loadMore, setLoadMore] = useState(true);
-    
+
     const dispatch = useDispatch();
     const scrollableDivRef = useRef(null);
     const chatInfo = useSelector(state => state.message.chatInfo);
@@ -55,7 +56,7 @@ function Content(props) {
                 component = <ImageGroup message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
                 return checkStatusMessage(message, index, isLatest, component);
             case "SYSTEM":
-                return <MessageSystem message={message} key={index} lastMessage={false}/>
+                return <MessageSystem message={message} key={index} lastMessage={false} />
 
             default: break;
         }
@@ -99,7 +100,7 @@ function Content(props) {
             getMessages();
         } else { dispatch(setMessages([])); }
     }, [chatInfo.roomId, reRenderMessage]);
-    
+
     useEffect(() => {
         if (scrollableDivRef.current) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
@@ -108,13 +109,28 @@ function Content(props) {
     useEffect(() => {
 
     }, [currentPage])
+    // console.log(userCurrent.name)
 
+    function adjustColor(color, amount) {
+        return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    }
+    const baseColor = chatInfo.user ? getColorForName(chatInfo.user?.name) : '#FFFFFF'; // Màu trắng là màu mặc định
+    const lighterColor = adjustColor(baseColor, 40); // Làm sáng màu lên một chút
+    const darkerColor = adjustColor(baseColor, -40); // Làm tối màu đi một chút
+    function hexToRgb(hex) {
+        hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b);
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+    }
     return (
-        <div id="scrollableDiv" ref={scrollableDivRef} className="d-flex content-chat w-100 " style={{ height: "100%" }}>
+        <div id="scrollableDiv" ref={scrollableDivRef} className="d-flex content-chat w-100 " style={{
+            height: "100%",
+            background: `linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.4) 0%, rgba(${hexToRgb(baseColor)}, 0.4) 50%, rgba(${hexToRgb(darkerColor)}, 0.4) 100%)`
+        }}>
 
             <InfiniteScroll
                 dataLength={messages.length}
-                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px",overflow:'unset' }} //To put endMessage and loader to the top.
+                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px", overflow: 'unset' }} //To put endMessage and loader to the top.
                 inverse={true}
                 next={fetchMore}
                 hasMore={true}
@@ -129,7 +145,7 @@ function Content(props) {
                             className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                         > {renderMessage(message, index)} </div>
                 })}
-            </InfiniteScroll> 
+            </InfiniteScroll>
         </div>
     );
 }

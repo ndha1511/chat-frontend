@@ -30,6 +30,12 @@ function MessageText(props) {
         setShowContent(false); // Tự động đóng menu sau khi xóa
     };
 
+    function getStyleForContent(content) {
+        if (content === '👍') {
+            return { fontSize: '30px' }; // Thay đổi kích thước phông chữ khi nội dung là 👍
+        }
+        return {}; // Trả về một object style rỗng nếu không phải là 👍
+    }
 
     return (
 
@@ -41,7 +47,7 @@ function MessageText(props) {
         >
             <div className='d-flex mess-hover' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
                 <div className="d-flex  mess-text" >
-                    <div className='text'> <pre>{props.message.content}</pre></div>
+                    <div className='text'> <pre style={getStyleForContent(props.message.content)}>{props.message.content}</pre></div>
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                     {selectedEmojis.length > 0 && (
                         <div className='btn-icon-custom-s'>

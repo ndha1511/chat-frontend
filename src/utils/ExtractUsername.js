@@ -27,3 +27,13 @@ export const getColorForName = (name) => {
     const colorIndex = Math.floor((totalAsciiCode/10) / 2);
     return colors[colorIndex];
 }
+// export const getColorForName = (name) => {
+//     const nameExtracted = extractName(name);
+//     let totalAsciiCode = 0;
+//     for (let i = 0; i < nameExtracted.length; i++) {
+//         const asciiCode = nameExtracted.charCodeAt(i);
+//         totalAsciiCode += asciiCode;
+//     }
+//     const colorIndex = totalAsciiCode % colors.length; // Sử dụng phép chia lấy dư
+//     return colors[colorIndex];
+// }
