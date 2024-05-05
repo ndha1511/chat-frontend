@@ -6,7 +6,14 @@ import { updateSendMessagePermission } from '../../../services/GroupService';
 function GroupManagerOffcanvas({ show, handleClose }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
-    const [isSendMsg, setIsSendMsg] = useState(chatInfo.user.sendMessagePermission === "PUBLIC");
+    const [isSendMsg, setIsSendMsg] = useState(false);
+
+    useEffect(() => {
+        if(chatInfo.user.sendMessagePermission === "PUBLIC")
+            setIsSendMsg(true);
+        else
+            setIsSendMsg(false);
+    });
 
     const handleChangeIsSendMsg = async () => {
         setIsSendMsg(!isSendMsg);
@@ -64,32 +71,32 @@ function GroupManagerOffcanvas({ show, handleClose }) {
                         </div>
                         <div className="ql-content1">
                             <h6>Chế độ phê duyệt thành viên mới <i className="bi bi-question-circle"></i></h6>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="memberApprovalSwitch" />
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox" id="memberApprovalSwitch" />
                             </div>
                         </div>
                         <div className="ql-content1">
                             <h6>Đánh dấu tin nhắn từ trưởng/phó nhóm<i className="bi bi-question-circle"></i></h6>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="memberApprovalSwitch" />
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox" id="memberApprovalSwitch" />
                             </div>
                         </div>
                         <div className="ql-content1">
                             <h6> Cho phép thành viên mới đọc tin nhắn gần nhất <i className="bi bi-question-circle"></i></h6>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="memberApprovalSwitch" />
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox" id="memberApprovalSwitch" />
                             </div>
                         </div>
                         <div className="ql-content1">
                             <h6> Cho phép dùng link tham gia nhóm <i className="bi bi-question-circle"></i></h6>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="memberApprovalSwitch" />
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox" id="memberApprovalSwitch" />
                             </div>
                         </div>
                         <div className="ql-content1">
                             <h6> zalo.me/g/lgzaaa <i className="bi bi-question-circle"></i></h6>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="memberApprovalSwitch" />
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox" id="memberApprovalSwitch" />
                             </div>
                         </div>
                         <div className="ql-btn">

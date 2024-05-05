@@ -32,7 +32,6 @@ function BoxChat(props) {
             // console.log(props.room.receiverId)
             if (props.room.roomType === "GROUP_CHAT") {
                 const response = await getGroupById(props.room.receiverId);
-                console.log(response);
                 const userData = {
                     name: response.groupName,
                     email: response.id,

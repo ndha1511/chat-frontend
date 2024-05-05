@@ -9,6 +9,7 @@ import friendReducer from '../reducers/friendReducer';
 import groupReducer from '../reducers/groupReducer';
 import dragableReducer from '../reducers/dragableReducer';
 
+
 export const store = configureStore({
   reducer: {
     message: messageReducer,
@@ -19,6 +20,6 @@ export const store = configureStore({
     renderView: renderLayoutReducer,
     friend: friendReducer,
     group: groupReducer,
-    dragable: dragableReducer
+    dragable: dragableReducer,
   },
 })

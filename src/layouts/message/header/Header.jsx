@@ -2,11 +2,13 @@ import { useState } from "react";
 import Avatar from "../../../components/avatar/Avatar";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./Header.scss"
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 import { callRequest } from "../../../services/MessageService";
+import { setMessageCall } from "../../../redux/reducers/messageReducer";
+import { iceServers } from "../../full-layout/FullLayout";
 
 function Header(props) {
     const [show, setShow] = useState(false);
@@ -15,6 +17,7 @@ function Header(props) {
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
+    const dispatch = useDispatch();
 
     const handleShowManager = () => {
         setShowManager(true);
@@ -63,11 +66,11 @@ function Header(props) {
     const buttons = chatIcon;
 
     const clickButtonRightGroup = (index) => {
-        switch(index) {
+        switch (index) {
             case 0: break;
-            case 1: 
+            case 1:
                 break;
-            case 2: 
+            case 2:
                 handleShow();
                 break;
             default: break;
@@ -76,9 +79,9 @@ function Header(props) {
     }
 
     const clickButtonRight = (index) => {
-        switch(index) {
+        switch (index) {
             case 0: break;
-            case 1: 
+            case 1:
                 const data = {
                     senderId: userCurrent.email,
                     receiverId: chatInfo.user.email,
@@ -88,9 +91,9 @@ function Header(props) {
                 // call api
                 handleCallRequest(data);
                 break;
-            case 2: 
+            case 2:
                 break;
-            case 3: 
+            case 3:
                 // open offcanvas for user info 
                 break;
             default: break;
@@ -99,8 +102,12 @@ function Header(props) {
     }
 
     const handleCallRequest = async (data) => {
+        props.setLocalPeer();
+        props.setLocalStream({ video: false, audio: true });
         try {
-            await callRequest(data);
+            const response = await callRequest(data);
+            dispatch(setMessageCall(response));
+
         } catch (error) {
             console.log(error);
         }
@@ -111,15 +118,15 @@ function Header(props) {
             if (chatInfo.user.groupStatus === "INACTIVE") {
                 return <></>;
             }
-            if(!chatInfo.user.members.includes(userCurrent.email)) {
+            if (!chatInfo.user.members.includes(userCurrent.email)) {
                 return <></>;
             }
             return <div className="action">
-                <ButtonGroup buttons={chatIconGroup} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" handle={clickButtonRightGroup}/>
+                <ButtonGroup buttons={chatIconGroup} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" handle={clickButtonRightGroup} />
             </div>
         } else {
             return <div className="action">
-                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" handle={clickButtonRight}/>
+                <ButtonGroup buttons={buttons} className="btn-hover" width={40} height={40} hoverColor="#f0f0f0" handle={clickButtonRight} />
             </div>
         }
     }

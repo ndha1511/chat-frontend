@@ -2,12 +2,17 @@ import Draggable from "react-draggable";
 import "./AudioCallDragable.scss";
 import Avatar from "../avatar/Avatar";
 import { acceptCallRequest, rejectCallRequest } from "../../services/MessageService";
+import { iceServers } from "../../layouts/full-layout/FullLayout";
+
 
 function AudioCallDragable(props) {
 
     const accept = async () => {
+        props.setLocalPeer();
+        props.setLocalStream({video: false, audio: true});
         try {
             await acceptCallRequest(props.message.id);
+            props.sendCall();
             props.hiddenDragable();
         } catch (error) {
             console.log(error);
@@ -25,21 +30,22 @@ function AudioCallDragable(props) {
 
 
     return (
-        <div style={{
-            position: "fixed",
-            bottom: "0",
-            right: "0",
-            zIndex: 999,
-            cursor: "pointer"
-        }}>
-            <audio controls autoPlay loop style={{display: "none"}}>
-                <source src="assets/mp3/nhac_chuong.mp3" type="audio/mpeg" />
-            </audio>
-            <Draggable defaultPosition={{
-                x: 0,
-                y: 0
-            }}
-            >
+
+        <Draggable defaultPosition={{
+            x: 0,
+            y: 0
+        }}
+        >
+            <div style={{
+                position: "fixed",
+                bottom: "0",
+                right: "0",
+                zIndex: 999,
+                cursor: "pointer"
+            }}>
+                <audio controls autoPlay loop style={{ display: "none" }}>
+                    <source src="assets/mp3/nhac_chuong.mp3" type="audio/mpeg" />
+                </audio>
                 <div className="draggable-window">
                     <button style={{
                         position: "fixed", top: 0, right: 0,
@@ -57,8 +63,9 @@ function AudioCallDragable(props) {
                             className="btn-audio-call btn-accept"><i className="bi bi-telephone-fill"></i></button>
                     </div>
                 </div>
-            </Draggable>
-        </div>
+            </div>
+        </Draggable>
+
     );
 }
 
