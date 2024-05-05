@@ -5,7 +5,7 @@ import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { useDispatch, useSelector } from "react-redux";
-import { reRenderMessge } from "../../redux/reducers/messageReducer";
+import { reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,10 @@ import { setGroup } from "../../redux/reducers/groupReducer";
 import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
 import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
 import { getUserByEmail } from "../../services/UserService";
+import AudioCallingView from "../../components/webrtc/AudioCallingView";
+import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
 import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
+
 
 
 export var stompClient = null;
@@ -34,11 +37,19 @@ export const disconnect = () => {
   }
 }
 
+export const iceServers = {
+  iceServer: {
+    urls: "stun:stun.l.google.com:19302"
+  }
+}
 
+let localPeer;
+let localStream;
 
 function FullLayout(props) {
   const user = useSelector((state) => state.userInfo.user);
   const rooms = useSelector((state) => state.room.rooms);
+  const messageCall = useSelector((state) => state.message.messageCall);
   const rerenderRoom = useSelector((state) => state.room.reRender);
   const renderGroup = useSelector((state) => state.group.renderGroup);
   const navigate = useNavigate();
@@ -48,8 +59,35 @@ function FullLayout(props) {
   const [showDragableCallRequest, setShowDragableCallRequest] = useState(false);
   const [showDragableCallQuestion, setShowDragableCallQuestion] = useState(false);
   const [callerInfo, setCallerInfo] = useState({});
-  const [messageCall, setMessageCall] = useState({});
+  const dragableAudioCall = useSelector((state) => state.dragable.dragableAudioCall);
+  const [showDragableAudioCall, setShowDragableAudioCall] = useState(dragableAudioCall);
+  const setLocalStream = (media) => {
+    navigator.mediaDevices.getUserMedia(media)
+      .then(async stream => {
+        localStream = stream;
+      })
+      .catch(error => {
+        console.log(error)
+      });
+  };
+  const setLocalPeer = () => {
+    localPeer = new RTCPeerConnection(iceServers);
+  }
 
+
+
+
+  useEffect(() => {
+    setShowDragableAudioCall(dragableAudioCall);
+  }, [dragableAudioCall]);
+
+  useEffect(() => {
+    if (localStream) {
+      localStream.getTracks().forEach(track => {
+        localPeer.addTrack(track, localStream);
+      });
+    }
+  }, [localStream])
 
   useEffect(() => {
     const getListFriends = async (email) => {
@@ -78,20 +116,129 @@ function FullLayout(props) {
   }, [renderGroup]);
 
 
-
   const state = props.state;
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
 
-
-
-
   const dispatch = useDispatch();
   const changeShowComponent = () => {
     dispatch(props.action());
   }
+
+  const onCallReceived = (call) => {
+    const callJson = JSON.parse(call.body);
+    const receiverId = callJson.callFrom;
+
+
+
+    localPeer.ontrack = (event) => {
+      const audioElement = document.createElement('audio');
+      audioElement.srcObject = event.streams[0];
+      audioElement.onloadedmetadata = (e) => {
+        audioElement.play();
+      };
+    }
+
+    localPeer.onicecandidate = (event) => {
+      if (event.candidate) {
+        var candidate = {
+          type: "candidate",
+          label: event.candidate.sdpMLineIndex,
+          id: event.candidate.candidate,
+        }
+        stompClient.send("/app/candidate", {}, JSON.stringify({
+          receiverId: receiverId,
+          fromUser: user.email,
+          candidate: candidate
+        }))
+      }
+    }
+
+
+    localPeer.createOffer().then(description => {
+      localPeer.setLocalDescription(description);
+      stompClient.send("/app/offer", {}, JSON.stringify({
+        receiverId: receiverId,
+        fromUser: user.email,
+        offer: {
+          type: "offer",
+          sdp: description.sdp
+        }
+      }))
+    });
+
+  }
+
+  const onOfferReceived = (offer) => {
+    var o = JSON.parse(offer.body)["offer"];
+
+
+
+    localPeer.ontrack = (event) => {
+      const audioElement = document.createElement('audio');
+      audioElement.srcObject = event.streams[0];
+      audioElement.onloadedmetadata = (e) => {
+        audioElement.play();
+      };
+    }
+
+    localPeer.onicecandidate = (event) => {
+      if (event.candidate) {
+        var candidate = {
+          type: "candidate",
+          label: event.candidate.sdpMLineIndex,
+          id: event.candidate.candidate,
+        }
+        stompClient.send("/app/candidate", {}, JSON.stringify({
+          receiverId: JSON.parse(offer.body)["fromUser"],
+          fromUser: user.email,
+          candidate: candidate
+        }))
+      }
+    }
+
+
+
+    localPeer.setRemoteDescription(new RTCSessionDescription(o));
+
+    localPeer.createAnswer().then(description => {
+      localPeer.setLocalDescription(description)
+      console.log("Setting Local Description")
+      console.log(description)
+      stompClient.send("/app/answer", {}, JSON.stringify({
+        receiverId: JSON.parse(offer.body)["fromUser"],
+        fromUser: user.email,
+        answer: {
+          type: "answer",
+          sdp: description.sdp,
+        }
+      }));
+
+    })
+  }
+
+  const onAnswerReceived = (answer) => {
+    var a = JSON.parse(answer.body)["answer"];
+    console.log(a);
+    localPeer.setRemoteDescription(new RTCSessionDescription(a));
+  }
+
+  const onCandidateReceived = (candidate) => {
+    var c = JSON.parse(candidate.body)["candidate"];
+    var iceCandidate = new RTCIceCandidate({
+      sdpMLineIndex: c["label"],
+      candidate: c["id"],
+    })
+    localPeer.addIceCandidate(iceCandidate)
+  }
+
+  // send message 
+  const sendCall = () => {
+    stompClient.send("/app/call", {}, JSON.stringify({ callTo: messageCall.senderId, callFrom: user.email }))
+  }
+
   const onEventReceived = (payload) => {
     const dataReceived = JSON.parse(payload.body);
     if (dataReceived.hasOwnProperty("status")) {
@@ -121,7 +268,7 @@ function FullLayout(props) {
           break;
         case "CALL_REQUEST":
           getCallerInfo(dataReceived.senderId);
-          setMessageCall(dataReceived.message);
+          dispatch(setMessageCall(dataReceived.message));
           setShowDragableCallQuestion(true);
           break;
         case "REJECT_CALL":
@@ -130,10 +277,32 @@ function FullLayout(props) {
           setShowDragableCallRequest(false);
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+          if (localStream) {
+            localStream.getAudioTracks().forEach(track => track.stop());
+          }
+          break;
+        case "END_CALL":
+          dispatch(setDragableAudioCall(false));
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
+          if (localStream) {
+            localStream.getAudioTracks().forEach(track => track.stop());
+          }
+          localPeer.close();
+          localPeer = null;
+
           break;
         case "ACCEPT_CALL":
           setShowDragableCallQuestion(false);
           setShowDragableCallRequest(false);
+          // set user info
+          if (user.email === dataReceived.senderId) {
+            console.log(dataReceived.receiverId);
+            getCallerInfo(dataReceived.receiverId);
+          } else {
+            getCallerInfo(dataReceived.senderId);
+          }
+          dispatch(setDragableAudioCall(true));
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
           break;
@@ -152,8 +321,13 @@ function FullLayout(props) {
 
   useEffect(() => {
     const onConnected = () => {
-      if (user)
+      if (user) {
         stompClient.subscribe(`/user/${user.email}/queue/messages`, onEventReceived);
+        stompClient.subscribe(`/user/${user.email}/topic/call`, onCallReceived);
+        stompClient.subscribe(`/user/${user.email}/topic/offer`, onOfferReceived);
+        stompClient.subscribe(`/user/${user.email}/topic/answer`, onAnswerReceived);
+        stompClient.subscribe(`/user/${user.email}/topic/candidate`, onCandidateReceived);
+      }
       setConnection(true);
     }
 
@@ -222,6 +396,10 @@ function FullLayout(props) {
     setShowDragableCallQuestion(false);
   }
 
+  const hiddenAudioCall = () => {
+    setShowDragableAudioCall(false);
+  }
+
   const hiddenDragableRequest = () => {
     setShowDragableCallRequest(false);
   }
@@ -233,8 +411,16 @@ function FullLayout(props) {
     <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh" }}>
       {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable}
         callerInfo={callerInfo}
-        message={messageCall} />}
+        message={messageCall}
+        setLocalStream={setLocalStream}
+        setLocalPeer={setLocalPeer}
+        sendCall={sendCall} />}
       {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest} />}
+      {showDragableAudioCall && <AudioCallingView hiddenDragable={hiddenAudioCall} callerInfo={callerInfo}
+        message={messageCall}
+        localStream={localStream}
+      />}
+
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />
       </div>
@@ -265,6 +451,8 @@ function FullLayout(props) {
       }}>
         {React.cloneElement(props.content, {
           showDragableRequest: showDragableRequest,
+          setLocalStream: setLocalStream,
+          setLocalPeer: setLocalPeer,
           backButton: windowSize.width <= 768 ?
             <ButtonIcon
               clickButton={() => { changeShowComponent() }}

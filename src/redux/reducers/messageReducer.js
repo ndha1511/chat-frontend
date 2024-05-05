@@ -4,7 +4,8 @@ const initialState = {
   chatInfo: {},
   messages: [],
   renderMessage: false,
-  scrollEnd: false
+  scrollEnd: false,
+  messageCall: {}
 }
 
 // cấu trúc khi dispatch 
@@ -46,10 +47,22 @@ export const messageReducer = createSlice({
     },
     setScrollEnd: (state) => {
       state.scrollEnd = !state.scrollEnd;
+    },
+    setMessageCall: (state, action) => {
+      state.messageCall = action.payload;
     }
   },
 })
 
-export const { setChatInfo, setMessages, pushMessage, updateMessage, deleteMessage, reRenderMessge, setScrollEnd } = messageReducer.actions
+export const { 
+  setChatInfo, 
+  setMessages, 
+  pushMessage, 
+  updateMessage, 
+  deleteMessage, 
+  reRenderMessge, 
+  setScrollEnd,
+  setMessageCall 
+} = messageReducer.actions
 
 export default messageReducer.reducer

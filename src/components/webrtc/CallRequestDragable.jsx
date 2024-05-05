@@ -4,16 +4,16 @@ import Avatar from "../avatar/Avatar";
 function CallRequestDragable(props) {
 
     return (
-        <div style={{
-            position: "fixed",
-            zIndex: 999,
-            cursor: "pointer"
-        }}>
-            <audio controls autoPlay loop style={{ display: "none" }}>
-                <source src="assets/mp3/nhac_cho.mp3" type="audio/mpeg" />
-            </audio>
-            <Draggable
-            >
+        <Draggable
+        >
+            <div style={{
+                position: "fixed",
+                zIndex: 999,
+                cursor: "pointer"
+            }}>
+                <audio controls autoPlay loop style={{ display: "none" }}>
+                    <source src="assets/mp3/nhac_cho.mp3" type="audio/mpeg" />
+                </audio>
                 <div className="draggable-window">
 
                     <Avatar />
@@ -27,8 +27,8 @@ function CallRequestDragable(props) {
                     </div>
 
                 </div>
-            </Draggable>
-        </div>
+            </div>
+        </Draggable>
     );
 }
 

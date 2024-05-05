@@ -2,13 +2,13 @@ import { useState } from "react";
 import Avatar from "../../../components/avatar/Avatar";
 import ButtonGroup from "../../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../../components/buttons/button-icon/ButtonIcon";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./Header.scss"
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 import { callRequest } from "../../../services/MessageService";
-import AccountInfor from "../../../components/modal/AccountInfor";
-import ProfileModal from "../../../components/modal/ProfileModal";
+
+import { setMessageCall } from "../../../redux/reducers/messageReducer";
 import FriendInfor from "../../../components/modal/FriendInfor";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
@@ -22,7 +22,9 @@ function Header(props) {
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const [friend, setFriend] = useState({})
+
+    const dispatch = useDispatch();
+
     const [showInfor, setshowInfor] = useState(false)
 
     console.log(props.user)
@@ -31,6 +33,7 @@ function Header(props) {
         setshowInfor(true)
 
     }
+
 
     const handleShowManager = () => {
         setShowManager(true);
@@ -115,8 +118,12 @@ function Header(props) {
     }
 
     const handleCallRequest = async (data) => {
+        props.setLocalPeer();
+        props.setLocalStream({ video: false, audio: true });
         try {
-            await callRequest(data);
+            const response = await callRequest(data);
+            dispatch(setMessageCall(response));
+
         } catch (error) {
             console.log(error);
         }
