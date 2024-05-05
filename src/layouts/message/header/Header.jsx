@@ -27,7 +27,6 @@ function Header(props) {
 
     const [showInfor, setshowInfor] = useState(false)
 
-    console.log(props.user)
     const handleShowProfile = () => {
         // setFriend(item)
         setshowInfor(true)
@@ -85,6 +84,15 @@ function Header(props) {
         switch (index) {
             case 0: break;
             case 1:
+                const dataVideo = {
+                    senderId: userCurrent?.email,
+                    receiverId: chatInfo?.user?.id,
+                    messageType: "VIDEO_CALL"
+                }
+                props.showDragableRequest();
+                // call api
+                const mediaVideo = { video: true, audio: true };
+                handleCallRequest(dataVideo, mediaVideo);
                 break;
             case 2:
                 handleShow();
@@ -99,15 +107,25 @@ function Header(props) {
             case 0: break;
             case 1:
                 const data = {
-                    senderId: userCurrent.email,
-                    receiverId: chatInfo.user.email,
+                    senderId: userCurrent?.email,
+                    receiverId: chatInfo?.user?.email,
                     messageType: "AUDIO_CALL"
                 }
                 props.showDragableRequest();
                 // call api
-                handleCallRequest(data);
+                const media = {video: false, audio: true};
+                handleCallRequest(data, media);
                 break;
             case 2:
+                const dataVideo = {
+                    senderId: userCurrent?.email,
+                    receiverId: chatInfo?.user?.email,
+                    messageType: "VIDEO_CALL"
+                }
+                props.showDragableRequest();
+                // call api
+                const mediaVideo = { video: true, audio: true };
+                handleCallRequest(dataVideo, mediaVideo);
                 break;
             case 3:
                 // open offcanvas for user info 
@@ -117,9 +135,9 @@ function Header(props) {
         }
     }
 
-    const handleCallRequest = async (data) => {
+    const handleCallRequest = async (data, media) => {
         props.setLocalPeer();
-        props.setLocalStream({ video: false, audio: true });
+        props.setLocalStream(media);
         try {
             const response = await callRequest(data);
             dispatch(setMessageCall(response));
@@ -183,21 +201,23 @@ function Header(props) {
 
             {/* Hiển thị Offcanvas 1 */}
 
-            <ChatInfoOffcanvas
+            {show && <ChatInfoOffcanvas
                 show={show}
                 handleClose={handleClose}
                 user={props.user}
                 handleShowManager={handleShowManager}
-            />
+            />}
             {/* Hiển thị Offcanvas 2 */}
             {/* Using the new GroupManagerOffcanvas */}
-            <GroupManagerOffcanvas
+            {showManager && <GroupManagerOffcanvas
                 show={showManager}
                 handleClose={handleCloseManager}
-            />
+            />}
 
             {/* Modal accontInfor */}
-            <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+            {
+              showInfor &&  <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+            }    
 
         </div>
     );

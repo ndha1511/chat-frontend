@@ -11,7 +11,7 @@ import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
 import { setFriend } from "../../redux/reducers/friendReducer";
 import { getFriendRequest } from "../../services/FriendService";
-import { findGroupBySenderId } from "../../services/GroupService";
+import { findGroupBySenderId, getGroupById } from "../../services/GroupService";
 import { setGroup } from "../../redux/reducers/groupReducer";
 import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
 import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
@@ -19,6 +19,8 @@ import { getUserByEmail } from "../../services/UserService";
 import AudioCallingView from "../../components/webrtc/AudioCallingView";
 import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
 import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
+import VideoCallDragable from "../../components/webrtc/VideoCallDragable";
+import VideoCallingView from "../../components/webrtc/VideoCallingView";
 
 
 
@@ -46,6 +48,7 @@ export const iceServers = {
 let localPeer;
 let localStream;
 
+
 function FullLayout(props) {
   const user = useSelector((state) => state.userInfo.user);
   const rooms = useSelector((state) => state.room.rooms);
@@ -61,6 +64,24 @@ function FullLayout(props) {
   const [callerInfo, setCallerInfo] = useState({});
   const dragableAudioCall = useSelector((state) => state.dragable.dragableAudioCall);
   const [showDragableAudioCall, setShowDragableAudioCall] = useState(dragableAudioCall);
+  const [remoteStreams, setRemoteStreams] = useState([]);
+  const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
+  const [groupInfo, setGroupInfo] = useState({});
+
+
+  // Hàm loại bỏ các phần tử trùng lặp từ một mảng
+  const removeDuplicates = (array) => {
+    return array.filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+  };
+
+  // useEffect để kiểm tra và loại bỏ các phần tử trùng lặp khi remoteStreams thay đổi
+  useEffect(() => {
+    setRemoteStreamsUnique(removeDuplicates(remoteStreams));
+  }, [remoteStreams]);
+
+
   const setLocalStream = (media) => {
     navigator.mediaDevices.getUserMedia(media)
       .then(async stream => {
@@ -73,9 +94,6 @@ function FullLayout(props) {
   const setLocalPeer = () => {
     localPeer = new RTCPeerConnection(iceServers);
   }
-
-
-
 
   useEffect(() => {
     setShowDragableAudioCall(dragableAudioCall);
@@ -128,10 +146,10 @@ function FullLayout(props) {
   }
 
   const onCallReceived = (call) => {
+    if(!localPeer) return;
     const callJson = JSON.parse(call.body);
     const receiverId = callJson.callFrom;
-
-
+    if(user.email === receiverId) return;
 
     localPeer.ontrack = (event) => {
       const audioElement = document.createElement('audio');
@@ -139,6 +157,10 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
+      if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+        // Thêm stream mới vào danh sách remoteStreams
+        setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      }
     }
 
     localPeer.onicecandidate = (event) => {
@@ -171,6 +193,8 @@ function FullLayout(props) {
 
   }
 
+
+
   const onOfferReceived = (offer) => {
     var o = JSON.parse(offer.body)["offer"];
 
@@ -182,6 +206,10 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
+      if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+        // Thêm stream mới vào danh sách remoteStreams
+        setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      }
     }
 
     localPeer.onicecandidate = (event) => {
@@ -236,7 +264,9 @@ function FullLayout(props) {
 
   // send message 
   const sendCall = () => {
-    stompClient.send("/app/call", {}, JSON.stringify({ callTo: messageCall.senderId, callFrom: user.email }))
+    const callTo = messageCall.receiverId === user.email ? messageCall.senderId : messageCall.receiverId
+    stompClient.send("/app/call", {}, JSON.stringify({ callTo: callTo, callFrom: user.email }));
+    console.error(callTo);
   }
 
   const onEventReceived = (payload) => {
@@ -267,9 +297,12 @@ function FullLayout(props) {
           stompClient.unsubscribe(room.roomId);
           break;
         case "CALL_REQUEST":
-          getCallerInfo(dataReceived.senderId);
-          dispatch(setMessageCall(dataReceived.message));
-          setShowDragableCallQuestion(true);
+          if (user.email !== dataReceived.message.senderId) {
+            getCallerInfo(dataReceived.senderId);
+            getGroupIfExist();
+            dispatch(setMessageCall(dataReceived.message));
+            setShowDragableCallQuestion(true);
+          }
           break;
         case "REJECT_CALL":
         case "MISSED_CALL":
@@ -279,6 +312,7 @@ function FullLayout(props) {
           dispatch(reRenderMessge());
           if (localStream) {
             localStream.getAudioTracks().forEach(track => track.stop());
+            localStream.getVideoTracks().forEach(track => track.stop());
           }
           break;
         case "END_CALL":
@@ -287,9 +321,12 @@ function FullLayout(props) {
           dispatch(reRenderMessge());
           if (localStream) {
             localStream.getAudioTracks().forEach(track => track.stop());
+            localStream.getVideoTracks().forEach(track => track.stop());
           }
           localPeer.close();
           localPeer = null;
+          setRemoteStreams([]);
+
 
           break;
         case "ACCEPT_CALL":
@@ -315,8 +352,22 @@ function FullLayout(props) {
 
   }
   const getCallerInfo = async (senderId) => {
-    const caller = await getUserByEmail(senderId);
-    setCallerInfo(caller);
+    try {
+      const caller = await getUserByEmail(senderId);
+      setCallerInfo(caller);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  const getGroupIfExist = async (groupId) => {
+    try {
+      const group = await getGroupById(groupId);
+      setGroupInfo(group);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -364,6 +415,7 @@ function FullLayout(props) {
 
               if (room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE") {
                 stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
+                stompClient.subscribe(`/user/${room.roomId}/topic/call`, onCallReceived, {id: `${room.roomId}_call`});
 
               }
 
@@ -409,17 +461,29 @@ function FullLayout(props) {
   }
   return (
     <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh" }}>
-      {showDragableCallQuestion && <AudioCallDragable hiddenDragable={hiddenDragable}
+      {showDragableCallQuestion ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallDragable hiddenDragable={hiddenDragable}
         callerInfo={callerInfo}
         message={messageCall}
         setLocalStream={setLocalStream}
         setLocalPeer={setLocalPeer}
-        sendCall={sendCall} />}
+        sendCall={sendCall} /> : <VideoCallDragable hiddenDragable={hiddenDragable}
+          callerInfo={callerInfo}
+          message={messageCall}
+          setLocalStream={setLocalStream}
+          setLocalPeer={setLocalPeer}
+          groupInfo={groupInfo}
+          sendCall={sendCall}
+      /> : <></>}
       {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest} />}
-      {showDragableAudioCall && <AudioCallingView hiddenDragable={hiddenAudioCall} callerInfo={callerInfo}
+      {showDragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView hiddenDragable={hiddenAudioCall} callerInfo={callerInfo}
         message={messageCall}
         localStream={localStream}
-      />}
+      /> : <VideoCallingView
+        remoteStreams={remoteStreamsUnique}
+        localStream={localStream}
+        message={messageCall}
+        hiddenDragable={hiddenAudioCall}
+      /> : <></>}
 
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />

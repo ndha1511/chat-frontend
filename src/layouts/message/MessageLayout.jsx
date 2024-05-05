@@ -21,11 +21,13 @@ function MessageLayout(props) {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((currentSlide + 1) % images.length); // Cập nhật slide tiếp theo
-        }, 3000); // Thay đổi slide mỗi 3 giây
-        return () => clearInterval(interval);
-    }, [currentSlide, images.length]);
+        if(Object.keys(chatInfo).length <= 0 ) {
+            const interval = setInterval(() => {
+                setCurrentSlide((currentSlide + 1) % images.length); // Cập nhật slide tiếp theo
+            }, 3000);
+            return () => clearInterval(interval);
+        } // Thay đổi slide mỗi 3 giây
+    }, [currentSlide, images.length, chatInfo]);
     // console.log(chatInfo);
     const handlePrevSlide = () => {
         setCurrentSlide((currentSlide - 1 + images.length) % images.length);
