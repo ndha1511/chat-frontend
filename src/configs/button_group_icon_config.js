@@ -1,15 +1,19 @@
+import { Icon } from "zmp-ui"
+import VideoIcon from "../components/icons/Icons"
+import Icons from "../components/icons/Icons"
+
 // icon in navbar
 export const navbarIcon = [
     {
-        item: <i className="bi bi-chat-text" style={{ fontSize: "25px" }}></i>,
+        item:<Icon style={{color:'white'}} icon="zi-chat" size={30}/>,
         title: "Tin nhắn"
     },
     {
-        item: <i className="bi bi-file-person" style={{ fontSize: "25px" }}></i>,
+        item: <Icons type="contact" fillColor="white" size={33} />,
         title: "Danh bạ"
     },
     {
-        item: <i className="bi bi-camera-video" style={{ fontSize: "25px" }}></i>,
+        item:      <Icons type="video" fillColor="white" size={25} />,
         title: "Meeting"
     },
 ]
@@ -17,11 +21,11 @@ export const navbarIcon = [
 // add friend, create group chat
 export const friendIcon = [
     {
-        item: <i className="bi bi-person-add"></i>,
+        item:  <Icon icon="zi-add-user"/>,
         title: "Thêm bạn"
     },
     {
-        item: <i className="bi bi-people"></i>,
+        item: <Icon icon="zi-add-member"/>,
         title: "Tạo nhóm chat"
     }
 ]

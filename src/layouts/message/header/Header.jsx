@@ -7,17 +7,33 @@ import "./Header.scss"
 import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 import { callRequest } from "../../../services/MessageService";
+
 import { setMessageCall } from "../../../redux/reducers/messageReducer";
-import { iceServers } from "../../full-layout/FullLayout";
+import FriendInfor from "../../../components/modal/FriendInfor";
+import { Icon } from "zmp-ui"
+import Icons from "../../../components/icons/Icons";
+
 
 function Header(props) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [isHovered, setIsHovered] = useState(false);
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
+
     const dispatch = useDispatch();
+
+    const [showInfor, setshowInfor] = useState(false)
+
+    console.log(props.user)
+    const handleShowProfile = () => {
+        // setFriend(item)
+        setshowInfor(true)
+
+    }
+
 
     const handleShowManager = () => {
         setShowManager(true);
@@ -29,36 +45,36 @@ function Header(props) {
 
     const chatIcon = [
         {
-            item: <i className="bi bi-search"></i>,
+            item:  <Icon icon='zi-search' size={25}/>,
             title: "Tìm kiếm tin nhắn"
         },
         {
-            item: <i className="bi bi-telephone"></i>,
+            item: <i style={{fontSize:19}} className="bi bi-telephone"></i>,
             title: "Cuộc gọi thoại"
         },
         {
-            item: <i className="bi bi-camera-video"></i>,
+            item: <Icons type="video1"  size={25} />,
             title: "Gọi video"
         },
         {
 
-            item: <><i className="bi bi-square-half"></i></>,
+            item: <><i style={{fontSize:19}} className="bi bi-square-half"></i></>,
 
             title: "Thông tin hội thoại"
         }
     ]
     const chatIconGroup = [
         {
-            item: <i className="bi bi-search"></i>,
+            item:  <Icon icon='zi-search' size={25}/>,
             title: "Tìm kiếm tin nhắn"
         },
         {
-            item: <i className="bi bi-camera-video"></i>,
+            item: <Icons type="video1"  size={25} />,
             title: "Gọi video"
         },
         {
 
-            item: <><i className="bi bi-square-half"></i></>,
+            item: <><i style={{fontSize:19}} className="bi bi-square-half"></i></>,
 
             title: "Thông tin hội thoại"
         }
@@ -137,18 +153,29 @@ function Header(props) {
             justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f0f0f0"
         }}>
             <div className="d-flex" style={{ alignItems: "center" }}>
-                <Avatar user={props.user} />
+                <button style={{ border: 'none', backgroundColor: 'white' }} onClick={handleShowProfile}><Avatar user={props.user} /></button>
                 <div className="d-flex" style={{
                     marginLeft: 10,
                     alignItems: "center",
-                }}>
-                    <span style={{ fontWeight: "bold" }}>{props.user.name}</span>
-                    <ButtonIcon
-                        title="Chỉnh sửa"
-                        className="btn-hover"
-                        hoverColor="#f0f0f0"
-                        borderRadius={50}
-                    ><i className="bi bi-pencil-square"></i></ButtonIcon>
+
+                }} onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}>
+                    <span
+                        style={{ fontWeight: 'bold' }}
+
+                    >
+                        {props.user.name}
+                    </span>
+                    {isHovered && (
+                        <div style={{marginLeft:6}}> <ButtonIcon
+                            title="Chỉnh sửa"
+                            className="btn-hover"
+                            hoverColor="#f0f0f0"
+                            borderRadius={50}
+                        >
+                            <Icon icon="zi-edit-text" size={20} />
+                        </ButtonIcon></div>
+                    )}
                 </div>
             </div>
             {renderRight()}
@@ -168,6 +195,10 @@ function Header(props) {
                 show={showManager}
                 handleClose={handleCloseManager}
             />
+
+            {/* Modal accontInfor */}
+            <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+
         </div>
     );
 }

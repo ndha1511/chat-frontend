@@ -18,6 +18,8 @@ import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
 import { getUserByEmail } from "../../services/UserService";
 import AudioCallingView from "../../components/webrtc/AudioCallingView";
 import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
+import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
+
 
 
 export var stompClient = null;
@@ -246,13 +248,22 @@ function FullLayout(props) {
         case "CREATE_GROUP":
         case "ADD_MEMBER":
           dispatch(reRenderRoom());
+
           stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
+          break;
+        case "ADD_ADMIN":
+        case "REMOVE_ADMIN":
+        case "ADD_MEMBER_GROUP":
+          dispatch(reRenderMember());
+          dispatch(reRenderRoom());
+          dispatch(reRenderMessge());
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
         case "LEAVE":
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
+          dispatch(reRenderMember());
           stompClient.unsubscribe(room.roomId);
           break;
         case "CALL_REQUEST":
@@ -409,6 +420,7 @@ function FullLayout(props) {
         message={messageCall}
         localStream={localStream}
       />}
+
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>
         <Navbar />
       </div>

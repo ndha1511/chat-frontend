@@ -1,11 +1,13 @@
+import { Icon } from "zmp-ui";
+
 function Search(props) {
     return (
         <form>
-            <div className="input-group">
+            <div style={{width:'120%'}} className="input-group">
                 <span className="input-group-text">
-                <i className="bi bi-search"></i>
+                <Icon icon='zi-search'/>
                 </span>
-                <input type="search" className="form-control" placeholder={props.placeholder} />
+                <input type="search"  className="form-control" placeholder={props.placeholder} />
             </div>
         </form>
     );

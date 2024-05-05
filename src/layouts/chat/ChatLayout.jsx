@@ -14,6 +14,7 @@ function ChatLayout() {
     useEffect(() => {
         const listBoxChat = rooms.map((room) => { return { item: <BoxChat room={room} /> } });
         setRoomRender(() => listBoxChat);
+        
     }, [rooms]);
 
     return (

@@ -114,10 +114,11 @@ function Content(props) {
 
             <InfiniteScroll
                 dataLength={messages.length}
-                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px",overflowX:'hidden' }} //To put endMessage and loader to the top.
+                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px",overflow:'unset' }} //To put endMessage and loader to the top.
                 inverse={true}
                 next={fetchMore}
-                hasMore={loadMore}
+                hasMore={true}
+                loader={<h1></h1>}
                 scrollableTarget="scrollableDiv"
             >
                 {messages.map((message, index) => {

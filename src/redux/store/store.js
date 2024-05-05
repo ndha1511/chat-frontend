@@ -8,6 +8,8 @@ import renderLayoutReducer from '../reducers/renderLayoutReducer';
 import friendReducer from '../reducers/friendReducer';
 import groupReducer from '../reducers/groupReducer';
 import dragableReducer from '../reducers/dragableReducer';
+import  renderMember  from '../reducers/renderOffcanvas';
+
 
 
 export const store = configureStore({
@@ -21,5 +23,7 @@ export const store = configureStore({
     friend: friendReducer,
     group: groupReducer,
     dragable: dragableReducer,
+    members: renderMember
+
   },
 })
