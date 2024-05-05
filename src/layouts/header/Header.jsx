@@ -91,7 +91,7 @@ function Header() {
     useEffect(() => {
         const getListFriendRequet = async () => {
             try {
-                const response = await getListFriend(user.email);
+                const response = await getListFriend(user?.email);
                 dispatch(setFriendAccepted(response));
             } catch (error) {
                 console.error("", error);

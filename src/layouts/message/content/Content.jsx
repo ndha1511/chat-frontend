@@ -83,7 +83,7 @@ function Content(props) {
 
     useEffect(() => {
 
-        if (chatInfo.roomId != "") {
+        if (chatInfo.roomId !== "") {
             const getMessages = async () => {
                 try {
                     const response = await getMessageByRoomId(userCurrent.email, props.roomId);
