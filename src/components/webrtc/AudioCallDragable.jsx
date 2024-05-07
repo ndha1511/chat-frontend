@@ -2,9 +2,15 @@ import Draggable from "react-draggable";
 import "./AudioCallDragable.scss";
 import Avatar from "../avatar/Avatar";
 import { acceptCallRequest, rejectCallRequest } from "../../services/MessageService";
+import { useDispatch } from "react-redux";
+import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
+import { reRenderRoom } from "../../redux/reducers/renderRoom";
+import { reRenderMessge } from "../../redux/reducers/messageReducer";
 
 
 function AudioCallDragable(props) {
+
+    const dispatch = useDispatch();
 
     const accept = async () => {
         props.setLocalPeer();
@@ -13,6 +19,10 @@ function AudioCallDragable(props) {
             await acceptCallRequest(props.message.id);
             props.sendCall();
             props.hiddenDragable();
+            props.setShowDragableCallQuestion(false);
+            dispatch(setDragableAudioCall(true));
+            dispatch(reRenderRoom());
+            dispatch(reRenderMessge());
         } catch (error) {
             console.log(error);
         }

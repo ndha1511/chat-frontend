@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
+  // danh sách lời mời kết bạn :))
   friends: [],
   friendsAccepted: []
 }

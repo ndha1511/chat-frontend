@@ -13,7 +13,7 @@ function GroupManagerOffcanvas({ show, handleClose }) {
             setIsSendMsg(true);
         else
             setIsSendMsg(false);
-    });
+    }, []);
 
     const handleChangeIsSendMsg = async () => {
         setIsSendMsg(!isSendMsg);
@@ -28,11 +28,13 @@ function GroupManagerOffcanvas({ show, handleClose }) {
             };
     
             try {
-                if (!isSendMsg) {
-                    await updateSendMessagePermission(request);
-                } else {
-                    request.sendMessagePermission = "PUBLIC";
-                    await updateSendMessagePermission(request);
+                if(chatInfo.room.roomType === "GROUP_CHAT") {
+                    if (!isSendMsg) {
+                        await updateSendMessagePermission(request);
+                    } else {
+                        request.sendMessagePermission = "PUBLIC";
+                        await updateSendMessagePermission(request);
+                    }
                 }
             } catch (error) {
                 console.error(error);

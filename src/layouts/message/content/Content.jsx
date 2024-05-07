@@ -83,7 +83,6 @@ function Content(props) {
     }
 
     useEffect(() => {
-
         if (chatInfo.roomId !== "") {
             const getMessages = async () => {
                 try {

@@ -83,8 +83,8 @@ function FullLayout(props) {
   }, [remoteStreams]);
 
 
-  const setLocalStream = (media) => {
-    navigator.mediaDevices.getUserMedia(media)
+  const setLocalStream = async (media) => {
+    await navigator.mediaDevices.getUserMedia(media)
       .then(async stream => {
         localStream = stream;
       })
@@ -147,10 +147,11 @@ function FullLayout(props) {
   }
 
   const onCallReceived = (call) => {
-    if(!localPeer) return;
+    if (!localPeer) return;
     const callJson = JSON.parse(call.body);
     const receiverId = callJson.callFrom;
-    if(user.email === receiverId) return;
+    getCallerInfo(receiverId);
+    if (user.email === receiverId) return;
 
     localPeer.ontrack = (event) => {
       const audioElement = document.createElement('audio');
@@ -198,7 +199,7 @@ function FullLayout(props) {
 
   const onOfferReceived = (offer) => {
     var o = JSON.parse(offer.body)["offer"];
-
+    getCallerInfo(JSON.parse(offer.body)["fromUser"]);
 
 
     localPeer.ontrack = (event) => {
@@ -298,11 +299,12 @@ function FullLayout(props) {
           dispatch(reRenderMember());
           dispatch(reRenderMessageHF());
           stompClient.unsubscribe(room.roomId);
+          stompClient.unsubscribe(`${room.roomId}_call`);
           break;
         case "CALL_REQUEST":
           if (user.email !== dataReceived.message.senderId) {
             getCallerInfo(dataReceived.senderId);
-            getGroupIfExist();
+            getGroupIfExist(dataReceived.message.receiverId);
             dispatch(setMessageCall(dataReceived.message));
             setShowDragableCallQuestion(true);
           }
@@ -326,22 +328,14 @@ function FullLayout(props) {
             localStream.getAudioTracks().forEach(track => track.stop());
             localStream.getVideoTracks().forEach(track => track.stop());
           }
-          localPeer.close();
-          localPeer = null;
+          if (localPeer) {
+            localPeer.close();
+            localPeer = null;
+          }
           setRemoteStreams([]);
-
-
           break;
         case "ACCEPT_CALL":
-          setShowDragableCallQuestion(false);
           setShowDragableCallRequest(false);
-          // set user info
-          if (user.email === dataReceived.senderId) {
-            console.log(dataReceived.receiverId);
-            getCallerInfo(dataReceived.receiverId);
-          } else {
-            getCallerInfo(dataReceived.senderId);
-          }
           dispatch(setDragableAudioCall(true));
           dispatch(reRenderRoom());
           dispatch(reRenderMessge());
@@ -418,7 +412,7 @@ function FullLayout(props) {
 
               if (room.roomType === "GROUP_CHAT" && room.roomStatus !== "INACTIVE") {
                 stompClient.subscribe(`/user/${room.roomId}/queue/messages`, onEventReceived, { id: room.roomId });
-                stompClient.subscribe(`/user/${room.roomId}/topic/call`, onCallReceived, {id: `${room.roomId}_call`});
+                stompClient.subscribe(`/user/${room.roomId}/topic/call`, onCallReceived, { id: `${room.roomId}_call` });
 
               }
 
@@ -469,12 +463,14 @@ function FullLayout(props) {
         message={messageCall}
         setLocalStream={setLocalStream}
         setLocalPeer={setLocalPeer}
+        setShowDragableCallQuestion={setShowDragableCallQuestion}
         sendCall={sendCall} /> : <VideoCallDragable hiddenDragable={hiddenDragable}
           callerInfo={callerInfo}
           message={messageCall}
           setLocalStream={setLocalStream}
           setLocalPeer={setLocalPeer}
           groupInfo={groupInfo}
+          setShowDragableCallQuestion={setShowDragableCallQuestion}
           sendCall={sendCall}
       /> : <></>}
       {showDragableCallRequest && <CallRequestDragable hiddenDragable={hiddenDragableRequest} />}

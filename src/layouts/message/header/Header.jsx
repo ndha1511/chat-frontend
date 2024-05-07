@@ -177,10 +177,10 @@ function Header(props) {
                 
                }
          
-            }
+            } 
         }
         getGroup();
-    },[renderMessage])
+    },[renderMessage, chatInfo])
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",
