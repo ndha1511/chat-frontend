@@ -2,37 +2,43 @@ import Draggable from "react-draggable";
 import "./AudioCallDragable.scss";
 import Avatar from "../avatar/Avatar";
 import { acceptCallRequest, rejectCallRequest } from "../../services/MessageService";
-import { useDispatch } from "react-redux";
-import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { setDragableAudioCall, setDragableCallQuestion } from "../../redux/reducers/dragableReducer";
 import { reRenderRoom } from "../../redux/reducers/renderRoom";
 import { reRenderMessge } from "../../redux/reducers/messageReducer";
+import { sendCall, setLocalPeer, setLocalStream } from "../../configs/WebRTCConfig";
 
 
 function VideoCallDragable(props) {
+    const user = useSelector((state) => state.userInfo.user);
+    const messageCall = useSelector((state) => state.message.messageCall);
     const dispatch = useDispatch();
 
     const accept = async () => {
-        props.setLocalPeer();
-        props.setLocalStream({video: true, audio: true});
+        setLocalPeer();
+        setLocalStream({video: true, audio: true});
         try {
-            await acceptCallRequest(props.message.id);
-            props.sendCall();
-            props.hiddenDragable();
-            props.setShowDragableCallQuestion(false);
+            await acceptCallRequest(messageCall.id);
+            sendCall(messageCall, user);
+            dispatch(setDragableCallQuestion(false));
+            dispatch(setDragableCallQuestion(false));
             dispatch(setDragableAudioCall(true));
             dispatch(reRenderRoom());
             dispatch(reRenderMessge());
         } catch (error) {
             console.log(error);
+            dispatch(setDragableCallQuestion(false));
+            dispatch(setDragableCallQuestion(false));
         }
     }
 
     const reject = async () => {
         try {
-            await rejectCallRequest(props.message.id);
-            props.hiddenDragable();
+            await rejectCallRequest(messageCall.id);
+            dispatch(setDragableCallQuestion(false));
         } catch (error) {
             console.log(error);
+            dispatch(setDragableCallQuestion(false));
         }
     }
 
@@ -60,7 +66,7 @@ function VideoCallDragable(props) {
                         backgroundColor: "#fff",
                         border: "none",
                         fontSize: 24
-                    }} onClick={props.hiddenDragable}><i className="bi bi-x-lg"></i></button>
+                    }} onClick={() => dispatch(setDragableCallQuestion(false))}><i className="bi bi-x-lg"></i></button>
                     <Avatar user={props.callerInfo} />
                     <h6>{props.callerInfo.name}</h6>
                     <span>Cuộc gọi đến</span>

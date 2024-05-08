@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../redux/reducers/userReducer";
 import UpdateInfoModal from "../../components/modal/UpdateInfoModal";
 import { setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
-import { disconnect } from "../full-layout/FullLayout";
+import { disconnect } from "../../configs/SocketConfig";
 
 function Navbar() {
     const buttons = navbarIcon;
