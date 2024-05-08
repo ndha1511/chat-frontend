@@ -3,24 +3,28 @@ import Avatar from "../avatar/Avatar";
 
 import { closeCall } from "../../services/MessageService";
 import { useState } from "react";
+import { closeStream, localStream } from "../../configs/WebRTCConfig";
+import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 function AudioCallingView(props) {
 
     const [mute, setMute] = useState(false);
+    const dispatch = useDispatch();
+    const messageCall = useSelector((state) => state.message.messageCall);
+    
 
 
     const stopCall = async () => {
-        if (props.localStream) {
-            props.localStream.getAudioTracks().forEach(track => track.stop());
-        }
-        await closeCall(props.message.id);
-        props.hiddenDragable();
+        closeStream();
+        await closeCall(messageCall.id);
+        dispatch(setDragableAudioCall(false));
     }
 
     const toggleMute = () => {
         setMute(prevMute => !prevMute);
-        if (props.localStream) {
-            props.localStream.getAudioTracks().forEach(track => {
+        if (localStream) {
+            localStream.getAudioTracks().forEach(track => {
                 track.enabled = !track.enabled; // Toggle the enabled state of the audio track
             });
         }
@@ -43,7 +47,7 @@ function AudioCallingView(props) {
                         backgroundColor: "#fff",
                         border: "none",
                         fontSize: 24
-                    }} onClick={props.hiddenDragable}><i className="bi bi-x-lg"></i></button>
+                    }} onClick={() => dispatch(setDragableAudioCall(false))}><i className="bi bi-x-lg"></i></button>
                     <Avatar user={props.callerInfo} />
                     <h6>{props.callerInfo.name}</h6>
                     <div className="group-btn-audio-call">

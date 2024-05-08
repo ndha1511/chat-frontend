@@ -13,6 +13,8 @@ import FriendInfor from "../../../components/modal/FriendInfor";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
 import { getGroupById } from "../../../services/GroupService";
+import { setLocalPeer, setLocalStream } from "../../../configs/WebRTCConfig";
+import { setDragableCallRequest } from "../../../redux/reducers/dragableReducer";
 
 
 function Header(props) {
@@ -90,7 +92,7 @@ function Header(props) {
                     receiverId: chatInfo?.user?.id,
                     messageType: "VIDEO_CALL"
                 }
-                props.showDragableRequest();
+                dispatch(setDragableCallRequest(true));
                 // call api
                 const mediaVideo = { video: true, audio: true };
                 handleCallRequest(dataVideo, mediaVideo);
@@ -112,7 +114,8 @@ function Header(props) {
                     receiverId: chatInfo?.user?.email,
                     messageType: "AUDIO_CALL"
                 }
-                props.showDragableRequest();
+                dispatch(setDragableCallRequest(true));
+
                 // call api
                 const media = {video: false, audio: true};
                 handleCallRequest(data, media);
@@ -123,7 +126,7 @@ function Header(props) {
                     receiverId: chatInfo?.user?.email,
                     messageType: "VIDEO_CALL"
                 }
-                props.showDragableRequest();
+                dispatch(setDragableCallRequest(true));
                 // call api
                 const mediaVideo = { video: true, audio: true };
                 handleCallRequest(dataVideo, mediaVideo);
@@ -137,8 +140,8 @@ function Header(props) {
     }
 
     const handleCallRequest = async (data, media) => {
-        props.setLocalPeer();
-        props.setLocalStream(media);
+        setLocalPeer();
+        setLocalStream(media);
         try {
             const response = await callRequest(data);
             dispatch(setMessageCall(response));
@@ -177,17 +180,17 @@ function Header(props) {
                 
                }
          
-            }
+            } 
         }
         getGroup();
-    },[renderMessage])
+    },[renderMessage, chatInfo])
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",
             justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f0f0f0"
         }}>
             <div className="d-flex" style={{ alignItems: "center" }}>
-                <button style={{ border: 'none', backgroundColor: 'white' }} onClick={handleShowProfile}><Avatar user={props.user} /></button>
+                <button style={{ border: 'none', backgroundColor: 'white' }} onClick={handleShowProfile}><Avatar user={chatInfo.user} /></button>
                 <div className="d-flex" style={{
                     marginLeft: 10,
                     alignItems: "center",
@@ -198,7 +201,7 @@ function Header(props) {
                         style={{ fontWeight: 'bold' }}
 
                     >
-                        {props.user.name}
+                        {chatInfo.user.name}
                     </span>
                     {isHovered && (
                         <div style={{marginLeft:6}}> <ButtonIcon
@@ -220,7 +223,7 @@ function Header(props) {
             {show && <ChatInfoOffcanvas
                 show={show}
                 handleClose={handleClose}
-                user={props.user}
+                user={chatInfo.user}
                 handleShowManager={handleShowManager}
             />}
             {/* Hiển thị Offcanvas 2 */}
@@ -232,7 +235,7 @@ function Header(props) {
 
             {/* Modal accontInfor */}
             {
-              showInfor &&  <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+              showInfor &&  <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={chatInfo.user} />
             }    
 
         </div>
