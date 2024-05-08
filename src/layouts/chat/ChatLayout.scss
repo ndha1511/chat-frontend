@@ -7,17 +7,3 @@
     padding-top: 10px;
     padding-bottom: 10px;
 }
-.chill{
-    // border: 1px solid red; /* Để dễ nhìn */
-  overflow: auto; /* Hiển thị thanh cuộn nếu nội dung vượt quá */
-  max-height: 100%;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding-bottom: 20pxs;
-}
-.chill > div {
-    text-align: center;
-    height: 83vh; /* Chiều cao của phần tử con trong trường hợp không có rooms */
-    // overflow-y: auto; /* Hiển thị thanh cuộn nếu nội dung vượt quá chiều cao */
-  }

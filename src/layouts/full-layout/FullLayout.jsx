@@ -9,10 +9,10 @@ import { reRenderMessge, setMessageCall } from "../../redux/reducers/messageRedu
 import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
-import { setFriend } from "../../redux/reducers/friendReducer";
-import { getFriendRequest } from "../../services/FriendService";
+import { setFriend, setFriendAccepted } from "../../redux/reducers/friendReducer";
+import { getFriendRequest, getListFriend } from "../../services/FriendService";
 import { findGroupBySenderId, getGroupById } from "../../services/GroupService";
-import { setGroup } from "../../redux/reducers/groupReducer";
+import { reRenderGroup, setGroup } from "../../redux/reducers/groupReducer";
 import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
 import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
 import { getUserByEmail } from "../../services/UserService";
@@ -22,6 +22,7 @@ import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
 import VideoCallDragable from "../../components/webrtc/VideoCallDragable";
 import VideoCallingView from "../../components/webrtc/VideoCallingView";
 import { reRenderMessageHF } from "../../redux/reducers/renderMessage";
+import { Icon } from "zmp-ui";
 
 
 
@@ -109,6 +110,16 @@ function FullLayout(props) {
   }, [localStream])
 
   useEffect(() => {
+    const getListFriendRequet = async (email) => {
+      try {
+          const response = await getListFriend(email);
+          dispatch(setFriendAccepted(response));
+      } catch (error) {
+          console.error("", error);
+
+      }
+  };
+
     const getListFriends = async (email) => {
       try {
         const response = await getFriendRequest(email);
@@ -129,6 +140,7 @@ function FullLayout(props) {
     if (user) {
       getListFriends(user.email);
       getGroups(user.email);
+      getListFriendRequet(user.email);
     }
 
 
@@ -270,6 +282,10 @@ function FullLayout(props) {
     console.error(callTo);
   }
 
+  const onFriendReceived = ()=>{
+    dispatch(reRenderGroup())
+  };
+
   const onEventReceived = (payload) => {
     const dataReceived = JSON.parse(payload.body);
     if (dataReceived.hasOwnProperty("status")) {
@@ -377,6 +393,8 @@ function FullLayout(props) {
     const onConnected = () => {
       if (user) {
         stompClient.subscribe(`/user/${user.email}/queue/messages`, onEventReceived);
+        stompClient.subscribe(`/user/${user.email}/queue/friend-request`, onFriendReceived);
+        stompClient.subscribe(`/user/${user.email}/queue/response-friend-request`, onFriendReceived);
         stompClient.subscribe(`/user/${user.email}/topic/call`, onCallReceived);
         stompClient.subscribe(`/user/${user.email}/topic/offer`, onOfferReceived);
         stompClient.subscribe(`/user/${user.email}/topic/answer`, onAnswerReceived);
@@ -525,7 +543,9 @@ function FullLayout(props) {
               clickButton={() => { changeShowComponent() }}
               className="btn-hover"
               hoverColor="#f0f0f0"
-              borderRadius={50}><i className="bi bi-arrow-left"></i></ButtonIcon> :
+              marginRight={10}
+            
+              borderRadius={50}><Icon icon='zi-chevron-left-header' size={32} /></ButtonIcon> :
             <></>
         })}
       </div>

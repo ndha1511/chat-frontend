@@ -10,6 +10,7 @@ import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
 import { getGroupById } from "../../../services/GroupService";
+import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
 
 
 function Footer(props) {
@@ -99,6 +100,7 @@ function Footer(props) {
                     dispatch(pushMessage(msg));
                     dispatch(reRenderRoom());
                     findRoomId();
+                    dispatch(setViewIndedx(0));
                     fileInputRef.current.value = null;
                 } catch (error) {
                     console.error(error);
@@ -125,6 +127,7 @@ function Footer(props) {
                     dispatch(reRenderMessge());
                     dispatch(reRenderRoom());
                     findRoomId();
+                    dispatch(setViewIndedx(0));
                     fileInputRef.current.value = null;
                 } catch (error) {
                     console.error(error);
@@ -213,6 +216,7 @@ function Footer(props) {
                 dispatch(reRenderRoom());
                 dispatch(setScrollEnd())
                 findRoomId();
+                dispatch(setViewIndedx(0));
 
             } catch (error) {
                 console.log(error);
@@ -269,7 +273,7 @@ function Footer(props) {
                         className="input-message w-100"
                     />
                 </label>
-                <button className="btn-smile" onClick={() => setShowEmojiPicker(!showEmojiPicker)} ><i className="bi bi-emoji-smile"></i></button>
+                <button className="btn-smile" onClick={() => {setShowEmojiPicker(!showEmojiPicker);  }} ><i className="bi bi-emoji-smile"></i></button>
                 {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ paddingBottom: 4 }}><Icons type="like" fillColor="#F7CE6C" size={28}/></button>}
                 {isActive1 ? (
                     <button className=" btn-send" onClick={sendMessage}>

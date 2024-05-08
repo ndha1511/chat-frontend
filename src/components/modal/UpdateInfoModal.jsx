@@ -76,7 +76,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
 
                         <div className="user-info">
                             <h6>Thông tin cá nhân</h6>
-                            <div class="mb-3 d-flex align-items-center" style={{ height: "40px", width: "150px", justifyContent: "space-between" }}>
+                            <div class="mb-3 d-flex align-items-center" style={{ height: "40px", width: "150px",marginTop:15, justifyContent: "space-between" }}>
                                 <div>
                                     <input type="radio" name="gender" id="gender" value={1} checked={currentGender ? true : false} onChange={() => {setCurrentGender(1)}} />
                                     <label for="gender" className="form-label">Nam</label>
@@ -87,7 +87,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="name" className="form-label">Tên hiển thị</label>
+                                <label for="name" className="form-label">Ngày sinh</label>
                                 <input type="date" className="form-control" id="dob" name="dob" defaultValue={user && user.dob ? user.dob : ""} />
                             </div>
                         </div>

@@ -9,6 +9,8 @@ import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer
 import Avatar from "../avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
 import FowardModal from "../modal/foward-modal/FowardModal";
+import { Icon } from "zmp-ui";
+import Icons from "../icons/Icons";
 
 
 
@@ -75,13 +77,14 @@ function BaseMessage(props) {
     }
 
     const btnCT = [
-        { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', }}></i>, },
-        { item: <i onClick={openFowardModal} className="bi bi-reply-fill" style={{ transform: 'scaleX(-1) ', }}></i>, },
+        { item: <Icons type="reply" size={25}/> },
+     
+        { item: <Icon onClick={openFowardModal} icon="zi-share" size={25}/> },
 
         {
             item: <Dropdown>
                 <Dropdown.Toggle as={CustomToggle} >
-                    <i className="bi bi-three-dots"> </i>
+                    <Icon icon="zi-more-horiz-solid" size={25}/>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="d-flex-right custom-dropdown-menu-cs">

@@ -5,6 +5,7 @@ import React, {  useState } from "react";
 import "./FowardModal.scss"
 import Avatar from "../../avatar/Avatar";
 import { fowardMessage } from "../../../services/MessageService";
+import Swal from "sweetalert2";
 function FowardModal(props) {
   const friends = useSelector((state) => state.friend.friendsAccepted);
   const user = useSelector((state) => state.userInfo.user);
@@ -32,7 +33,28 @@ function FowardModal(props) {
     }
     try {
       await fowardMessage(request);
-      alert("chia sẻ tin nhắn thành công");
+      Swal.fire({
+        icon: 'success',
+        title: 'Thành công!',
+        html: `Đã chia sẻ tin nhắn thành công.<br/><b>(2s)</b>`,
+        timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
+        timerProgressBar: false,
+        showConfirmButton: true,
+        willOpen: () => {
+            let counter = 2;
+            const timerInterval = setInterval(() => {
+                Swal.update({
+                    html: `Đã chia sẻ tin nhắn thành công.<br/><b>(${counter}s)</b>`,
+                });
+                counter--;
+                if (counter < 0) {
+                    clearInterval(timerInterval);
+                    Swal.close(); // Đóng thông báo khi hết thời gian
+                }
+            }, 1000);
+        }
+    });
+    props.handleClose()
     } catch (error) {
       console.log(error)
     }

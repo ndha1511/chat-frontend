@@ -9,16 +9,21 @@ import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 import { callRequest } from "../../../services/MessageService";
 
 import { setMessageCall } from "../../../redux/reducers/messageReducer";
-import FriendInfor from "../../../components/modal/FriendInfor";
+
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
 import { getGroupById } from "../../../services/GroupService";
+import AccountInfor from "../../../components/modal/AccountInfor";
+import ChatInfoOffcanvasFriend from "./ChatInfoOffcanvasFriend";
 
 
 function Header(props) {
     const [show, setShow] = useState(false);
+    const [show1, setShow1] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleClose1 = () => setShow1(false);
+    const handleShow1 = () => setShow1(true);
     const [isHovered, setIsHovered] = useState(false);
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
@@ -130,6 +135,7 @@ function Header(props) {
                 break;
             case 3:
                 // open offcanvas for user info 
+                handleShow1();
                 break;
             default: break;
 
@@ -229,10 +235,16 @@ function Header(props) {
                 show={showManager}
                 handleClose={handleCloseManager}
             />}
-
+            {/* Hiển thị Offcanvas 3 */}
+            {show1 && <ChatInfoOffcanvasFriend
+                show={show1}
+                handleClose={handleClose1}
+                user={props.user}
+                handleShowManager={handleShowManager}
+            />}
             {/* Modal accontInfor */}
             {
-              showInfor &&  <FriendInfor show={showInfor} onClose={() => setshowInfor(false)} friend={props.user} />
+              showInfor &&  <AccountInfor show={showInfor} onClose={() => setshowInfor(false)} user={props.user} closeBack={2} />
             }    
 
         </div>

@@ -8,11 +8,12 @@ import MemberOffcanvas from './MemberOffcanvas';
 
 import { leaveGroup, removeGroup } from '../../../services/GroupService';
 import VerifyModal from '../../../components/dialogs/verify-dialog/VerifyModal';
-import UpdateGroupModal from '../../header/UpdateGroupModal';
+
 import { Icon } from 'zmp-ui';
+import CreateGroupModal from '../../header/CreateGroupModal';
 
 
-const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
+const ChatInfoOffcanvasFriend = ({ show, handleClose, handleShowManager }) => {
     const memberList = useSelector(state => state.members.members);
     const [showMember, setShowMember] = useState(false);
     const [showContent, setShowContent] = useState(false);
@@ -128,10 +129,10 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                             </div>
                             <div className="item">
                                 <Button onClick={handleShowManagerModal}> <Icon size={23} icon="zi-add-member" /></Button>
-                                <span>Thêm <br /> thành viên</span>
+                                <span>Tạo nhóm<br /> trò chuyện</span>
                             </div>
-                            <UpdateGroupModal show={showManager} handleClose={() => setShowManager(false)}
-                                groupName={groupChat.name}
+                            <CreateGroupModal show={showManager} handleClose={() => setShowManager(false)}
+                               
                             // selectedMembers={groupChat.members}
                             />
                             {
@@ -145,7 +146,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                     </div>
                     <div className="Offcanva-center1">
                         <Button className="Offcanva-img-mp4-file-link" onClick={() => setShowMember(!showMember)} >
-                            <h6>Thành viên</h6>
+                            <h6>Nhóm chung</h6>
                             <i  className={`bi bi-caret-right-fill ${showMember ? 'rotate' : ''}`}></i>
                         </Button>
                         
@@ -153,7 +154,7 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
                             <Button onClick={handleShowMemBerOcv} className="Offcanva-center">
                                 <div className="Offcanva-btn-center">
                                     <Icon style={{color:'black'}} size={28} icon="zi-members" />
-                                    <span>{memberList.length} thành viên</span>
+                                    <span>n nhóm chung </span>
 
                                 </div>
                             </Button>
@@ -245,4 +246,4 @@ const ChatInfoOffcanvas = ({ show, handleClose, handleShowManager }) => {
     );
 };
 
-export default ChatInfoOffcanvas;
+export default ChatInfoOffcanvasFriend;

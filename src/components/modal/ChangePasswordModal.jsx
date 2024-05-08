@@ -5,6 +5,7 @@ import { changePassword } from '../../services/Password';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserInfo } from '../../redux/reducers/userReducer';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from 'zmp-ui';
 
 const ChangePasswordModal = ({ show, onClose, handleBack }) => {
     const [oldPassword, setOldPassword] = useState("");
@@ -53,22 +54,22 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
         <Modal show={show} onHide={onClose} size='md' centered>
 
             <Modal.Header closeButton className='modal-header-cs'>
-                <Button variant="outline-secondary" className='btn-hearder' onClick={handleBack}><i className="bi bi-caret-left"></i></Button>
+            <button variant="outline-secondary" className='btn-hearder' onClick={handleBack}><Icon icon='zi-chevron-left-header' size={25} /></button>
                 <Modal.Title>Thay Đổi Mật Khẩu</Modal.Title>
             </Modal.Header>
             <Modal.Body className='modal-body-cs'>
                 <div className='change-password-modal'>
                     <Form>
                         <Form.Group controlId="oldPassword" className='m-3'>
-                            <Form.Label>Nhập mật khẩu cũ:</Form.Label>
+                            <Form.Label style={{marginLeft:-15}}  >Nhập mật khẩu cũ:</Form.Label>
                             <Form.Control type="password" placeholder="Nhập mật khẩu cũ" onChange={(e) => setOldPassword(e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="confirmNewPassword" className='m-3'>
-                            <Form.Label>Nhập mật khẩu mới:</Form.Label>
+                            <Form.Label style={{marginLeft:-15}} >Nhập mật khẩu mới:</Form.Label>
                             <Form.Control type="password" placeholder="Nhập lại mật khẩu mới" onChange={(e) => setNewPassword(e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="newPassword" className='m-3'>
-                            <Form.Label>Nhập lại mật khẩu mới:</Form.Label>
+                            <Form.Label style={{marginLeft:-15}} >Nhập lại mật khẩu mới:</Form.Label>
                             <Form.Control type="password" placeholder="Nhập mật khẩu mới" onChange={(e) => setConfirmNewPassword(e.target.value)} />
                         </Form.Group>
                         {err && <span className='text-danger m-3'>{err}</span>}

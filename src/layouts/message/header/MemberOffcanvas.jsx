@@ -6,17 +6,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import {  getGroupById, getUserGroupById } from '../../../services/GroupService';
 import HoverDots from '../../../components/hover-dots/HoverDots';
 import { createAdmin, createMember } from '../../../redux/reducers/renderOffcanvas';
+import UpdateGroupModal from '../../header/UpdateGroupModal';
 
 
 function MemberOffcanvas({ show, handleClose }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const admins1 = useSelector(state => state.members.admins);
     const memberList = useSelector(state => state.members.members);
+    const groupChat = useSelector(state => state.message.chatInfo.user);
     const reRenderMember = useSelector(state => state.members.reRender);
     const [members, setMembers] = useState([])
     const [memberItems, setMemberItems] = useState([]);
+    const [showManager, setShowManager] = useState(false)
     const dispatch = useDispatch();
+    const handleShowManagerModal = () => {
+        setShowManager(true)
 
+    }
 
 
     // console.log(chatInfo.user.numberOfMembers)
@@ -66,7 +72,11 @@ function MemberOffcanvas({ show, handleClose }) {
             </Offcanvas.Header>
             <Offcanvas.Body >
                 <div className='d-flex bd-member'>
-                    <button className='btn-add-member'> <i className="bi bi-person-add"></i>Thêm thành viên</button>
+                    <button onClick={handleShowManagerModal} className='btn-add-member'> <i style={{marginRight:10}} className="bi bi-person-add"></i>Thêm thành viên</button>
+                    <UpdateGroupModal show={showManager} handleClose={() => setShowManager(false)}
+                                groupName={groupChat.name}
+                            // selectedMembers={groupChat.members}
+                            />
                     <div className='d-flex w-100 center-member'>
                         <h6>Danh sách thành viên ({memberList.length})</h6>
                         <button className='btn-center'><i className="bi bi-three-dots"></i></button>

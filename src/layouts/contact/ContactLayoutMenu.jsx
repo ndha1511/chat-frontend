@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import { setContactIndex, setViewContent } from "../../redux/reducers/renderLayoutReducer";
+import { reRenderMessageLayout } from "../../redux/reducers/renderReducer";
 
 function ContacLayoutMenu() {
     const dispatch = useDispatch();
@@ -31,6 +32,7 @@ function ContacLayoutMenu() {
     const myFunction = (index) => {
         dispatch(setContactIndex(index));
         dispatch(setViewContent({data: index}));
+        dispatch(reRenderMessageLayout());
     }
     return (
         <div className="d-flex" style={{ flexDirection: "column" }}>

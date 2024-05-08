@@ -88,20 +88,20 @@ function Header() {
     }
 
 
-    useEffect(() => {
-        const getListFriendRequet = async () => {
-            try {
-                const response = await getListFriend(user?.email);
-                dispatch(setFriendAccepted(response));
-            } catch (error) {
-                console.error("", error);
+    // useEffect(() => {
+    //     const getListFriendRequet = async () => {
+    //         try {
+    //             const response = await getListFriend(user?.email);
+    //             dispatch(setFriendAccepted(response));
+    //         } catch (error) {
+    //             console.error("", error);
 
-            }
-        };
+    //         }
+    //     };
 
-        getListFriendRequet(); // Call the function to fetch friend requests
+    //     getListFriendRequet(); // Call the function to fetch friend requests
 
-    }, [dispatch]);
+    // }, [dispatch]);
 
 
 
@@ -127,7 +127,7 @@ function Header() {
             {/* Modal add friend */}
             <Modal show={showModalAddFriend} onHide={handleCloseAddFriend} scrollable={true} centered>
                 <Modal.Header className="md-h" closeButton>
-                    <Modal.Title style={{ fontWeight: 'bold', fontSize: 20 }}>Thêm bạn</Modal.Title>
+                    <Modal.Title style={{ fontWeight: 600, fontSize: 20 }}>Thêm bạn</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="modal-body-custom">
                     <div>

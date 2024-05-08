@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ButtonIcon from "../button-icon/ButtonIcon";
 
 function ButtonGroup(props) {
@@ -8,6 +8,7 @@ function ButtonGroup(props) {
         if(props.showModal) props.showModal(index);
         if(props.handle) props.handle(index);
     }
+    useEffect(()=>{setActive(props.active)},[props.active])
     return (
         <div className={`${props.vertical ? "btn-group-vertical" : "btn-group"}`}
             style={{ 

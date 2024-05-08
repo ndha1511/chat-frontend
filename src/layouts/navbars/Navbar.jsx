@@ -14,11 +14,13 @@ import { setUserInfo } from "../../redux/reducers/userReducer";
 import UpdateInfoModal from "../../components/modal/UpdateInfoModal";
 import { setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
 import { disconnect } from "../full-layout/FullLayout";
+import { reRenderMessageLayout } from "../../redux/reducers/renderReducer";
 
 function Navbar() {
     const buttons = navbarIcon;
     const navigate = useNavigate();
     const user = useSelector((state) => state.userInfo.user);
+    const viewIndex =useSelector((state) => state.renderView.viewIndex);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -64,10 +66,13 @@ function Navbar() {
                 break;
             case 1:
                 dispatch(setViewIndedx(1));
+                dispatch(reRenderMessageLayout());
                 break;
             default: 
                 dispatch(setViewIndedx(2));
+                
                 break;
+             
         }
     }
     useEffect(() => {
@@ -106,7 +111,7 @@ function Navbar() {
                             height={65}
                             backgroundActive="#006EDC"
                             hoverColor="#0082E5"
-                            active={0}
+                            active={viewIndex}
                             textHoverColor="blue"
                         />
                     </div>

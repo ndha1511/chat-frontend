@@ -1,8 +1,12 @@
 import { Button, Dropdown } from "react-bootstrap";
 import "./ContentLayout.scss"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "../../components/avatar/Avatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setChatInfo } from "../../redux/reducers/messageReducer";
+import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
+import MessageLayout from "../message/MessageLayout";
+import { getGroupById, getUserGroupById } from "../../services/GroupService";
 
 function ContentListGroup(props) {
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -19,7 +23,52 @@ function ContentListGroup(props) {
         </a>
     ));
     const groups = useSelector((state) => state.group.groups);
+    const userCurrent = useSelector((state) => state.userInfo.user);
+    const [showListGroup,setShowListGroup]=useState(true)
+    const [showMessageLayout, setShowMessageLayout] = useState(false);
+    const rederMessageLayout = useSelector(state => state.render.renderMessageLayout)
+    const handleShowMessageLayout = () => {
+        setShowMessageLayout(true);
+        setShowListGroup(false);
+    };
+    useEffect(()=>{
+        setShowMessageLayout(false);
+        setShowListGroup(true);
+    },[rederMessageLayout])
+    const dispatch = useDispatch();
+    const viewSendMessage = async (id) => {
+        console.log(id)
+        try {
+            const response = await getGroupById(id);
+            const res = await getRoomBySenderIdAndReceiverId(userCurrent.email,id); 
+            console.log(response)
+            const userData = {
+                name: response.groupName,
+                email: response.id,
+                ...response
+            }
+            const chatInfo = {
+                user: userData,
+                roomId: response.id,
+                room: res
+            };
+            dispatch(setChatInfo(chatInfo));
+            handleShowMessageLayout(); 
+            return response;
+            
+        } catch (error) {
+            const chatInfo = {
+            };
+            dispatch(setChatInfo(chatInfo));
+        }
+        finally{
+            // onClose()
+        }
+    }
     return (
+        <>
+        {showListGroup && ( 
+        <>
         <div className="d-flex tong" >
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
                 {props.backButton}
@@ -69,7 +118,8 @@ function ContentListGroup(props) {
                     </div>
                     <div className="loc-center">
                         {groups.map((item, index) => (
-                            <div className="loc-center-s" key={index}>
+                          
+                            <div onClick={()=>{viewSendMessage(item.id)}}   className="loc-center-s" key={index}>
                                 <div className="loc-center-item">
                                     <Avatar user={{
                                         avatar: item.avatar,
@@ -98,6 +148,10 @@ function ContentListGroup(props) {
                 </div>
             </div>
         </div>
+        </>
+        )}
+        {showMessageLayout && <MessageLayout />}
+        </>
     );
 }
 

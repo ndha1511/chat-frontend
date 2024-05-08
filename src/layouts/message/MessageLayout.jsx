@@ -39,11 +39,11 @@ function MessageLayout(props) {
         setCurrentSlide((currentSlide + 1) % images.length);
     };
     return (
-        <div className="d-flex w-100">
+        <div className="d-flex w-100" >
             {Object.keys(chatInfo).length > 0 ?
                 <div className="d-flex w-100" style={{ flexDirection: "column" }}>
                     <div className="d-flex w-100" style={{ height: "12%", paddingTop: "18px", alignItems: 'center', paddingLeft: "15px" }}>
-                        {props.backButton}
+                        <span style={{marginTop:-27, marginRight:-15}}>{props.backButton}</span>
 
                         <Header user={chatInfo.user} showDragableRequest={props.showDragableRequest}
                             setLocalStream={props.setLocalStream}

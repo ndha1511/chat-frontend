@@ -4,7 +4,8 @@ import Header from "./header/Header";
 import { useEffect, useState } from "react";
 import BoxChat from "../../components/box-chat/BoxChat";
 import "./ChatLayout.scss"
-
+import SimpleBar from "simplebar-react";
+import 'simplebar/dist/simplebar.min.css';
 function ChatLayout() {
     const rooms = useSelector((state) => state.room.rooms);
     const [roomRender, setRoomRender] = useState([]);
@@ -14,15 +15,16 @@ function ChatLayout() {
     useEffect(() => {
         const listBoxChat = rooms.map((room) => { return { item: <BoxChat room={room} /> } });
         setRoomRender(() => listBoxChat);
-        
+
     }, [rooms]);
 
     return (
 
-        <div className="d-flex"  style={{ flexDirection: "column",maxHeight:'100%', }}>
+        <div className="d-flex" style={{ flexDirection: "column", }}>
             <Header />
-            <div className="chill">
-                <div>
+
+            <SimpleBar style={{ maxHeight: '83vh' }}>
+
                 {rooms.length <= 0 ?
                     <div className="d-flex w-100 justify-content-center align-items-center"
                         style={{ textAlign: "center", height: '78vh', }}>
@@ -40,8 +42,9 @@ function ChatLayout() {
                         />
                     </div>
                 }
-                </div>
-            </div>
+
+            </SimpleBar>
+
         </div>
 
 

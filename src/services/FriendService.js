@@ -43,3 +43,11 @@ export const acceptFriendRequest = async (data) => {
         return Promise.reject(error);
     }
 }
+export const unFriendRequest = async (data) => {
+    try {
+        const response = await requestApi("/friends/unfriend", "POST", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

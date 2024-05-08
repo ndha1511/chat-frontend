@@ -17,6 +17,7 @@ import ImageGroup from "../../../components/messages/image-group/ImageGroup";
 import { setMessages } from "../../../redux/reducers/messageReducer";
 import MessageSystem from "../../../components/messages/message-system/MessageSystem";
 import { getColorForName } from "../../../utils/ExtractUsername";
+import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
 
 
 
@@ -33,6 +34,8 @@ function Content(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [render, setRender] = useState(false);
+
 
 
     const renderMessage = (message, index, isLatest = false) => {
@@ -71,6 +74,7 @@ function Content(props) {
         }
         return component;
     }
+
     const fetchMore = async () => {
         console.log("Fetching more data");
         try {
@@ -137,24 +141,24 @@ function Content(props) {
 
         >
 
-            <InfiniteScroll
-                dataLength={messages.length}
-                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px", overflow: 'unset' }} //To put endMessage and loader to the top.
-                inverse={true}
-                next={fetchMore}
-                hasMore={true}
-                loader={<h1></h1>}
-                scrollableTarget="scrollableDiv"
-            >
-                {messages.map((message, index) => {
-                    return index === 0 ? <div key={index}
-                        className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
-                        {renderMessage(message, index, true)}  </div> :
-                        <div key={index}
-                            className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
-                        > {renderMessage(message, index)} </div>
-                })}
-            </InfiniteScroll>
+                <InfiniteScroll
+                    dataLength={messages.length}
+                    style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px", overflow: 'unset' }} //To put endMessage and loader to the top.
+                    inverse={true}
+                    next={fetchMore}
+                    hasMore={true}
+                    loader={<h1></h1>}
+                    scrollableTarget="scrollableDiv"
+                >
+                    {messages.map((message, index) => {
+                        return index === 0 ? <div key={index}
+                            className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+                            {renderMessage(message, index, true)}  </div> :
+                            <div key={index}
+                                className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
+                            > {renderMessage(message, index)} </div>
+                    })}
+                </InfiniteScroll>
         </div>
     );
 }

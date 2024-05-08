@@ -6,9 +6,13 @@
     width: 10px;
    
 }
-  
+  /* Ẩn thanh cuộn */
 ::-webkit-scrollbar-thumb {
-    background-color: gainsboro;
+    background: transparent; /* làm cho thanh cuộn trong suốt */
     border-radius: 6px;
 }
+/* Hiển thị thanh cuộn khi hover */
+:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2); /* hoặc màu khác tùy chọn */
 
+}

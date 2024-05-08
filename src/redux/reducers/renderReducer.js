@@ -2,6 +2,9 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   renderResult: false,
+  renderMessageLayout: false,
+  renderFriendReques: false,
+  
 }
 
 export const renderReducer = createSlice({
@@ -10,10 +13,16 @@ export const renderReducer = createSlice({
   reducers: {
     reRender: (state, action) => {
       state.renderResult = !state.renderResult;
+    },
+    reRenderMessageLayout: (state, action) => {
+      state.renderMessageLayout = !state.renderMessageLayout;
+    },
+    reRenderFriendReques: (state, action) => {
+      state.renderFriendReques = !state.renderFriendReques;
     }
   },
 })
 
-export const { reRender } = renderReducer.actions
+export const { reRender,reRenderMessageLayout,reRenderFriendReques} = renderReducer.actions
 
 export default renderReducer.reducer 

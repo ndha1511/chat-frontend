@@ -4,6 +4,8 @@ import "./ProfileModal.scss"; // Đảm bảo file SCSS được chỉnh sửa �
 import Avatar from '../avatar/Avatar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from 'zmp-ui';
+import RandomBackgroundImage from '../RandomBackgroundImage/RandomBackgroundImage';
 
 const ProfileModal = ({ show, onClose,friend, onOpenChangePassword, onOpenUpdateModal }) => {
     let user =  useSelector((state) => state.userInfo.user);
@@ -22,18 +24,14 @@ const ProfileModal = ({ show, onClose,friend, onOpenChangePassword, onOpenUpdate
             <Modal.Body className='modal-body-cs'>
                 <div className="profile-modal">
                     <div className="profile-background">
-                        <img
-                            src="https://i.pinimg.com/736x/4f/31/2a/4f312aa213541fed49e46896076b8e40.jpg"
-                            alt="Ảnh bìa"
-                            className="img-fluid"
-                        />
+                       <RandomBackgroundImage /> 
                     </div>
                     <div className="profile-avatar">
                         <Avatar user={user} width={70} height={70}/>
                         <h5 className="text-center mt-2">{user && user.name ? user.name : ""}</h5>
-                        <i className="bi bi-pencil"></i>
+                        <button><Icon icon='zi-edit-text' size={20} /></button>
                     </div>
-                    
+                    <div className='backgroundColor'></div>
                     <div className="user-info">
                         <h6>Thông tin cá nhân</h6>
                         <ListGroup variant="flush">
@@ -43,10 +41,11 @@ const ProfileModal = ({ show, onClose,friend, onOpenChangePassword, onOpenUpdate
                         </ListGroup>
                     </div>
                 </div>
+              
             </Modal.Body>
             <Modal.Footer className='modal-f'>
-                <Button variant="outline-primary" onClick={onOpenUpdateModal}>Cập nhật thông tin</Button>
-                <Button variant="primary" onClick={onOpenChangePassword}>Thay Đổi Mật Khẩu</Button>
+                <button className='btn-update-infor' onClick={onOpenUpdateModal}>Cập nhật thông tin</button>
+                <button  className='btn-update-pass' onClick={onOpenChangePassword}>Thay Đổi Mật Khẩu</button>
             </Modal.Footer>
         </Modal>
     );
