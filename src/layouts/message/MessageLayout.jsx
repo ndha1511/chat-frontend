@@ -45,10 +45,7 @@ function MessageLayout(props) {
                     <div className="d-flex w-100" style={{ height: "12%", paddingTop: "18px", alignItems: 'center', paddingLeft: "15px" }}>
                         <span style={{marginTop:-27, marginRight:-15}}>{props.backButton}</span>
 
-                        <Header user={chatInfo.user} showDragableRequest={props.showDragableRequest}
-                            setLocalStream={props.setLocalStream}
-                            setLocalPeer={props.setLocalPeer}
-                        />
+                        <Header/>
 
                     </div>
                     <div className="w-100" style={{ height: "70%", width: '100%' }}>

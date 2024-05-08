@@ -1,31 +1,35 @@
 import Draggable from "react-draggable";
 import { closeCall } from "../../services/MessageService";
 import { useState } from "react";
+import { closeStream, localStream } from "../../configs/WebRTCConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
 
 function VideoCallingView(props) {
-    
+    console.log(props.remoteStreams);
+
+    const dispatch = useDispatch();
+    const messageCall = useSelector((state) => state.message.messageCall);
     const [mute, setMute] = useState(false);
     const [showCamera, setShowCamera] = useState(true);
     const stopCall = async () => {
-        if (props.localStream) {
-            props.localStream.getAudioTracks().forEach(track => track.stop());
-        }
-        await closeCall(props.message.id);
-        props.hiddenDragable();
+        closeStream();
+        await closeCall(messageCall.id);
+        dispatch(setDragableAudioCall(false));
     }
 
     const toggleMute = () => {
         setMute(prevMute => !prevMute);
-        if (props.localStream) {
-            props.localStream.getAudioTracks().forEach(track => {
+        if (localStream) {
+            localStream.getAudioTracks().forEach(track => {
                 track.enabled = !track.enabled; // Toggle the enabled state of the audio track
             });
         }
     }
     const toggleCamera = () => {
         setShowCamera(prevShowCamera =>!prevShowCamera);
-        if (props.localStream) {
-            props.localStream.getVideoTracks().forEach(track => {
+        if (localStream) {
+            localStream.getVideoTracks().forEach(track => {
                 track.enabled = !track.enabled; // Toggle the enabled state of the video track
             });
         }
@@ -64,8 +68,8 @@ function VideoCallingView(props) {
                         </div>
                         <div className="local-video">
                             <video ref={(ref) => {
-                                if (ref && props.localStream) {
-                                    ref.srcObject = props.localStream;
+                                if (ref && localStream) {
+                                    ref.srcObject = localStream;
                                 }
                             }} autoPlay muted
                             ></video>

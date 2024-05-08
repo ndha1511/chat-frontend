@@ -309,28 +309,28 @@ function Footer(props) {
     };
 
     const groupRemoved = () => {
-        return <div lassName="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
+        return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
             <p>Nhóm này đã giải tán</p>
         </div>
     }
 
     const groupNotPermission = () => {
-        return <div lassName="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
+        return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
             <p>Chỉ trưởng nhóm hoặc phó nhóm mới có thể gửi tin nhắn</p>
         </div>
     }
 
     const groupNotMember = () => {
-        return <div lassName="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
+        return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
             <p>Bạn không phải thành viên của nhóm này</p>
         </div>
     }
 
     const renderMessage = useSelector(state=>state.renderMessage.renderMessage)
-    const [groupState,setGroupState] =useState(null)
+    const [groupState,setGroupState] =useState(null);
     useEffect(()=>{
         const getGroup = async ()=>{
-            if(chatInfo && chatInfo.room?.roomType === "GROUP_CHAT"){
+            if(chatInfo.room?.roomType === "GROUP_CHAT"){
                try {
                 const group = await getGroupById(chatInfo.user.id);
                 setGroupState(group)
@@ -338,22 +338,23 @@ function Footer(props) {
                 
                }
          
-            }
+            } 
         }
         getGroup();
-    },[renderMessage])
+    },[renderMessage, chatInfo])
     const renderFooter = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
             if (groupState?.groupStatus === "INACTIVE") {
                 return groupRemoved();
             }
+            if (!groupState?.members.includes(userCurrent.email)) {
+                return groupNotMember();
+            }
             if (groupState?.sendMessagePermission !== "PUBLIC" &&
                 (userCurrent.email !== groupState?.owner && !groupState?.admins.includes(userCurrent.email))) {
                 return groupNotPermission();
             }
-            if (!groupState?.members.includes(userCurrent.email)) {
-                return groupNotMember();
-            }
+           
             return chatField();
         } else {
             return chatField();
