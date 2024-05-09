@@ -137,7 +137,7 @@ function BaseMessage(props) {
                 </div>
             )}
             
-            {props.isSender ? props.children : props.children}
+            {props.children }
             {!props.isSender && props.message.messageType !== "SYSTEM" && <div style={{ padding: 10 }}>
                 <Avatar user={senderUser} width={40} height={40} /></div>}
               

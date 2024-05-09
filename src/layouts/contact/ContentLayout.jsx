@@ -65,28 +65,15 @@ function ContentLayout(props) {
             await rejectFriendRequest({
                 senderId: user.email,
                 receiverId: friend.user.email
-            })
-            alert("đã từ chối lời  mời kết bạn với" + friend.user.name);
+            })    
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `đã từ chối lời  mời kết bạn với  ${friend.user.name }<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `đã từ chối lời  mời kết bạn với  ${friend.user.name }<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
-                }
+                html: `Đã từ chối lời mời kết bạn với ${friend.user.name}.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html' ,
+                }     
             });
             dispatch(deleteFriend(friend));
         } catch (error) {
@@ -104,25 +91,13 @@ function ContentLayout(props) {
             // viewSendMessage()
             dispatch(reRenderGroup())
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `bạn và  ${friend.user.name } đã trở thành bạn bè<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `bạn và  ${friend.user.name } đã trở thành bạn bè<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
-                }
+                html: `Bạn và ${friend.user.name } đã trở thành bạn bè.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html' ,
+                }     
             });
             dispatch(deleteFriend(friend));
         } catch (error) {

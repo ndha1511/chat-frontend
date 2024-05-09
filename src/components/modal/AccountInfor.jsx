@@ -40,7 +40,7 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
         // setIsFriend(true)
 
     }, [reRender])
-    console.log(reRender)
+    // console.log(reRender)
     const viewSendMessage = async () => {
         try {
             const response = await getRoomBySenderIdAndReceiverId(userCurrent.email, user.email);
@@ -76,26 +76,15 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
             const response = await unFriendRequest(request);
             // dispatch(reRenderFriendReques())
             dispatch(reRenderGroup())
+            onClose();
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `bạn đã hủy kết bạn với ${user.email}<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `bạn đã hủy kết bạn với ${user.email}<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
-                }
+                html: `Bạn đã hủy kết bạn với ${user.email}.`,
+                timer: 1500, // Đặt thời gian tự đóng là 2000 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html' ,
+                }     
             });
         } catch (error) {
             console.error("Error sending friend request:", error);
@@ -110,7 +99,7 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
                 <Modal.Title style={{ fontWeight: 600 }} >Thông Tin Cá Nhân</Modal.Title>
             </Modal.Header>
             <Modal.Body className='modal-body-cs'>
-                <SimpleBar style={{ maxHeight: '80vh',  }}>
+                <SimpleBar style={{ maxHeight: '85vh',  }}>
                     <div className="profile-modal">
                         <div className="profile-background">
                             <RandomBackgroundImage />

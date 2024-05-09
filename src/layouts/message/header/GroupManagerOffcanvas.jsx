@@ -44,7 +44,7 @@ function GroupManagerOffcanvas({ show, handleClose }) {
         updatePermission();
     }, [isSendMsg]);
     return (
-        <Offcanvas show={show} onHide={handleClose} placement="end" style={{ width: '350px' }}>
+        <Offcanvas show={show} onHide={handleClose} placement="end" style={{ width: '350px' }} backdrop={true}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Quản lý nhóm</Offcanvas.Title>
             </Offcanvas.Header>

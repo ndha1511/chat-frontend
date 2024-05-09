@@ -10,7 +10,7 @@ import { Icon } from 'zmp-ui';
 import Swal from 'sweetalert2';
 import RandomBackgroundImage from '../RandomBackgroundImage/RandomBackgroundImage';
 
-const HelloMessage = ({ show, onClose, user, handleBack }) => {
+const HelloMessage = ({ show, onClose, user, handleBack }) => {  //user là nguoi nhan
     const userSender = useSelector((state) => state.userInfo.user);
     const [txt, setTxt] = useState("")
     const navigate = useNavigate();
@@ -31,36 +31,25 @@ const HelloMessage = ({ show, onClose, user, handleBack }) => {
             onClose();
             dispatch(reRenderFriendReques())
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `bạn đã gửi lời mời  kết bạn với ${user.email}<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `bạn đã gửi lời mời  kết bạn với ${user.email}<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
-                }
-            }).then((result) => {
-                // Code to execute after the Swal closes
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log('I was closed by the timer');
-                } else if (result.isConfirmed) {
-                    console.log('Confirmed');
-                }
+                html: `Bạn đã gửi lời mời  kết bạn với ${user.email}`,
+                timer: 1500, // Đặt thời gian tự đóng là 2000 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html' ,
+                }     
             });
         } catch (error) {
             console.error("Error sending friend request:", error);
-            alert("Không thể gửi yêu cầu kết bạn.");
+            Swal.fire({
+                html: `Không thể gửi yêu cầu kết bạn.`,
+                timer: 1500, // Đặt thời gian tự đóng là 2000 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html' ,
+                }     
+            });
         }
     }
 

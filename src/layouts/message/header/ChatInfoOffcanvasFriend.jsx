@@ -106,7 +106,7 @@ const ChatInfoOffcanvasFriend = ({ show, handleClose, handleShowManager }) => {
     console.log(showMember);
 
     return (
-        <Offcanvas show={show} onHide={handleClose} style={{ width: '350px' }} placement="end" backdrop="static">
+        <Offcanvas show={show} onHide={handleClose} style={{ width: '350px' }} placement="end" backdrop={true}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Thông tin hội thoại</Offcanvas.Title>
             </Offcanvas.Header>

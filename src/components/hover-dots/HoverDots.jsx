@@ -1,18 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../avatar/Avatar";
 import "./HoverDots.scss"
+import "../../App.scss"
 import { Dropdown, } from "react-bootstrap";
 import { addAdmin, removeAdmin, removeMember } from "../../services/GroupService";
-import { deleteMember, reRenderMember, removeMember1 } from "../../redux/reducers/renderOffcanvas";
+import { deleteMember, reRenderMember } from "../../redux/reducers/renderOffcanvas";
 import Swal from "sweetalert2";
+import { Icon } from "zmp-ui";
+import AccountInfor from "../modal/AccountInfor";
+import ProfileModal from "../modal/ProfileModal";
 
 function HoverDots({ member }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector(state => state.userInfo.user);
     const admins = useSelector(state => state.members.admins);
-    const dispatch = useDispatch();
     const [showHoverDots, setShowHoverDots] = useState(false);
+    const [showAccountInfor, setShowAccountInfor] = useState(false)
+    const [showProfile, setShowprofile] = useState(false)
+    const dispatch = useDispatch();
+
+
+    const handleShowAccountInforOrProfile = () => {
+        if( user.email === member.email) {
+            setShowprofile(true);
+            setShowAccountInfor(false);
+        }else{
+            setShowAccountInfor(true);
+            setShowprofile(false);
+        }
+    }
     const handleMouseEnter = () => {
         setShowHoverDots(true);
 
@@ -49,24 +66,12 @@ function HoverDots({ member }) {
             await addAdmin(request);
             dispatch(reRenderMember())
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `bạn đã thêm ${member.name} làm phó nhóm.<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `bạn đã thêm ${member.name} làm phó nhóm.<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
+                html: `Bạn đã thêm ${member.name} làm phó nhóm.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
                 }
             });
         } catch (error) {
@@ -84,24 +89,12 @@ function HoverDots({ member }) {
             await removeAdmin(request);
             dispatch(reRenderMember())
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `bạn đã giáng ${member.name} xuống làm thành viên.<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `bạn đã giáng ${member.name} xuống làm thành viên.<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
+                html: `Bạn đã giáng ${member.name} xuống làm thành viên.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
                 }
             });
         } catch (error) {
@@ -116,26 +109,13 @@ function HoverDots({ member }) {
         }
         try {
             await removeMember(request);
-            // Khởi tạo thông báo với SweetAlert2
             Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                html: `Bạn đã xóa ${member.name} ra khỏi nhóm.<br/><b>(2s)</b>`,
-                timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-                timerProgressBar: false,
-                showConfirmButton: true,
-                willOpen: () => {
-                    let counter = 2;
-                    const timerInterval = setInterval(() => {
-                        Swal.update({
-                            html: `Bạn đã xóa ${member.name} ra khỏi nhóm.<br/><b>(${counter}s)</b>`,
-                        });
-                        counter--;
-                        if (counter < 0) {
-                            clearInterval(timerInterval);
-                            Swal.close(); // Đóng thông báo khi hết thời gian
-                        }
-                    }, 1000);
+                html: `Bạn đã xóa ${member.name} ra khỏi nhóm.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
                 }
             });
             dispatch(deleteMember(member.email));
@@ -146,12 +126,23 @@ function HoverDots({ member }) {
     }
 
     return (
-        <div className="d-flex w-100 container-member " onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            <div className='d-flex member-tong' style={{ width: '100%', alignItems: 'center', }}  >
-                <Avatar user={member} /> {member.email === chatInfo.user.owner ? <div className="rotate-45"><i className="bi bi-key-fill"></i></div> :
-                    (admins.includes(member.email)) ? <div className="rotate-45"><i className="bi bi-key-fill" style={{ color: "#00ff7f" }}></i></div> :
+        <div className="d-flex w-100 container-member "   onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <div className='d-flex member-tong' style={{ width: '100%', alignItems: 'center', }} onClick={handleShowAccountInforOrProfile} >
+                <Avatar user={member} /> {member.email === chatInfo.user.owner ? <div className="rotate-45"><Icon style={{ color: "#f5d25c" }} icon="zi-key-solid" size={18} /></div> :
+                    (admins.includes(member.email)) ? <div className="rotate-45"><Icon style={{ color: "#00ff7f" }} icon="zi-key-solid" size={18} /></div> :
                         <></>}
-                <div style={{ marginLeft: '15px' }}>{member.name}</div>
+                <div style={{ marginLeft: '15px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                       {user.email === member.email ? <span>Bạn</span>: <span>{member.name}</span>}
+                        {member.email === chatInfo.user.owner ? <span style={{ fontSize: 14, color: '#9a8f85' }}>Trưởng nhóm</span>
+                            :(admins.includes(member.email)) ?
+                            <span style={{ fontSize: 14, color: '#9a8f85' }}>Phó nhóm</span>
+                            :
+                            <></>
+                        }
+
+                    </div>
+                </div>
             </div>
             <div className="dotss"
                 style={{
@@ -183,7 +174,8 @@ function HoverDots({ member }) {
                         </Dropdown.Menu>
                     </Dropdown> : <></>}
 
-
+                   {showAccountInfor &&(<AccountInfor show={showAccountInfor} onClose={() => setShowAccountInfor(false)} user={member}/>)} 
+                   {showProfile &&(<ProfileModal show={showProfile} onClose={() => setShowprofile(false)} />)}                 
             </div>
         </div>
     );

@@ -46,7 +46,7 @@ function MessageText(props) {
         // showHidden={isHovered}
         >
             <div className='d-flex mess-hover' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
-                <div className="d-flex  mess-text" >
+                <div className="d-flex  mess-text" style={{backgroundColor:userCurrent.email === props.message.senderId?'#e5efff':'white'}} >
                     <div className='text'> <pre style={getStyleForContent(props.message.content)}>{props.message.content}</pre></div>
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                     {selectedEmojis.length > 0 && (

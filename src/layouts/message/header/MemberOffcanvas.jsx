@@ -18,6 +18,7 @@ function MemberOffcanvas({ show, handleClose }) {
     const [members, setMembers] = useState([])
     const [memberItems, setMemberItems] = useState([]);
     const [showManager, setShowManager] = useState(false)
+
     const dispatch = useDispatch();
     const handleShowManagerModal = () => {
         setShowManager(true)
@@ -66,7 +67,7 @@ function MemberOffcanvas({ show, handleClose }) {
     }, [members,]);
 
     return (
-        <Offcanvas show={show} onHide={()=>{handleClose(false);}} placement="end" style={{ width: '350px' }}>
+        <Offcanvas show={show} onHide={()=>{handleClose(false);}} placement="end" style={{ width: '350px' }} backdrop={true}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Thành viên</Offcanvas.Title>
             </Offcanvas.Header>
@@ -82,7 +83,7 @@ function MemberOffcanvas({ show, handleClose }) {
                         <button className='btn-center'><i className="bi bi-three-dots"></i></button>
                     </div>
 
-                    <div className="w-100 d-flex btn-group" style={{ flex: 1 }} >
+                    <div className="w-100 d-flex btn-group" style={{ flex: 1,}} >
                        <ButtonGroup buttons={memberItems}
                             widthBtnGroup="100%"
                             vertical width="100%"

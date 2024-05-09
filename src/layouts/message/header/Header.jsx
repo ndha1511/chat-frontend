@@ -19,6 +19,7 @@ import ChatInfoOffcanvasFriend from "./ChatInfoOffcanvasFriend";
 
 import { setLocalPeer, setLocalStream } from "../../../configs/WebRTCConfig";
 import { setDragableCallRequest } from "../../../redux/reducers/dragableReducer";
+import HelloMessage from "../../../components/modal/HelloMessage";
 
 
 
@@ -33,10 +34,15 @@ function Header(props) {
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
-
-    const dispatch = useDispatch();
-
+    const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
     const [showInfor, setshowInfor] = useState(false)
+    const dispatch = useDispatch();
+    console.log(chatInfo)
+    const handleShowHelloMessageModal = () => {
+        setshowInfor(false);
+        setShowHelloMessageModal(true)
+
+    }
 
     const handleShowProfile = () => {
         // setFriend(item)
@@ -250,9 +256,13 @@ function Header(props) {
             />}
             {/* Modal accontInfor */}
             {
-              showInfor &&  <AccountInfor show={showInfor} onClose={() => setshowInfor(false)} user={chatInfo.user} closeBack={2} />
+              showInfor &&  <AccountInfor show={showInfor} onClose={() => setshowInfor(false)} user={chatInfo.user} closeBack={2} addFriend={handleShowHelloMessageModal}  />
 
             }    
+              {
+              showHelloMessageModal &&  <HelloMessage show={showHelloMessageModal} user={chatInfo.user} onClose={() => setShowHelloMessageModal(false)}  />
+
+            }  
 
         </div>
     );
