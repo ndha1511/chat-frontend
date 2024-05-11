@@ -14,7 +14,6 @@ import CreateGroupModal from '../../header/CreateGroupModal';
 
 
 const ChatInfoOffcanvasFriend = ({ show, handleClose, handleShowManager }) => {
-    const memberList = useSelector(state => state.members.members);
     const [showMember, setShowMember] = useState(false);
     const [showContent, setShowContent] = useState(false);
     const [showFile, setShowFile] = useState(false);

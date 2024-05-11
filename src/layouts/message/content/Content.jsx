@@ -14,10 +14,12 @@ import MessageVideo from "../../../components/messages/message-video/MessageVide
 import MessageRevoked from "../../../components/messages/message-revoked/MessageRevoked";
 
 import ImageGroup from "../../../components/messages/image-group/ImageGroup";
-import { setMessages } from "../../../redux/reducers/messageReducer";
+import { setMessages, updateMessage } from "../../../redux/reducers/messageReducer";
 import MessageSystem from "../../../components/messages/message-system/MessageSystem";
 import { getColorForName } from "../../../utils/ExtractUsername";
 import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
+import { Spinner } from "react-bootstrap";
+import { Icon } from "zmp-ui";
 
 
 
@@ -34,7 +36,10 @@ function Content(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
-    const [render, setRender] = useState(false);
+
+    const [showScrollButton, setShowScrollButton] = useState(false);
+
+    const windowSize = useSelector(state => state.render.windowSize);
 
 
 
@@ -79,8 +84,9 @@ function Content(props) {
         console.log("Fetching more data");
         try {
             setCurrentPage(prev => prev + 1);
-            const response = await getMessageByRoomId(userCurrent.email, props.roomId, currentPage);
+            const response = await getMessageByRoomId(userCurrent.email, props.roomId, currentPage + 1);
             const messagesMore = response.messages.reverse();
+            dispatch(updateMessage(messagesMore));
         } catch (error) {
             console.log(error);
         }
@@ -93,26 +99,55 @@ function Content(props) {
                     const response = await getMessageByRoomId(userCurrent.email, props.roomId);
                     // dispatch(setMessages(response.messages.reverse()));
                     dispatch(setMessages(response.messages.reverse()));
+                    setCurrentPage(0);
                     setTotalPages(response.totalPage);
-                    if (currentPage === response.totalPage - 1) setLoadMore(false);
-                    else setLoadMore(true);
+
                 } catch (error) {
                     console.log(error);
+                    setLoadMore(false);
                 }
             }
             getMessages();
-        } else { dispatch(setMessages([])); }
+        } else { 
+            dispatch(setMessages([]));
+            setLoadMore(false);
+        }
     }, [chatInfo.roomId, reRenderMessage]);
+
+    const scrollToTop = () => {
+        if (scrollableDivRef.current) {
+            scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
+            setShowScrollButton(false);
+        }
+    };
+
+    useEffect(() => {
+        if (totalPages === 1 || totalPages === 0) {
+            setLoadMore(false);
+        } else {
+            if (currentPage === totalPages - 1) {
+                setLoadMore(false);
+            } else {
+                setLoadMore(true);
+            }
+        }
+    }, [totalPages, currentPage])
 
     useEffect(() => {
         if (scrollableDivRef.current) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
         }
-    }, [scrollEnd]);
-    useEffect(() => {
-
-    }, [currentPage])
-    // console.log(userCurrent.name)
+    }, [scrollEnd, chatInfo]);
+    
+    const scrollEvent = () => {
+        if(scrollableDivRef.current) {
+            if(scrollableDivRef.current.scrollTop <= -400) {
+                setShowScrollButton(true);
+            } else {
+                setShowScrollButton(false);
+            }
+        }
+    }
 
     function adjustColor(color, amount) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
@@ -127,6 +162,7 @@ function Content(props) {
     }
     return (
         <div id="scrollableDiv" ref={scrollableDivRef} className="d-flex content-chat w-100 "
+            onScroll={scrollEvent}
             style={{
                 height: "100%",
                 backgroundImage: chatInfo.user.avatar ?
@@ -145,19 +181,35 @@ function Content(props) {
                 style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px", overflow: 'unset' }} //To put endMessage and loader to the top.
                 inverse={true}
                 next={fetchMore}
-                hasMore={true}
-                loader={<h1></h1>}
+
+                hasMore={loadMore}
+                loader={<div className="message message-center">
+                    <Spinner animation="border" role="status" variant="primary" size="sm">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </div>}
                 scrollableTarget="scrollableDiv"
             >
                 {messages.map((message, index) => {
-                    return index === 0 ? <div key={index}
-                        className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+                    return index === 0 ? <div key={message.id}
+                        className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+
                         {renderMessage(message, index, true)}  </div> :
                         <div key={index}
-                            className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
+                            className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                         > {renderMessage(message, index)} </div>
                 })}
             </InfiniteScroll>
+            {showScrollButton && (
+                <button className="scroll-button" onClick={scrollToTop}
+                    style={{
+                        left: windowSize.width > 768 ? "98vw" : "93vw"
+                    }}
+                >
+                    <Icon icon="zi-chevron-down"/>
+                </button>
+            )}
+
         </div>
     );
 }

@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   members: [],
   reRender: false,
-  admins: []
+  admins: [],
+  showOffcanvas:false,
 }
 
 export const renderMember = createSlice({
@@ -25,9 +26,13 @@ export const renderMember = createSlice({
     deleteAdmin: (state, action) => {
       state.admins = state.admins.filter(admin => admin !== action.payload);
     },
+    setShowOffcanvas: (state, action) => {
+      state.showOffcanvas = !state.showOffcanvas;
+    
+    }
   },
 })
 
-export const { createMember, deleteMember, reRenderMember,createAdmin,deleteAdmin } = renderMember.actions
+export const { createMember, deleteMember, reRenderMember,createAdmin,deleteAdmin ,setShowOffcanvas} = renderMember.actions
 
 export default renderMember.reducer

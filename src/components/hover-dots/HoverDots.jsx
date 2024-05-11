@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../avatar/Avatar";
 import "./HoverDots.scss"
@@ -14,9 +14,10 @@ import HelloMessage from "../modal/HelloMessage";
 import VerifyModal from "../dialogs/verify-dialog/VerifyModal";
 
 function HoverDots({ member, handleClose }) {
-    const chatInfo = useSelector(state => state.message.chatInfo);
+    const chatInfor = useSelector(state => state.message.chatInfo);
+    const [chatInfo, setChatInfo] = useState(chatInfor);
     const user = useSelector(state => state.userInfo.user);
-    const admins = useSelector(state => state.members.admins);
+
     const [showHoverDots, setShowHoverDots] = useState(false);
     const [showAccountInfor, setShowAccountInfor] = useState(false)
     const [showProfile, setShowprofile] = useState(false)
@@ -38,6 +39,11 @@ function HoverDots({ member, handleClose }) {
             setShowprofile(false);
         }
     }
+    useEffect(()=>{
+        if(chatInfor.room?.roomType === 'GROUP_CHAT'){
+            setChatInfo(chatInfor);
+        }
+    },[chatInfor])
     const removeAction = async () => {
         const request = {
             ownerId: user.email,
@@ -96,10 +102,7 @@ function HoverDots({ member, handleClose }) {
             {children}
         </a>
     ));
-    // console.log(showHoverDots)
-    if (member.email === chatInfo.user.owner) {
 
-    }
 
     const handleAddAdmin = async () => {
         const request = {
@@ -176,30 +179,30 @@ function HoverDots({ member, handleClose }) {
             return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
 
         }
-        if (chatInfo.user.owner !== user.email && !admins.includes(user.email) && member.email === user.email) {
+        if (chatInfo.user.owner !== user.email && !chatInfo.user.admins.includes(user.email) && member.email === user.email) {
             return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
         }
 
-        if (admins.includes(user.email) && admins.includes(member.email) && member.email === user.email) {
+        if (chatInfo.user.admins.includes(user.email) && chatInfo.user.admins.includes(member.email) && member.email === user.email) {
             return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
         }
-        if (admins.includes(user.email) && !admins.includes(member.email) && member.email !== chatInfo.user.owner) {
+        if (chatInfo.user.admins.includes(user.email) && !chatInfo.user.admins.includes(member.email) && member.email !== chatInfo.user.owner) {
             return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
         }
     }
 
-
+    console.log(chatInfo)
     return (
         <div className="d-flex w-100 container-member " onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div className='d-flex member-tong' style={{ width: '100%', alignItems: 'center', }} onClick={handleShowAccountInforOrProfile} >
                 <Avatar user={member} /> {member.email === chatInfo.user.owner ? <div className="rotate-45"><Icon style={{ color: "#f5d25c" }} icon="zi-key-solid" size={18} /></div> :
-                    (admins.includes(member.email)) ? <div className="rotate-45"><Icon style={{ color: "#00ff7f" }} icon="zi-key-solid" size={18} /></div> :
+                    (chatInfo.user.admins.includes(member.email)) ? <div className="rotate-45"><Icon style={{ color: "#00ff7f" }} icon="zi-key-solid" size={18} /></div> :
                         <></>}
                 <div style={{ marginLeft: '15px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                         {user.email === member.email ? <span>Bạn</span> : <span>{member.name}</span>}
                         {member.email === chatInfo.user.owner ? <span style={{ fontSize: 14, color: '#9a8f85' }}>Trưởng nhóm</span>
-                            : (admins.includes(member.email)) ?
+                            : (chatInfo.user.admins.includes(member.email)) ?
                                 <span style={{ fontSize: 14, color: '#9a8f85' }}>Phó nhóm</span>
                                 :
                                 <></>
@@ -214,12 +217,12 @@ function HoverDots({ member, handleClose }) {
                     alignItems: 'center'
                 }}
             >
-                {((chatInfo.user.owner === user.email || admins.includes(user.email) || user.email === member.email)
+                {((chatInfo.user.owner === user.email || chatInfo.user.admins.includes(user.email) || user.email === member.email)
                 )
                     ? <Dropdown style={{ width: '100%' }}>
                         <Dropdown.Toggle className="btn-dots" as={CustomToggle}>
                             {/* {(chatInfo.user.owner !== user.email && chatInfo.user.owner === member.email)?<></>:
-                            (!admins.includes(user.email) && (chatInfo.user.owner !== user.email && (admins.includes(member.email) ||  user.email !== member.email))) ?<></>:
+                            (!admins.includes(user.email) && (chatInfo.user.owner !== user.email && (chatInfo.user.admins.includes(member.email) ||  user.email !== member.email))) ?<></>:
                             <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>} */}
                             {checkDot(member)}
                         </Dropdown.Toggle>
@@ -227,7 +230,7 @@ function HoverDots({ member, handleClose }) {
                             {
                                 user.email === chatInfo.user.owner && user.email !== member.email
                                     ? <>
-                                        {admins.includes(member.email)
+                                        {chatInfo.user.admins.includes(member.email)
                                             ? <Dropdown.Item onClick={handleRemoveAdmin}>Xóa phó nhóm</Dropdown.Item>
                                             : <Dropdown.Item onClick={handleAddAdmin}>Thêm phó nhóm</Dropdown.Item>
                                         }
@@ -236,7 +239,7 @@ function HoverDots({ member, handleClose }) {
                                     : null
                             }
                             {
-                                admins.includes(user.email) && !admins.includes(member.email) && user.email !== member.email && chatInfo.user.owner !== member.email
+                                chatInfo.user.admins.includes(user.email) && !chatInfo.user.admins.includes(member.email) && user.email !== member.email && chatInfo.user.owner !== member.email
                                     ? <Dropdown.Item onClick={handleRemoveMember}>Xóa thành viên</Dropdown.Item>
                                     : null
                             }

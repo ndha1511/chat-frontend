@@ -37,6 +37,7 @@ function Header(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
+    const reRenderOffcanvas = useSelector(state => state.members.showOffcanvas)
     const [showGroup, setShowGroup] = useState(false)
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [showInfor, setshowInfor] = useState(false)
@@ -53,11 +54,10 @@ function Header(props) {
         setShowHelloMessageModal(false)
     }
 
-    const handleShowProfile = () => {
-        // setFriend(item)
-        setshowInfor(true)
+    useEffect(()=>{
+        setShow(false);
+    },[reRenderOffcanvas])
 
-    }
     const memberList = async () => {
         const rep = await getUserGroupById(chatInfo.user.id);
         setListMember(rep);
@@ -199,10 +199,10 @@ function Header(props) {
 
     const renderRight = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
-            if (groupState?.groupStatus === "INACTIVE") {
+            if (chatInfo?.user.groupStatus === "INACTIVE") {
                 return <></>;
             }
-            if (!groupState?.members.includes(userCurrent.email)) {
+            if (!chatInfo?.user.members.includes(userCurrent.email)) {
                 return <></>;
             }
             return <div className="action">
@@ -214,22 +214,8 @@ function Header(props) {
             </div>
         }
     }
-    const renderMessage = useSelector(state => state.renderMessage.renderMessage)
-    const [groupState, setGroupState] = useState(null)
-    useEffect(() => {
-        const getGroup = async () => {
-            if (chatInfo && chatInfo.room?.roomType === "GROUP_CHAT") {
-                try {
-                    const group = await getGroupById(chatInfo.user.id);
-                    setGroupState(group)
-                } catch (error) {
 
-                }
-
-            }
-        }
-        getGroup();
-    }, [renderMessage, chatInfo])
+  
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",

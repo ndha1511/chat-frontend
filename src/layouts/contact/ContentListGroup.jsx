@@ -150,7 +150,7 @@ function ContentListGroup(props) {
         </div>
         </>
         )}
-        {showMessageLayout && <MessageLayout />}
+        {showMessageLayout && <MessageLayout backButton={props.backButton} />}
         </>
     );
 }

@@ -25,12 +25,13 @@ function UpdateGroupModal({ show, handleClose, groupName, }) {
    
 
     useEffect(() => {
-        const memberGroup = async ()=>{
-         const rep =   await getUserGroupById(chatInfo.user.id);
-            setMemberList(rep)
-            console.log(rep)
-        }
-        if(Object.keys(chatInfo).length > 0){
+      
+        if(Object.keys(chatInfo).length > 0 && chatInfo.room?.roomType === 'GROUP_CHAT'){
+            const memberGroup = async ()=>{
+                const rep =   await getUserGroupById(chatInfo.user.id);
+                   setMemberList(rep)
+                   console.log(rep)
+               }
             memberGroup();
         }
     },[chatInfo])

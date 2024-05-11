@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./BoxChat.scss";
 import { displayDateTime } from "../../utils/DateTimeHandle";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getUserByEmail } from "../../services/UserService";
-import { setChatInfo } from "../../redux/reducers/messageReducer";
+import { setChatInfo, setMessages } from "../../redux/reducers/messageReducer";
 import { seenMessage } from "../../services/ChatService";
-import { reRenderRoom } from "../../redux/reducers/renderRoom";
+import { updateRoom } from "../../redux/reducers/renderRoom";
 import { getGroupById } from "../../services/GroupService";
 import { Dropdown } from "react-bootstrap";
 import { Icon } from "zmp-ui";
@@ -16,6 +16,8 @@ function BoxChat(props) {
     const [hiddenButton, setHiddenButton] = useState(true);
     const [date, setDate] = useState(displayDateTime(props.room.time));
     const dispatch = useDispatch();
+    const chatInfor = useSelector(state => state.message.chatInfo);
+    const renderChatInfor = useSelector(state => state.message.renderChatInfor);
 
     const user = {
         name: props.room.name,
@@ -31,6 +33,7 @@ function BoxChat(props) {
     }
 
     const pushChatMessage = async () => {
+        dispatch(setMessages([]));
         try {
             // console.log(props.room.receiverId)
             if (props.room.roomType === "GROUP_CHAT") {
@@ -52,16 +55,23 @@ function BoxChat(props) {
                     senderId: props.room.senderId,
                     receiverId: props.room.receiverId
                 }
-                await seenMessage(request);
-                dispatch(reRenderRoom());
-                dispatch(reRenderMember());
+
+                const newRoom = {
+                    ...props.room,
+                    numberOfUnreadMessage: 0,
+                    id: props.room.objectId
+                }
+                dispatch(updateRoom(newRoom));
+                seenMessage(request);
+
 
             } else {
                 const response = await getUserByEmail(props.room.receiverId);
                 // console.log(response);
                 const chatInfo = {
                     user: { ...response },
-                    roomId: props.room.roomId
+                    roomId: props.room.roomId,
+                    room: props.room
                 };
                 dispatch(setChatInfo(chatInfo));
                 const request = {
@@ -69,14 +79,57 @@ function BoxChat(props) {
                     senderId: props.room.senderId,
                     receiverId: props.room.receiverId
                 }
-                await seenMessage(request);
-                dispatch(reRenderRoom());
+                const newRoom = {
+                    ...props.room,
+                    numberOfUnreadMessage: 0,
+                    id: props.room.objectId
+                }
+                dispatch(updateRoom(newRoom));
+                seenMessage(request);
+
             }
 
         } catch (error) {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        const updateChatInfo = async () => {
+            if (Object.keys(chatInfor).length > 0) {
+                if (props.room.roomId === chatInfor.roomId) {
+                    if (props.room.roomType === "GROUP_CHAT") {
+                        const response = await getGroupById(props.room.receiverId);
+                        const userData = {
+                            name: response.groupName,
+                            email: response.id,
+                            ...response
+                        }
+                        const chatInfo = {
+                            user: userData,
+                            roomId: props.room.roomId,
+                            room: props.room
+                        };
+
+                        dispatch(setChatInfo(chatInfo));
+                    } else {
+                        const response = await getUserByEmail(props.room.receiverId);
+                        console.log(response);
+                        const chatInfo = {
+                            user: { ...response },
+                            roomId: props.room.roomId,
+                            room: props.room
+                        };
+                        dispatch(setChatInfo(chatInfo));
+                    }
+
+                }
+            }
+        }
+        updateChatInfo();
+    }, [renderChatInfor])
+
+
 
     const onpenMoreMenu = (event) => {
         event.stopPropagation(); // Ngăn chặn sự kiện click truyền ra khỏi button ở bên trong
@@ -187,5 +240,6 @@ function BoxChat(props) {
 
     );
 }
+
 
 export default BoxChat;

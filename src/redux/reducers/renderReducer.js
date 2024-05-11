@@ -4,6 +4,10 @@ const initialState = {
   renderResult: false,
   renderMessageLayout: false,
   renderFriendReques: false,
+  windowSize: {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }
   
 }
 
@@ -19,10 +23,13 @@ export const renderReducer = createSlice({
     },
     reRenderFriendReques: (state, action) => {
       state.renderFriendReques = !state.renderFriendReques;
+    },
+    setWindowSize: (state, action) => {
+      state.windowSize = action.payload;
     }
   },
 })
 
-export const { reRender,reRenderMessageLayout,reRenderFriendReques} = renderReducer.actions
+export const { reRender,reRenderMessageLayout,reRenderFriendReques, setWindowSize} = renderReducer.actions
 
 export default renderReducer.reducer 

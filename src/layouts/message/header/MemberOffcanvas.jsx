@@ -30,6 +30,7 @@ function MemberOffcanvas({ show, handleClose }) {
     console.log(memberList)
 
     useEffect(() => {
+       if(chatInfo.room?.roomType === 'GROUP_CHAT'){
         const getUserbyGroupId = async () => {
             const roomId = chatInfo.roomId
             // console.log(roomId)
@@ -44,6 +45,8 @@ function MemberOffcanvas({ show, handleClose }) {
             }
         }
         getUserbyGroupId();
+       }
+      
   
     }, [chatInfo.roomId,reRenderMember])
 

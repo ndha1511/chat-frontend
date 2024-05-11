@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { reRenderGroup } from '../../redux/reducers/groupReducer';
 import RandomBackgroundImage from '../RandomBackgroundImage/RandomBackgroundImage';
 import SimpleBar from 'simplebar-react';
+import { setShowOffcanvas } from '../../redux/reducers/renderOffcanvas';
 
 
 const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack }) => {
@@ -41,23 +42,30 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
 
     }, [reRender])
     // console.log(reRender)
+    
     const viewSendMessage = async () => {
         try {
             const response = await getRoomBySenderIdAndReceiverId(userCurrent.email, user.email);
             console.log(userCurrent.email, user)
             const chatInfo = {
                 user,
-                roomId: response.roomId
+                roomId: response.roomId,
+                room: response
             };
+            dispatch(setShowOffcanvas())
             dispatch(setChatInfo(chatInfo));
             return response;
 
         } catch (error) {
+            console.log(error)
             const chatInfo = {
                 user,
-                roomId: ""
+                roomId:'',
+
             };
+            dispatch(setShowOffcanvas())
             dispatch(setChatInfo(chatInfo));
+         
         }
         finally {
             onClose()
