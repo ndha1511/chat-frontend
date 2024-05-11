@@ -26,16 +26,15 @@ function ButtonGroup(props) {
                         background={active === index ? props.backgroundActive : null}
                         color={active === index ? props.colorActive : null}
                         clickButton={() => {clickButton(index)}}
+                        color1 = {props.color1}
                         hoverColor={props.hoverColor}
                         title={button.title}
                         borderBottom={active === index ? `2px solid ${props.colorActive}` : null}
                         fontWeight={props.fontWeight ? props.fontWeight : "normal"}
-                        textHoverColor={props.textHoverColor ? props.textHoverColor : "black"}
+                        textHoverColor={props.textHoverColor ? props.textHoverColor : ""}
                         marginRight={props.marginRight ? props.marginRight : 0}
                         fontSize = {props.fontSize}
                         borderRadius={props.borderRadius ? props.borderRadius : 0}
-                     
-                      
                     >
                         {button.item}
                     </ButtonIcon>

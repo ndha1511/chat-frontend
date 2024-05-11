@@ -140,24 +140,24 @@ function Content(props) {
 
         >
 
-                <InfiniteScroll
-                    dataLength={messages.length}
-                    style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px", overflow: 'unset' }} //To put endMessage and loader to the top.
-                    inverse={true}
-                    next={fetchMore}
-                    hasMore={true}
-                    loader={<h1></h1>}
-                    scrollableTarget="scrollableDiv"
-                >
-                    {messages.map((message, index) => {
-                        return index === 0 ? <div key={index}
-                            className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
-                            {renderMessage(message, index, true)}  </div> :
-                            <div key={index}
-                                className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
-                            > {renderMessage(message, index)} </div>
-                    })}
-                </InfiniteScroll>
+            <InfiniteScroll
+                dataLength={messages.length}
+                style={{ display: "flex", flexDirection: "column-reverse", paddingBottom: "30px", overflow: 'unset' }} //To put endMessage and loader to the top.
+                inverse={true}
+                next={fetchMore}
+                hasMore={true}
+                loader={<h1></h1>}
+                scrollableTarget="scrollableDiv"
+            >
+                {messages.map((message, index) => {
+                    return index === 0 ? <div key={index}
+                        className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+                        {renderMessage(message, index, true)}  </div> :
+                        <div key={index}
+                            className={`message ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
+                        > {renderMessage(message, index)} </div>
+                })}
+            </InfiniteScroll>
         </div>
     );
 }

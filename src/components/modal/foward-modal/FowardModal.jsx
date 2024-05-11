@@ -33,27 +33,15 @@ function FowardModal(props) {
     }
     try {
       await fowardMessage(request);
-      Swal.fire({
-        icon: 'success',
-        title: 'Thành công!',
-        html: `Đã chia sẻ tin nhắn thành công.<br/><b>(2s)</b>`,
-        timer: 3000, // Đặt thời gian tổng cộng là 4 giây để đảm bảo đếm ngược từ 2 -> 0
-        timerProgressBar: false,
-        showConfirmButton: true,
-        willOpen: () => {
-            let counter = 2;
-            const timerInterval = setInterval(() => {
-                Swal.update({
-                    html: `Đã chia sẻ tin nhắn thành công.<br/><b>(${counter}s)</b>`,
-                });
-                counter--;
-                if (counter < 0) {
-                    clearInterval(timerInterval);
-                    Swal.close(); // Đóng thông báo khi hết thời gian
-                }
-            }, 1000);
-        }
-    });
+    Swal.fire({
+      html: `Chia sẻ tin nhắn thành công.`,
+      timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+      timerProgressBar: true,
+      showConfirmButton: false,
+      customClass: {
+          htmlContainer: 'my-custom-html',
+      }
+  });
     props.handleClose()
     } catch (error) {
       console.log(error)

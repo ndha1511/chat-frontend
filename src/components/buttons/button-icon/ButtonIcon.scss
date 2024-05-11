@@ -1,4 +1,5 @@
-.btn-hover {
+.btn-hover { 
+    color:var(--color);
     &:hover {
         background-color: var(--hover-color);
         color: var(--text-hover-color);

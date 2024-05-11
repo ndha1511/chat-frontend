@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./BoxChat.scss";
 import { displayDateTime } from "../../utils/DateTimeHandle";
@@ -8,6 +8,9 @@ import { setChatInfo } from "../../redux/reducers/messageReducer";
 import { seenMessage } from "../../services/ChatService";
 import { reRenderRoom } from "../../redux/reducers/renderRoom";
 import { getGroupById } from "../../services/GroupService";
+import { Dropdown } from "react-bootstrap";
+import { Icon } from "zmp-ui";
+import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
 
 function BoxChat(props) {
     const [hiddenButton, setHiddenButton] = useState(true);
@@ -51,10 +54,11 @@ function BoxChat(props) {
                 }
                 await seenMessage(request);
                 dispatch(reRenderRoom());
+                dispatch(reRenderMember());
 
             } else {
                 const response = await getUserByEmail(props.room.receiverId);
-                console.log(response);
+                // console.log(response);
                 const chatInfo = {
                     user: { ...response },
                     roomId: props.room.roomId
@@ -88,6 +92,19 @@ function BoxChat(props) {
             clearInterval(intervalId);
         };
     }, [props.room.time])
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+        <span
+
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }}
+            className="" // Thêm class cho avatar dropdown
+        >
+            {children}
+        </span>
+    ));
     return (
 
         <div className="row d-flex w-100 wrapper-boxchat" onClick={pushChatMessage} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
@@ -124,7 +141,29 @@ function BoxChat(props) {
                         <div className="btn-more" data-bs-toggle="tooltip" title="Thêm" style={{
                             width: 40,
                             height: 30,
-                        }} onClick={onpenMoreMenu}><i className="bi bi-three-dots"></i></div>}
+                        }} onClick={onpenMoreMenu}>
+                            <Dropdown>
+                                <Dropdown.Toggle as={CustomToggle} >
+                                    <Icon style={{ marginTop: -5, color: '' }} icon="zi-more-horiz-solid" size={20} />
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu className="d-flex-right custom-dropdown-menu-box-chat">
+
+                                    <Dropdown.Item>Ghim hội thoại</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Đánh dấu chưa đọc</Dropdown.Item>
+                                    <Dropdown.Item>Phân loại</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item >Thêm vào nhóm</Dropdown.Item>
+                                    <Dropdown.Item >Tắt thông báo</Dropdown.Item>
+                                    <Dropdown.Item >Ẩn trò chuyện </Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item style={{ color: 'red' }}  >Xóa hội thoại</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+
+
+                            </div>}
                 </div>
                 {
                     props.room.numberOfUnreadMessage > 0 ?

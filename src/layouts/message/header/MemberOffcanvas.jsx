@@ -15,7 +15,6 @@ function MemberOffcanvas({ show, handleClose }) {
     const memberList = useSelector(state => state.members.members);
     const groupChat = useSelector(state => state.message.chatInfo.user);
     const reRenderMember = useSelector(state => state.members.reRender);
-    const [members, setMembers] = useState([])
     const [memberItems, setMemberItems] = useState([]);
     const [showManager, setShowManager] = useState(false)
 
@@ -35,12 +34,11 @@ function MemberOffcanvas({ show, handleClose }) {
             const roomId = chatInfo.roomId
             // console.log(roomId)
             try {
-                const res = await getUserGroupById(roomId)
-                setMembers(res)
-                dispatch(createMember(res))
                 const group = await getGroupById(roomId)
                 dispatch(createAdmin(group.admins))
-                console.log(res)
+                const res = await getUserGroupById(roomId)
+                dispatch(createMember(res))
+                console.log(group)
             } catch (error) {
                 alert('lỗi không láy được user')
             }
@@ -49,22 +47,20 @@ function MemberOffcanvas({ show, handleClose }) {
   
     }, [chatInfo.roomId,reRenderMember])
 
-    useEffect(()=>{
-        setMembers(memberList)
-    },[memberList])
-
     useEffect(() => {
-        const owner = members.filter(member=>member.email === chatInfo.user.owner)
-        // console.log(owner)
-        const admins = members.filter(member=>admins1.includes(member.email))
-        const memberList = members.filter(member=>!admins1.includes(member.email)&&!(member.email === chatInfo.user.owner))
-        const listRs = [...owner,...admins,...memberList]
+        const owner = memberList.filter(member=>member.email === chatInfo.user.owner)
+      
+        const admins = memberList.filter(member=>admins1.includes(member.email))
+        console.log(admins)
+        const memberList1 = memberList.filter(member=>!admins1.includes(member.email)&&!(member.email === chatInfo.user.owner))
+        const listRs = [...owner,...admins,...memberList1]
         const listMember = listRs.map(member => ({
-            item: <HoverDots key={member.email} member={member} />
+            item: <HoverDots key={member.email} member={member}  />
+          
         }));
         setMemberItems(listMember);
         
-    }, [members,]);
+    }, [memberList]);
 
     return (
         <Offcanvas show={show} onHide={()=>{handleClose(false);}} placement="end" style={{ width: '350px' }} backdrop={true}>

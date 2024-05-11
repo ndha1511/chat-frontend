@@ -3,26 +3,37 @@ import { Modal, Button, Form, Tooltip, OverlayTrigger } from 'react-bootstrap'; 
 import { reRender } from '../../redux/reducers/renderReducer';
 import Avatar from '../../components/avatar/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
-import { addGroup, addMember } from '../../services/GroupService';
-import { createMember, reRenderMember } from '../../redux/reducers/renderOffcanvas';
+import { addGroup, addMember, getUserGroupById } from '../../services/GroupService';
+import {  reRenderMember } from '../../redux/reducers/renderOffcanvas';
 
 // Your other code...
 
 function UpdateGroupModal({ show, handleClose, groupName, }) {
+    const dispatch = useDispatch();
     const [friendName, setFriendName] = useState('');
     const [friendId, setFriendId] = useState([]);
     const [updateMemberId, setUpdateMemberId] = useState([]);
     const [updateState, setUpdateState] = useState(false);
     const [memberId, setmemberId] = useState([]);
-    const memberList = useSelector(state => state.members.members);
+    const [memberList, setMemberList] = useState([]);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [title, setTitle] = useState('Tạo nhóm');
-    const [isValid, setIsValid] = useState(true); // State to manage input validity
+    const [isValid, setIsValid] = useState(true); 
     const friends = useSelector((state) => state.friend.friendsAccepted);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
-    const dispatch = useDispatch();
+   
 
+    useEffect(() => {
+        const memberGroup = async ()=>{
+         const rep =   await getUserGroupById(chatInfo.user.id);
+            setMemberList(rep)
+            console.log(rep)
+        }
+        if(Object.keys(chatInfo).length > 0){
+            memberGroup();
+        }
+    },[chatInfo])
     const handleAddGroup = async () => {
         if (!friendName.trim()) {
             setIsValid(false);
@@ -112,7 +123,7 @@ function UpdateGroupModal({ show, handleClose, groupName, }) {
     );
 
 
-
+    console.log(memberList)
     useEffect(() => {
         if (memberList && memberList.length > 0) {
             // Chuyển đổi danh sách selectedMembers thành mảng các email
@@ -120,7 +131,6 @@ function UpdateGroupModal({ show, handleClose, groupName, }) {
             const selectedEmails1 = memberList.map(member => member.email);
             setFriendId(selectedEmails);
             setmemberId(selectedEmails1)
-            console.log(selectedEmails)
             setIsUpdateMode(true)
             setTitle('Thêm thành viên')
         }
@@ -154,6 +164,7 @@ function UpdateGroupModal({ show, handleClose, groupName, }) {
                                 type="text"
                                 id="name"
                                 placeholder="Nhập tên nhóm"
+                                readOnly
                                 isInvalid={!isValid}
                             />
                         </OverlayTrigger>

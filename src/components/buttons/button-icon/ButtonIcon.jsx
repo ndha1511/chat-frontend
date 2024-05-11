@@ -12,7 +12,7 @@ function ButtonIcon(props) {
                     width: props.width ? props.width : 30,
                     height: props.height ? props.height : 30,
                     backgroundColor: props.background ? props.background : "",
-                    color: props.color ? props.color : "",
+                    '--color': props.color ? props.color : props.color1? props.color1 : "",
                     '--hover-color': hoverColor,
                     '--text-hover-color': textHoverColor,
                     border:"none",
@@ -21,6 +21,7 @@ function ButtonIcon(props) {
                     fontWeight: props.fontWeight ? props.fontWeight : "normal",
                     marginRight: props.marginRight ? props.marginRight : 0,
                     fontSize: props.fontSize,
+                    color1: props.color1,
                     // backgroundColor: props.backgroundColor,  
                  
                   

@@ -25,6 +25,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     &:hover {
         background-color: #cccccc;
     }
@@ -35,6 +36,7 @@
     right: 30px;
     top: 40px;
 }
+
 .fixed {
     top: 10px;
     right: 10px;
@@ -54,4 +56,10 @@
     top: -10px;
     left: -20px;
 
+}
+
+.custom-dropdown-menu-box-chat {
+    border: none;
+    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.2);
+ 
 }

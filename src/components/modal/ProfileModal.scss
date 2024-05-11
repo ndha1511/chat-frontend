@@ -1,247 +1,370 @@
-.container-account-infor{
+.container-account-infor {
   overflow: hidden;
 }
-.modal-body-cs{
+
+.modal-body-cs {
   //  overflow-y: hidden;
   // height: 80vh;
-    padding: 0;
-    // &:hover{
-    //   overflow: auto;
-    // }
+  padding: 0;
+  // &:hover{
+  //   overflow: auto;
+  // }
 }
 
 .simplebar-scrollbar:before {
-  background-color:  rgba(0,0,0,0.2) !important; /* Màu xanh */
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  /* Màu xanh */
 }
-.modal-fter{
+
+.modal-fter {
   padding: 0;
 }
-.modal-content-cs {
-    padding: 0;
-}
-.modal-header-cs{
-    padding: 15px;
-    height: 40px;
-    .modal-title{
-        font-size: 17px;
-    }
-}
-.profile-modal {
-    .profile-background {
-      width: 100%;
-      img {
-        width: 100%;
-        height: 170px;
 
-      }
-    }
-  
-    .profile-avatar {
-      display: flex;
-      padding: 10px;
-      justify-content: flex-start;
-      align-items: center;
-      margin-top: -20px;
-  
-      button{
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        background-color: white;
-        &:hover{
-          background-color: gainsboro
-        }
-        &:active{
-          background-color: rgb(201, 191, 191)
-        }
-      }
-      img {
-        border: 3px solid white;
-        width: 80px;
-        height: 80px;
-      }
-      h5{
-        padding-left: 15px;
-        padding-right: 8px;
-        font-size: 22px;
-      }
-    }
-  
-    .user-info {
-    //   margin-top: 20px;
-   
-    border-bottom: 8px solid rgb(242, 238, 238);;
-    h6{
-      font-size: 18px;
-    }
-    padding: 10px;
-    padding-bottom: 20px;
+.modal-content-cs {
+  padding: 0;
+}
+
+.modal-header-cs {
+  padding: 15px;
+  height: 40px;
+
+  .modal-title {
+    font-size: 17px;
+  }
+}
+
+.profile-modal {
+  .profile-background {
+    width: 100%;
+
+    img {
+      width: 100%;
+      height: 170px;
+
     }
   }
 
-  .modal-f{
+  .profile-avatar {
+    display: flex;
+    padding: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: -20px;
+
+    button {
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background-color: white;
+
+      &:hover {
+        background-color: gainsboro
+      }
+
+      &:active {
+        background-color: rgb(201, 191, 191)
+      }
+    }
+
+    img {
+      border: 3px solid white;
+      width: 80px;
+      height: 80px;
+    }
+
+    h5 {
+      padding-left: 15px;
+      padding-right: 8px;
+      font-size: 22px;
+    }
+  }
+
+  .user-info {
+    //   margin-top: 20px;
+
+    border-bottom: 8px solid rgb(242, 238, 238);
+    ;
+
+    h6 {
+      font-size: 18px;
+    }
+
+    padding: 10px;
+    padding-bottom: 20px;
+  }
+}
+
+.modal-f {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 65px;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  margin-top: 30px;
+  width: 100%;
+  padding: 0;
+
+  .btn-update-infor {
+    width: 45%;
+    height: 40px;
+    border: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 65px;
-    overflow: hidden;
-    flex-wrap: nowrap;
-    margin-top: 30px;
-    width: 100%;
-    padding: 0;
-    .btn-update-infor{
-      width: 45%;
-      height: 40px;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: 600;
-      font-size: 18px;
-      border-radius: 5px;
-      &:hover{
-        background-color: gainsboro
-      }
-      &:active{
-        background-color: rgb(205, 199, 199)
-      }
-    }
-    .btn-update-pass{
-      border-radius: 5px;
-      width: 45%;
-      height: 40px;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #E5EFFF;
-      color: #1565DD;
-      font-weight: 600;
-      font-size: 18px;
-      &:hover{
-        background-color: #d8e7fe;
-      }
-      &:active{
-        background-color: #bad3fa;
-      }
-    }
-  
-  }
-  .ft-css{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 10px;
-    margin-bottom: 15px;
-  }
-  .btn-unfriend{
-    
-      width: 100%;
-      height: 50px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 5px;
 
-      background-color: white;
-      // margin-bottom: 15px;
-      border: none;
-      &:hover{
-        background-color: gainsboro
-      }
-      &:active{
-        background-color: rgb(205, 199, 199)
-      }
-    
+    &:hover {
+      background-color: gainsboro
+    }
+
+    &:active {
+      background-color: rgb(205, 199, 199)
+    }
   }
-  .btn-account-infor{
+
+  .btn-update-pass {
+    border-radius: 5px;
+    width: 45%;
+    height: 40px;
+    border: none;
     display: flex;
-    width: 100%;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    // border: 1px solid blueviolet;
-    // border: 1px solid black;
-    button{
-      width: 45%;
-      height: 35px;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    background-color: #E5EFFF;
+    color: #1565DD;
+    font-weight: 600;
+    font-size: 18px;
+
+    &:hover {
+      background-color: #d8e7fe;
     }
-    .btn-add-call{
-      width: 45%;
-      height: 40px;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: 600;
-      font-size: 18px;
-      border-radius: 5px;
-      &:hover{
-        background-color: gainsboro
-      }
-      &:active{
-        background-color: rgb(205, 199, 199)
-      }
-    }
-    .btn-message{
-      border-radius: 5px;
-      width: 45%;
-      height: 40px;
-      border: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #E5EFFF;
-      color: #1565DD;
-      font-weight: 600;
-      font-size: 18px;
-      &:hover{
-        background-color: #d8e7fe;
-      }
-      &:active{
-        background-color: #bad3fa;
-      }
+
+    &:active {
+      background-color: #bad3fa;
     }
   }
-  .btn-hearder{
-    margin-top: 2px;
-    color: black;
-    margin-left: -10px;
-    margin-right: 5px;
+
+}
+
+.ft-css {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.btn-unfriend {
+
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  background-color: white;
+  // margin-bottom: 15px;
+  border: none;
+
+  &:hover {
+    background-color: gainsboro
   }
-  .backgroundColor{
+
+  &:active {
+    background-color: rgb(205, 199, 199)
+  }
+
+}
+
+.btn-account-infor {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+
+  // border: 1px solid blueviolet;
+  // border: 1px solid black;
+  button {
+    width: 45%;
+    height: 35px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn-add-call {
+    width: 45%;
+    height: 40px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 5px;
+
+    &:hover {
+      background-color: gainsboro
+    }
+
+    &:active {
+      background-color: rgb(205, 199, 199)
+    }
+  }
+
+  .btn-message {
+    border-radius: 5px;
+    width: 45%;
+    height: 40px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E5EFFF;
+    color: #1565DD;
+    font-weight: 600;
+    font-size: 18px;
+
+    &:hover {
+      background-color: #d8e7fe;
+    }
+
+    &:active {
+      background-color: #bad3fa;
+    }
+  }
+}
+
+.btn-hearder {
+  margin-top: 2px;
+  color: black;
+  margin-left: -10px;
+  margin-right: 5px;
+}
+
+.backgroundColor {
+  width: 100%;
+  height: 8px;
+  background-color: rgb(242, 238, 238);
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.bd-text {
+  width: 100%;
+  padding: 10px;
+
+  textarea {
     width: 100%;
-    height: 8px;
-    background-color: rgb(242, 238, 238);
-    margin-top: 25px;
-    margin-bottom: 15px;
-  }
-  .bd-text{
-    width: 100%;
-    padding: 10px;
-    textarea{
-      width: 100%;
-      border: 0.5px solid gainsboro;
-      height: 150px;
-      padding: 15px;
-      // border: none;
+    border: 0.5px solid gainsboro;
+    height: 150px;
+    padding: 15px;
+    // border: none;
+    outline: none;
+    resize: none;
+    overflow: auto;
+
+    &:focus {
+      border-color: #007bff;
+      /* Chuyển sang màu xanh khi được focus */
       outline: none;
-      resize: none;
-      overflow: auto;
-      &:focus{
-        border-color: #007bff; /* Chuyển sang màu xanh khi được focus */
-        outline: none; /* Xóa đường viền mặc định khi focus (nếu cần) */
-      }
+      /* Xóa đường viền mặc định khi focus (nếu cần) */
     }
   }
+}
 
-.modal{
+.modal {
   height: 100%;
 }
 
+// Group
+.profile-avatar-group {
+  display: flex;
+  padding: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: -20px;
+  // border: 1px solid black;
+  margin-top: 15px;
+  button {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: white;
+
+    &:hover {
+      background-color: gainsboro
+    }
+
+    &:active {
+      background-color: rgb(201, 191, 191)
+    }
+  }
+
+  img {
+    border: 3px solid white;
+    width: 80px;
+    height: 80px;
+  }
+
+  h5 {
+    padding-left: 15px;
+    padding-right: 8px;
+    font-size: 22px;
+  }
+}
+.btn-account-infor-group{
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  .btn-message {
+    border-radius: 5px;
+    width: 90%;
+    height: 40px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E5EFFF;
+    color: #1565DD;
+    font-weight: 600;
+    font-size: 18px;
+    margin-top: 10px;
+
+    &:hover {
+      background-color: #d8e7fe;
+    }
+
+    &:active {
+      background-color: #bad3fa;
+    }
+  }
+}
+.user-info-group{
+  padding: 10px;
+  .member-group{
+    display: flex;
+    position: relative;
+    padding: 0;
+  }
+}
+.backgroundColor-group{
+  width: 100%;
+  height: 8px;
+  background-color: rgb(242, 238, 238);
+  margin-top: 15px;
+
+}

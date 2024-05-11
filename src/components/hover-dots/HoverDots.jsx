@@ -1,38 +1,83 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../avatar/Avatar";
 import "./HoverDots.scss"
 import "../../App.scss"
-import { Dropdown, } from "react-bootstrap";
-import { addAdmin, removeAdmin, removeMember } from "../../services/GroupService";
+import { Button, Dropdown, } from "react-bootstrap";
+import { addAdmin, leaveGroup, removeAdmin, removeGroup, removeMember } from "../../services/GroupService";
 import { deleteMember, reRenderMember } from "../../redux/reducers/renderOffcanvas";
 import Swal from "sweetalert2";
 import { Icon } from "zmp-ui";
 import AccountInfor from "../modal/AccountInfor";
 import ProfileModal from "../modal/ProfileModal";
+import HelloMessage from "../modal/HelloMessage";
+import VerifyModal from "../dialogs/verify-dialog/VerifyModal";
 
-function HoverDots({ member }) {
+function HoverDots({ member, handleClose }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector(state => state.userInfo.user);
     const admins = useSelector(state => state.members.admins);
     const [showHoverDots, setShowHoverDots] = useState(false);
     const [showAccountInfor, setShowAccountInfor] = useState(false)
     const [showProfile, setShowprofile] = useState(false)
+    const [showSecurity, setShowSecurity] = useState(false);
+    const [showVerifyModal, setShowVerifyModal] = useState(false);
+    const [showHelloMessage, setShowHelloMessage] = useState(false)
+    const handleShowRemoveMoadl = () => setShowRemoveModal(true);
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
+    const handleCloseRemoveModal = () => setShowRemoveModal(false);
     const dispatch = useDispatch();
 
-
+    const handleShow = () => setShowVerifyModal(true);
     const handleShowAccountInforOrProfile = () => {
-        if( user.email === member.email) {
+        if (user.email === member.email) {
             setShowprofile(true);
             setShowAccountInfor(false);
-        }else{
+        } else {
             setShowAccountInfor(true);
             setShowprofile(false);
         }
     }
+    const removeAction = async () => {
+        const request = {
+            ownerId: user.email,
+            groupId: chatInfo.roomId
+        }
+        try {
+            await removeGroup(request);
+            handleClose();
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+    const handleLeaveGroup = () => {
+        handleShow();
+
+    }
+    const handleCloseModal = () => setShowVerifyModal(false);
+    const handleRemoveGroup = () => {
+        handleShowRemoveMoadl();
+    }
+    const handleShowHelloMessageModal = () => {
+        setShowAccountInfor(false);
+        setShowHelloMessage(true)
+    }
     const handleMouseEnter = () => {
         setShowHoverDots(true);
 
+    }
+    const leaveAction = async () => {
+        const request = {
+            memberId: user.email,
+            groupId: chatInfo.roomId
+        }
+        try {
+            await leaveGroup(request);
+            handleClose();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleMouseLeave = () => {
@@ -125,20 +170,39 @@ function HoverDots({ member }) {
         }
     }
 
+
+    const checkDot = (member) => {
+        if (chatInfo.user.owner === user.email) {
+            return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
+
+        }
+        if (chatInfo.user.owner !== user.email && !admins.includes(user.email) && member.email === user.email) {
+            return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
+        }
+
+        if (admins.includes(user.email) && admins.includes(member.email) && member.email === user.email) {
+            return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
+        }
+        if (admins.includes(user.email) && !admins.includes(member.email) && member.email !== chatInfo.user.owner) {
+            return <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>
+        }
+    }
+
+
     return (
-        <div className="d-flex w-100 container-member "   onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <div className="d-flex w-100 container-member " onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div className='d-flex member-tong' style={{ width: '100%', alignItems: 'center', }} onClick={handleShowAccountInforOrProfile} >
                 <Avatar user={member} /> {member.email === chatInfo.user.owner ? <div className="rotate-45"><Icon style={{ color: "#f5d25c" }} icon="zi-key-solid" size={18} /></div> :
                     (admins.includes(member.email)) ? <div className="rotate-45"><Icon style={{ color: "#00ff7f" }} icon="zi-key-solid" size={18} /></div> :
                         <></>}
                 <div style={{ marginLeft: '15px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                       {user.email === member.email ? <span>Bạn</span>: <span>{member.name}</span>}
+                        {user.email === member.email ? <span>Bạn</span> : <span>{member.name}</span>}
                         {member.email === chatInfo.user.owner ? <span style={{ fontSize: 14, color: '#9a8f85' }}>Trưởng nhóm</span>
-                            :(admins.includes(member.email)) ?
-                            <span style={{ fontSize: 14, color: '#9a8f85' }}>Phó nhóm</span>
-                            :
-                            <></>
+                            : (admins.includes(member.email)) ?
+                                <span style={{ fontSize: 14, color: '#9a8f85' }}>Phó nhóm</span>
+                                :
+                                <></>
                         }
 
                     </div>
@@ -150,32 +214,64 @@ function HoverDots({ member }) {
                     alignItems: 'center'
                 }}
             >
-                {(chatInfo.user.owner === user.email || admins.includes(user.email))
-                    && (chatInfo.user.owner !== member.email) && (user.email !== member.email)
+                {((chatInfo.user.owner === user.email || admins.includes(user.email) || user.email === member.email)
+                )
                     ? <Dropdown style={{ width: '100%' }}>
-                        <Dropdown.Toggle className=" btn-dots" as={CustomToggle} >
-                            <button className="btn-dooot"> <i className="bi bi-three-dots"></i></button>
+                        <Dropdown.Toggle className="btn-dots" as={CustomToggle}>
+                            {/* {(chatInfo.user.owner !== user.email && chatInfo.user.owner === member.email)?<></>:
+                            (!admins.includes(user.email) && (chatInfo.user.owner !== user.email && (admins.includes(member.email) ||  user.email !== member.email))) ?<></>:
+                            <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>} */}
+                            {checkDot(member)}
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="item-menu" >
                             {
-                                user.email === chatInfo.user.owner ?
-                                    admins.includes(member.email) ?
-                                        <Dropdown.Item onClick={handleRemoveAdmin}>Xóa phó nhóm</Dropdown.Item> :
-                                        <Dropdown.Item onClick={handleAddAdmin}>Thêm phó nhóm</Dropdown.Item>
-                                    : <></>
+                                user.email === chatInfo.user.owner && user.email !== member.email
+                                    ? <>
+                                        {admins.includes(member.email)
+                                            ? <Dropdown.Item onClick={handleRemoveAdmin}>Xóa phó nhóm</Dropdown.Item>
+                                            : <Dropdown.Item onClick={handleAddAdmin}>Thêm phó nhóm</Dropdown.Item>
+                                        }
+                                        <Dropdown.Item onClick={handleRemoveMember}>Xóa thành viên</Dropdown.Item>
+                                    </>
+                                    : null
                             }
                             {
-                                chatInfo.user.owner === user.email ||
-                                    (admins.includes(user.email) && !admins.includes(member.email)) ?
-                                    <Dropdown.Item onClick={handleRemoveMember}>Xóa thành viên</Dropdown.Item> :
-                                    <></>
+                                admins.includes(user.email) && !admins.includes(member.email) && user.email !== member.email && chatInfo.user.owner !== member.email
+                                    ? <Dropdown.Item onClick={handleRemoveMember}>Xóa thành viên</Dropdown.Item>
+                                    : null
                             }
-
+                            {
+                                user.email === member.email
+                                    ?
+                                    chatInfo.user.owner === user.email ?
+                                     <Dropdown.Item onClick={handleRemoveGroup} >Giải thán nhóm</Dropdown.Item>
+                                    : <Dropdown.Item onClick={handleLeaveGroup} >Rời nhóm</Dropdown.Item>:<></>
+                            }
                         </Dropdown.Menu>
-                    </Dropdown> : <></>}
+                    </Dropdown>
+                    : null
+                }
 
-                   {showAccountInfor &&(<AccountInfor show={showAccountInfor} onClose={() => setShowAccountInfor(false)} user={member}/>)} 
-                   {showProfile &&(<ProfileModal show={showProfile} onClose={() => setShowprofile(false)} />)}                 
+
+
+                {showAccountInfor && (<AccountInfor show={showAccountInfor} onClose={() => setShowAccountInfor(false)} user={member} addFriend={handleShowHelloMessageModal} />)}
+                {showProfile && (<ProfileModal show={showProfile} onClose={() => setShowprofile(false)} />)}
+                {showHelloMessage && (<HelloMessage show={showHelloMessage} onClose={() => setShowHelloMessage(false)} handleBack={handleShowAccountInforOrProfile} />)}
+
+
+
+
+                <VerifyModal content="Bạn có chắc chắn muốn rời nhóm" show={showVerifyModal}
+                    handleClose={handleCloseModal}
+                    action={leaveAction}
+                />
+                <VerifyModal content="Bạn có chắc chắn giải tán nhóm" show={showRemoveModal}
+                    handleClose={handleCloseRemoveModal}
+                    action={removeAction}
+                />
+
+
+
             </div>
         </div>
     );

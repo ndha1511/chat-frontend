@@ -62,13 +62,13 @@ function FullLayout(props) {
   useEffect(() => {
     const getListFriendRequet = async (email) => {
       try {
-          const response = await getListFriend(email);
-          dispatch(setFriendAccepted(response));
+        const response = await getListFriend(email);
+        dispatch(setFriendAccepted(response));
       } catch (error) {
-          console.error("", error);
+        console.error("", error);
 
       }
-  };
+    };
 
     const getListFriends = async (email) => {
       try {
@@ -228,7 +228,7 @@ function FullLayout(props) {
 
 
 
-  const onFriendReceived = ()=>{
+  const onFriendReceived = () => {
     dispatch(reRenderGroup())
   };
 
@@ -247,6 +247,7 @@ function FullLayout(props) {
           break;
         case "ADD_ADMIN":
         case "REMOVE_ADMIN":
+        case "REMOVE_MEMBER_GROUP":
         case "ADD_MEMBER_GROUP":
           dispatch(reRenderMember());
           dispatch(reRenderRoom());
@@ -396,16 +397,16 @@ function FullLayout(props) {
     };
   }, [windowSize]);
 
- 
+
   return (
     <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh" }}>
-      {dragableCallQuestion ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallDragable callerInfo={callerInfo} /> : 
-      <VideoCallDragable 
+      {dragableCallQuestion ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallDragable callerInfo={callerInfo} /> :
+        <VideoCallDragable
           callerInfo={callerInfo}
           groupInfo={groupInfo}
-      /> : <></>}
+        /> : <></>}
       {dragableCallRequest && <CallRequestDragable />}
-      {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView  callerInfo={callerInfo}
+      {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView callerInfo={callerInfo}
       /> : <VideoCallingView
         remoteStreams={remoteStreamsUnique}
       /> : <></>}
@@ -445,7 +446,7 @@ function FullLayout(props) {
               className="btn-hover"
               hoverColor="#f0f0f0"
               marginRight={10}
-            
+
               borderRadius={50}><Icon icon='zi-chevron-left-header' size={32} /></ButtonIcon> :
             <></>
         })}

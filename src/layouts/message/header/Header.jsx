@@ -12,7 +12,7 @@ import { setMessageCall } from "../../../redux/reducers/messageReducer";
 
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
-import { getGroupById } from "../../../services/GroupService";
+import { getGroupById, getUserGroupById } from "../../../services/GroupService";
 
 import AccountInfor from "../../../components/modal/AccountInfor";
 import ChatInfoOffcanvasFriend from "./ChatInfoOffcanvasFriend";
@@ -20,6 +20,8 @@ import ChatInfoOffcanvasFriend from "./ChatInfoOffcanvasFriend";
 import { setLocalPeer, setLocalStream } from "../../../configs/WebRTCConfig";
 import { setDragableCallRequest } from "../../../redux/reducers/dragableReducer";
 import HelloMessage from "../../../components/modal/HelloMessage";
+import GroupInfor from "../../../components/modal/GroupInfor";
+import UpdateGroupModal from "../../header/UpdateGroupModal";
 
 
 
@@ -35,7 +37,10 @@ function Header(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
+    const [showGroup, setShowGroup] = useState(false)
+    const [showCreateModal, setShowCreateModal] = useState(false)
     const [showInfor, setshowInfor] = useState(false)
+    const [listMember, setListMember] = useState([])
     const dispatch = useDispatch();
     console.log(chatInfo)
     const handleShowHelloMessageModal = () => {
@@ -43,13 +48,34 @@ function Header(props) {
         setShowHelloMessageModal(true)
 
     }
+    const handleShowAccountInfor = () => {
+        setshowInfor(true);
+        setShowHelloMessageModal(false)
+    }
 
     const handleShowProfile = () => {
         // setFriend(item)
         setshowInfor(true)
 
     }
+    const memberList = async () => {
+        const rep = await getUserGroupById(chatInfo.user.id);
+        setListMember(rep);
+    }
+    const hanldeUserGroup = async () => {
 
+        if (chatInfo.room?.roomType === "GROUP_CHAT") {
+            try {
+                await memberList();
+                setShowGroup(true);
+            } catch (error) {
+
+            }
+
+        } else {
+            setshowInfor(true);
+        }
+    }
 
     const handleShowManager = () => {
         setShowManager(true);
@@ -61,36 +87,40 @@ function Header(props) {
 
     const chatIcon = [
         {
-            item:  <Icon icon='zi-search' size={25}/>,
+            item: <Icon icon='zi-search' size={25} />,
             title: "Tìm kiếm tin nhắn"
         },
         {
-            item: <i style={{fontSize:19}} className="bi bi-telephone"></i>,
+            item: <i style={{ fontSize: 19 }} className="bi bi-telephone"></i>,
             title: "Cuộc gọi thoại"
         },
         {
-            item: <Icons type="video1"  size={25} />,
+            item: <Icons type="video1" size={25} />,
             title: "Gọi video"
         },
         {
 
-            item: <><i style={{fontSize:19}} className="bi bi-square-half"></i></>,
+            item: <><i style={{ fontSize: 19 }} className="bi bi-square-half"></i></>,
 
             title: "Thông tin hội thoại"
         }
     ]
     const chatIconGroup = [
         {
-            item:  <Icon icon='zi-search' size={25}/>,
+            item: <Icon onClick={()=>{setShowCreateModal(true)}} icon='zi-add-member' size={25} />,
+            title: "Thêm thành viên"
+        },
+        {
+            item: <Icon icon='zi-search' size={25} />,
             title: "Tìm kiếm tin nhắn"
         },
         {
-            item: <Icons type="video1"  size={25} />,
+            item: <Icons type="video1" size={25} />,
             title: "Gọi video"
         },
         {
 
-            item: <><i style={{fontSize:19}} className="bi bi-square-half"></i></>,
+            item: <><i style={{ fontSize: 19 }} className="bi bi-square-half"></i></>,
 
             title: "Thông tin hội thoại"
         }
@@ -100,7 +130,8 @@ function Header(props) {
     const clickButtonRightGroup = (index) => {
         switch (index) {
             case 0: break;
-            case 1:
+            case 1: break;
+            case 2:
                 const dataVideo = {
                     senderId: userCurrent?.email,
                     receiverId: chatInfo?.user?.id,
@@ -111,7 +142,7 @@ function Header(props) {
                 const mediaVideo = { video: true, audio: true };
                 handleCallRequest(dataVideo, mediaVideo);
                 break;
-            case 2:
+            case 3:
                 handleShow();
                 break;
             default: break;
@@ -131,7 +162,7 @@ function Header(props) {
                 dispatch(setDragableCallRequest(true));
 
                 // call api
-                const media = {video: false, audio: true};
+                const media = { video: false, audio: true };
                 handleCallRequest(data, media);
                 break;
             case 2:
@@ -183,29 +214,29 @@ function Header(props) {
             </div>
         }
     }
-    const renderMessage = useSelector(state=>state.renderMessage.renderMessage)
-    const [groupState,setGroupState] =useState(null)
-    useEffect(()=>{
-        const getGroup = async ()=>{
-            if(chatInfo && chatInfo.room?.roomType === "GROUP_CHAT"){
-               try {
-                const group = await getGroupById(chatInfo.user.id);
-                setGroupState(group)
-               } catch (error) {
-                
-               }
-         
-            } 
+    const renderMessage = useSelector(state => state.renderMessage.renderMessage)
+    const [groupState, setGroupState] = useState(null)
+    useEffect(() => {
+        const getGroup = async () => {
+            if (chatInfo && chatInfo.room?.roomType === "GROUP_CHAT") {
+                try {
+                    const group = await getGroupById(chatInfo.user.id);
+                    setGroupState(group)
+                } catch (error) {
+
+                }
+
+            }
         }
         getGroup();
-    },[renderMessage, chatInfo])
+    }, [renderMessage, chatInfo])
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",
             justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f0f0f0"
         }}>
             <div className="d-flex" style={{ alignItems: "center" }}>
-                <button style={{ border: 'none', backgroundColor: 'white' }} onClick={handleShowProfile}><Avatar user={chatInfo.user} /></button>
+                <button style={{ border: 'none', backgroundColor: 'white' }} onClick={hanldeUserGroup}><Avatar user={chatInfo.user} /></button>
                 <div className="d-flex" style={{
                     marginLeft: 10,
                     alignItems: "center",
@@ -219,7 +250,7 @@ function Header(props) {
                         {chatInfo.user.name}
                     </span>
                     {isHovered && (
-                        <div style={{marginLeft:6}}> <ButtonIcon
+                        <div style={{ marginLeft: 6 }}> <ButtonIcon
                             title="Chỉnh sửa"
                             className="btn-hover"
                             hoverColor="#f0f0f0"
@@ -256,14 +287,18 @@ function Header(props) {
             />}
             {/* Modal accontInfor */}
             {
-              showInfor &&  <AccountInfor show={showInfor} onClose={() => setshowInfor(false)} user={chatInfo.user} closeBack={2} addFriend={handleShowHelloMessageModal}  />
+                showInfor && <AccountInfor show={showInfor} onClose={() => setshowInfor(false)} user={chatInfo.user} closeBack={2} addFriend={handleShowHelloMessageModal} />
 
-            }    
-              {
-              showHelloMessageModal &&  <HelloMessage show={showHelloMessageModal} user={chatInfo.user} onClose={() => setShowHelloMessageModal(false)}  />
+            }
+            {
+                showHelloMessageModal && <HelloMessage show={showHelloMessageModal} user={chatInfo.user} onClose={() => setShowHelloMessageModal(false)} handleBack={handleShowAccountInfor} />
 
-            }  
-
+            }
+            {showGroup && <GroupInfor show={showGroup} onClose={() => setShowGroup(false)} user={chatInfo.user} listMember={listMember} />}
+            <UpdateGroupModal show={showCreateModal} handleClose={() => setShowCreateModal(false)}
+                groupName={chatInfo.user.name}
+            // selectedMembers={groupChat.members}
+            />
         </div>
     );
 }

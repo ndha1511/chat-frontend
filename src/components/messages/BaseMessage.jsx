@@ -11,6 +11,9 @@ import { getUserByEmail } from "../../services/UserService";
 import FowardModal from "../modal/foward-modal/FowardModal";
 import { Icon } from "zmp-ui";
 import Icons from "../icons/Icons";
+import AccountInfor from "../modal/AccountInfor";
+import HelloMessage from "../modal/HelloMessage";
+import { getUserGroupById } from "../../services/GroupService";
 
 
 
@@ -19,9 +22,20 @@ function BaseMessage(props) {
     const [hiddenBtn, setHiddenBtn] = useState(false);
     const user = useSelector((state) => state.userInfo.user);
     const dispatch = useDispatch();
-
+    const chatInfo = useSelector(state => state.message.chatInfo);
+    const [userAcccount, setUserAccount] = useState();
     const [showFowardModal, setShowFowardModal] = useState(false);
+    const [showAccountInfor, setShowAccountInfor] = useState(false);
+    const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
+    const handleShowHelloMessageModal = () => {
+        setShowAccountInfor(false);
+        setShowHelloMessageModal(true)
 
+    }
+    const handleShowAccountInforModal = () => {
+        setShowHelloMessageModal(false);
+        setShowAccountInfor(true);
+    }
     const closeFowardModal = () => {
         setShowFowardModal(false);
     }
@@ -44,7 +58,7 @@ function BaseMessage(props) {
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <span
-           
+
             ref={ref}
             onClick={(e) => {
                 e.preventDefault();
@@ -75,16 +89,32 @@ function BaseMessage(props) {
 
         }
     }
+    const hanldeUserGroup = async()=>{
+        if(chatInfo.room?.roomType === "GROUP_CHAT"){
+            try {
+                const rep = await getUserByEmail(props.message.senderId);
+                console.log(props.message.senderId)
+                setUserAccount(rep)
+                setShowAccountInfor(true);
+            } catch (error) {
+    
+            }
+      
+        }else{
+            setUserAccount(chatInfo.user)
+            setShowAccountInfor(true);
+        }
+    }
 
     const btnCT = [
-        { item: <Icons type="reply" size={25}/> },
-     
-        { item: <Icon onClick={openFowardModal} icon="zi-share" size={25}/> },
+        { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, },
+
+        { item: <Icon onClick={openFowardModal} icon="zi-share-solid" size={18} /> },
 
         {
             item: <Dropdown>
                 <Dropdown.Toggle as={CustomToggle} >
-                    <Icon icon="zi-more-horiz-solid" size={25}/>
+                    <Icon style={{ marginTop: -5, color: '' }} icon="zi-more-horiz-solid" size={20} />
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="d-flex-right custom-dropdown-menu-cs">
@@ -123,24 +153,28 @@ function BaseMessage(props) {
             }}>
             {hiddenBtn && props.message.messageStatus !== "REVOKED" && props.message.messageStatus !== "ERROR" && props.message.messageType !== "SYSTEM" && (
                 <div className="hidden" style={{ display: "block", marginBottom: "20px", position: 'relative' }}>
-                    <div style={{ backgroundColor: '#f0f0f0', borderRadius: 5, border: '0.5px solid gainsboro' }}>
+                    <div className="hoverText" style={{ backgroundColor: '#dde8ec', borderRadius: 5, border: 'none', }}>
                         <ButtonGroup buttons={btnCT}
                             className="btn-hover"
-                            width={25}
+                            width={30}
                             height={25}
-                            hoverColor="#f0f0f0"
+                            hoverColor="#dde8ec"
                             textHoverColor="blue"
                             fontSize={18}
                             borderRadius={5}
+                            color='red'
+                            color1='#7589a3'
                         />
                     </div>
                 </div>
             )}
-            
-            {props.children }
-            {!props.isSender && props.message.messageType !== "SYSTEM" && <div style={{ padding: 10 }}>
-                <Avatar user={senderUser} width={40} height={40} /></div>}
-              
+
+            {props.children}
+            {!props.isSender && props.message.messageType !== "SYSTEM" &&
+                <div onClick={() => {  hanldeUserGroup();}} style={{ padding: 10 }}>
+                    <Avatar user={senderUser} width={40} height={40} />
+                </div>}
+
             {
                 props.lastMessage ?
                     <div className="m-2" style={{ position: "absolute", bottom: -60, padding: 10 }}>
@@ -148,9 +182,9 @@ function BaseMessage(props) {
                     </div> : <></>
             }
 
-            <FowardModal show={showFowardModal} handleClose={closeFowardModal} message={props.message}/>
-      
-         
+            <FowardModal show={showFowardModal} handleClose={closeFowardModal} message={props.message} />
+            {showAccountInfor && <AccountInfor show={showAccountInfor} onClose={() => { setShowAccountInfor(false) }} closeBack={2} user={userAcccount} addFriend={handleShowHelloMessageModal} />}
+            {showHelloMessageModal && <HelloMessage show={showHelloMessageModal} user={userAcccount} onClose={() => setShowHelloMessageModal(false)} handleBack={handleShowAccountInforModal} />}
 
         </div>
     );
