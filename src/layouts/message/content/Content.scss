@@ -4,7 +4,7 @@
     position: relative;
     height: 100%;
     overflow-y: auto;
-    overflow-x: unset;
+    overflow-x: hidden;
     flex-direction: column-reverse;
     padding-bottom: 20px;
     // background: linear-gradient(90deg, rgba(45,240,229,1) 48%, rgba(85,202,218,1) 63%, rgba(149,228,217,1) 98%);
@@ -19,8 +19,44 @@
     width: 100%;
 }
 
+.message-center {
+    justify-content: center;
+    width: 100%;
+}
+
 .loading {
     position: absolute;
     top: 50%;
     left: 50%;
 }
+
+@keyframes slideInFromBottom {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+.message-slide-in {
+    animation: slideInFromBottom 0.5s ease-out;
+}
+
+.scroll-button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    border-radius: 50%;
+    position: fixed;
+    bottom: 160px;
+    transform: translateX(-50%);
+    &:hover {
+        color: blue
+    }
+}
+
+

@@ -14,7 +14,7 @@ import ProfileModal from "../modal/ProfileModal";
 function HoverDots({ member }) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector(state => state.userInfo.user);
-    const admins = useSelector(state => state.members.admins);
+    const admins = chatInfo.user.admins;
     const [showHoverDots, setShowHoverDots] = useState(false);
     const [showAccountInfor, setShowAccountInfor] = useState(false)
     const [showProfile, setShowprofile] = useState(false)

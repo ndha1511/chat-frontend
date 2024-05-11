@@ -168,10 +168,10 @@ function Header(props) {
 
     const renderRight = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
-            if (groupState?.groupStatus === "INACTIVE") {
+            if (chatInfo?.user.groupStatus === "INACTIVE") {
                 return <></>;
             }
-            if (!groupState?.members.includes(userCurrent.email)) {
+            if (!chatInfo?.user.members.includes(userCurrent.email)) {
                 return <></>;
             }
             return <div className="action">
@@ -183,22 +183,7 @@ function Header(props) {
             </div>
         }
     }
-    const renderMessage = useSelector(state=>state.renderMessage.renderMessage)
-    const [groupState,setGroupState] =useState(null)
-    useEffect(()=>{
-        const getGroup = async ()=>{
-            if(chatInfo && chatInfo.room?.roomType === "GROUP_CHAT"){
-               try {
-                const group = await getGroupById(chatInfo.user.id);
-                setGroupState(group)
-               } catch (error) {
-                
-               }
-         
-            } 
-        }
-        getGroup();
-    },[renderMessage, chatInfo])
+  
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",

@@ -3,8 +3,8 @@ import Header from "../header/Header";
 import Navbar from "../navbars/Navbar";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
 import { useDispatch, useSelector } from "react-redux";
-import { reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
-import { createRooms, reRenderRoom } from "../../redux/reducers/renderRoom";
+import { pushMessage, reRenderChatInfor, reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
+import { createRooms, reRenderRoom, updateRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
 import { setFriend, setFriendAccepted } from "../../redux/reducers/friendReducer";
@@ -23,14 +23,16 @@ import { reRenderMessageHF } from "../../redux/reducers/renderMessage";
 import { Icon } from "zmp-ui";
 import { connect, stompClient } from "../../configs/SocketConfig";
 import { closePeer, closeStream, localPeer, localStream } from "../../configs/WebRTCConfig";
+import { setWindowSize } from "../../redux/reducers/renderReducer";
 
-
+let chatInfo = {};
 
 
 function FullLayout(props) {
   const user = useSelector((state) => state.userInfo.user);
   const rooms = useSelector((state) => state.room.rooms);
   const messageCall = useSelector((state) => state.message.messageCall);
+  chatInfo = useSelector(state => state.message.chatInfo);
   const rerenderRoom = useSelector((state) => state.room.reRender);
   const renderGroup = useSelector((state) => state.group.renderGroup);
   const dragableAudioCall = useSelector((state) => state.dragable.dragableAudioCall);
@@ -44,6 +46,8 @@ function FullLayout(props) {
   const [remoteStreams, setRemoteStreams] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
+
+  console.log(chatInfo)
 
 
   // Hàm loại bỏ các phần tử trùng lặp từ một mảng
@@ -98,15 +102,20 @@ function FullLayout(props) {
 
 
   const state = props.state;
+  const windowSizeRedux = useSelector(state => state.render.windowSize);
   const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight
+    width: windowSizeRedux.width,
+    height: windowSizeRedux.height
   });
 
   const dispatch = useDispatch();
   const changeShowComponent = () => {
     dispatch(props.action());
   }
+
+  useEffect(() => {
+    setWindowSize(windowSizeRedux);
+  }, [windowSizeRedux])
 
   const onCallReceived = (call) => {
     if (!localPeer) return;
@@ -250,16 +259,20 @@ function FullLayout(props) {
         case "ADD_MEMBER_GROUP":
           dispatch(reRenderMember());
           dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
-          dispatch(reRenderMessageHF());
+          if(Object.keys(chatInfo).length > 0) {
+            dispatch(reRenderMessge());
+          }
+          dispatch(reRenderChatInfor());
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
         case "LEAVE":
           dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
+          if(Object.keys(chatInfo).length > 0) {
+            dispatch(reRenderMessge());
+          }
           dispatch(reRenderMember());
-          dispatch(reRenderMessageHF());
+          dispatch(reRenderChatInfor());
           stompClient.unsubscribe(room.roomId);
           stompClient.unsubscribe(`${room.roomId}_call`);
           break;
@@ -273,16 +286,22 @@ function FullLayout(props) {
           break;
         case "REJECT_CALL":
         case "MISSED_CALL":
-          dispatch(setDragableCallQuestion(true));
+          dispatch(setDragableCallQuestion(false));
           dispatch(setDragableCallRequest(false));
           dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
+          if(Object.keys(chatInfo).length > 0) {
+            dispatch(reRenderMessge());
+          }
           closeStream();
           break;
         case "END_CALL":
           dispatch(setDragableAudioCall(false));
           dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
+          if(Object.keys(chatInfo).length > 0) {
+            if(chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+              dispatch(reRenderMessge());
+            }
+          }
           closeStream();
           closePeer();
           setRemoteStreams([]);
@@ -291,11 +310,35 @@ function FullLayout(props) {
           dispatch(setDragableCallRequest(false));
           dispatch(setDragableAudioCall(true));
           dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
+          if(Object.keys(chatInfo).length > 0) {
+            if(chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+              dispatch(reRenderMessge());
+            }
+          }
           break;
-        default:
+        case "SUCCESS":
+          const roomTemp = {
+            ...room,
+            avatar: chatInfo.user.avatar,
+            name: chatInfo.user.name,
+          }
+          dispatch(pushMessage(dataReceived.message));
+          dispatch(updateRoom(roomTemp));
+          break;
+        case "SENT":
+          console.log(chatInfo);
+          if(Object.keys(chatInfo).length > 0) {
+            if(chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+              dispatch(pushMessage(dataReceived.message));
+            }
+          }
           dispatch(reRenderRoom());
-          dispatch(reRenderMessge());
+        default:
+          console.log("default")
+          if(Object.keys(chatInfo).length > 0) {
+            dispatch(reRenderMessge());
+          }
+          dispatch(reRenderRoom());
           break;
       }
     }
@@ -398,13 +441,13 @@ function FullLayout(props) {
 
  
   return (
-    <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh" }}>
+    <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh", overflow: "hidden" }}>
       {dragableCallQuestion ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallDragable callerInfo={callerInfo} /> : 
       <VideoCallDragable 
           callerInfo={callerInfo}
           groupInfo={groupInfo}
       /> : <></>}
-      {dragableCallRequest && <CallRequestDragable />}
+      {dragableCallRequest && <CallRequestDragable receiver={chatInfo}/>}
       {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView  callerInfo={callerInfo}
       /> : <VideoCallingView
         remoteStreams={remoteStreamsUnique}

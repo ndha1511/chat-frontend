@@ -156,7 +156,7 @@ function ContentListFriend(props) {
                     </div>
                 </>
             )}
-            {showMessageLayout && <MessageLayout />}
+            {showMessageLayout && <MessageLayout backButton={props.backButton} />}
         </>
     );
 

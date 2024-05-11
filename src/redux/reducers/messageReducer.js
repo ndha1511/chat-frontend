@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 
 const initialState = {
   chatInfo: {},
+  renderChatInfor: false,
   messages: [],
   renderMessage: false,
   scrollEnd: false,
@@ -13,7 +14,8 @@ const initialState = {
  * @param {chatInfo}
      const chatInfo = {
         user: {...response},
-        roomId: props.room.roomId
+        roomId: props.room.roomId,
+        room: props.room,
       };
   * @param {messages}
       const messages = [phần response của message khi fetch data]
@@ -30,13 +32,15 @@ export const messageReducer = createSlice({
       state.messages = action.payload;
     },
     pushMessage: (state, action) => {
-      state.messages = [action.payload, ...state.messages];
+      const index = state.messages.findIndex(msg => msg.id === action.payload.id);
+      if(index !== -1) {
+        state.messages[index] = action.payload;
+      } else {
+        state.messages = [ action.payload, ...state.messages ];
+      }
     },
     updateMessage: (state, action) => {
-      state.messages = state.messages.map((message) => {
-        if(message.id === action.payload.id) return action.payload;
-        return message;
-      });
+      state.messages = [...state.messages, ...action.payload];
     },
     deleteMessage: (state, action) => {
       const index = action.payload;
@@ -50,6 +54,9 @@ export const messageReducer = createSlice({
     },
     setMessageCall: (state, action) => {
       state.messageCall = action.payload;
+    }, 
+    reRenderChatInfor: (state) => {
+      state.renderChatInfor = !state.renderChatInfor;
     }
   },
 })
@@ -62,7 +69,8 @@ export const {
   deleteMessage, 
   reRenderMessge, 
   setScrollEnd,
-  setMessageCall 
+  setMessageCall,
+  reRenderChatInfor 
 } = messageReducer.actions
 
 export default messageReducer.reducer
