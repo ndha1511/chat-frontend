@@ -4,12 +4,11 @@ import { useDispatch } from "react-redux";
 import "./Footer.scss";
 import { sendImgaeGroup, sendMessageToUser } from "../../../services/ChatService";
 import { useEffect, useRef, useState } from "react";
-import { pushMessage, reRenderMessge, setChatInfo, setScrollEnd } from "../../../redux/reducers/messageReducer";
+import { pushMessage, setChatInfo, setScrollEnd } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
-import { getGroupById } from "../../../services/GroupService";
 import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
 
 
@@ -99,7 +98,7 @@ function Footer(props) {
                     const msg = await sendImgaeGroup(request);
                     dispatch(pushMessage(msg));
                     dispatch(reRenderRoom());
-                    findRoomId();
+                    // findRoomId();
                     dispatch(setViewIndedx(0));
                     fileInputRef.current.value = null;
                 } catch (error) {
@@ -124,9 +123,8 @@ function Footer(props) {
                     request.append("hiddenSenderSide", false);
                     const msg = await sendMessageToUser(request);
                     dispatch(pushMessage(msg));
-                    dispatch(reRenderMessge());
                     dispatch(reRenderRoom());
-                    findRoomId();
+                    // findRoomId();
                     dispatch(setViewIndedx(0));
                     fileInputRef.current.value = null;
                 } catch (error) {
@@ -211,11 +209,10 @@ function Footer(props) {
                 request.append("hiddenSenderSide", false);
                 setTextContent("");
                 const msg = await sendMessageToUser(request);
-                dispatch(pushMessage(msg));
-                dispatch(reRenderMessge());
-                dispatch(reRenderRoom());
+                // dispatch(pushMessage(msg));
+                // dispatch(reRenderMessge());
                 dispatch(setScrollEnd())
-                findRoomId();
+                // findRoomId();
                 dispatch(setViewIndedx(0));
 
             } catch (error) {
@@ -296,9 +293,7 @@ function Footer(props) {
         try {
             const sendMessageAsync = async () => {
                 const msg = await sendMessageToUser(request);
-                dispatch(pushMessage(msg));
-                dispatch(reRenderMessge());
-                dispatch(reRenderRoom());
+                // dispatch(pushMessage(msg));
                 dispatch(setScrollEnd());
                 findRoomId();
             };
@@ -326,32 +321,18 @@ function Footer(props) {
         </div>
     }
 
-    const renderMessage = useSelector(state=>state.renderMessage.renderMessage)
-    const [groupState,setGroupState] =useState(null);
-    useEffect(()=>{
-        const getGroup = async ()=>{
-            if(chatInfo.room?.roomType === "GROUP_CHAT"){
-               try {
-                const group = await getGroupById(chatInfo.user.id);
-                setGroupState(group)
-               } catch (error) {
-                
-               }
-         
-            } 
-        }
-        getGroup();
-    },[renderMessage, chatInfo])
+
+  
     const renderFooter = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
-            if (groupState?.groupStatus === "INACTIVE") {
+            if (chatInfo?.user.groupStatus === "INACTIVE") {
                 return groupRemoved();
             }
-            if (!groupState?.members.includes(userCurrent.email)) {
+            if (!chatInfo?.user.members.includes(userCurrent.email)) {
                 return groupNotMember();
             }
-            if (groupState?.sendMessagePermission !== "PUBLIC" &&
-                (userCurrent.email !== groupState?.owner && !groupState?.admins.includes(userCurrent.email))) {
+            if (chatInfo?.user.sendMessagePermission !== "PUBLIC" &&
+                (userCurrent.email !== chatInfo?.user.owner && !chatInfo?.user.admins.includes(userCurrent.email))) {
                 return groupNotPermission();
             }
            
