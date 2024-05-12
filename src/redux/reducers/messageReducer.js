@@ -40,7 +40,15 @@ export const messageReducer = createSlice({
       }
     },
     updateMessage: (state, action) => {
-      state.messages = [...state.messages, ...action.payload];
+      let newMessage = action.payload;
+      for(let i = 0; i < newMessage.length; i++) {
+        const index = state.messages.findIndex(msg => msg.id === newMessage[i].id);
+        if(index!== -1) {
+          state.messages[index] = newMessage[i];
+        } else {
+          state.messages = [...state.messages, newMessage[i]];
+        }
+      }
     },
     deleteMessage: (state, action) => {
       const index = action.payload;

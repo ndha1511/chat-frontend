@@ -36,6 +36,7 @@ function Content(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [messageGroupDate, setMessageGroupDate] = useState({});
 
     const [showScrollButton, setShowScrollButton] = useState(false);
 
@@ -86,6 +87,7 @@ function Content(props) {
             setCurrentPage(prev => prev + 1);
             const response = await getMessageByRoomId(userCurrent.email, props.roomId, currentPage + 1);
             const messagesMore = response.messages.reverse();
+            setTotalPages(response.totalPage);
             dispatch(updateMessage(messagesMore));
         } catch (error) {
             console.log(error);
@@ -93,11 +95,25 @@ function Content(props) {
     }
 
     useEffect(() => {
+        let messageGroup = {};
+        messages.forEach(msg => {
+            const [year, month, day] = msg.sendDate.slice(0, 3);
+            const dateString = `${year}-${month}-${day}`;
+            if (!messageGroup[dateString]) {
+                messageGroup[dateString] = [];
+            }
+            messageGroup[dateString].unshift(msg);
+        });
+        setMessageGroupDate(messageGroup);
+    }, [messages]);
+
+    useEffect(() => {
         if (chatInfo.roomId !== "") {
             const getMessages = async () => {
                 try {
                     const response = await getMessageByRoomId(userCurrent.email, props.roomId);
                     // dispatch(setMessages(response.messages.reverse()));
+                    console.log(response);
                     dispatch(setMessages(response.messages.reverse()));
                     setCurrentPage(0);
                     setTotalPages(response.totalPage);
@@ -108,7 +124,7 @@ function Content(props) {
                 }
             }
             getMessages();
-        } else { 
+        } else {
             dispatch(setMessages([]));
             setLoadMore(false);
         }
@@ -138,10 +154,10 @@ function Content(props) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
         }
     }, [scrollEnd, chatInfo]);
-    
+
     const scrollEvent = () => {
-        if(scrollableDivRef.current) {
-            if(scrollableDivRef.current.scrollTop <= -400) {
+        if (scrollableDivRef.current) {
+            if (scrollableDivRef.current.scrollTop <= -400) {
                 setShowScrollButton(true);
             } else {
                 setShowScrollButton(false);
@@ -190,14 +206,21 @@ function Content(props) {
                 </div>}
                 scrollableTarget="scrollableDiv"
             >
-                {messages.map((message, index) => {
-                    return index === 0 ? <div key={message.id}
-                        className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
+                {Object.keys(messageGroupDate).map((msgDate) => {
+                    return (
+                        <div key={msgDate}>
+                            <div className="message message-center">{msgDate}</div>
+                            {messageGroupDate[msgDate].map((message, index) => {
+                                return index === 0 ? <div key={message.id}
+                                    className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
 
-                        {renderMessage(message, index, true)}  </div> :
-                        <div key={index}
-                            className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
-                        > {renderMessage(message, index)} </div>
+                                    {renderMessage(message, index, true)}  </div> :
+                                    <div key={index}
+                                        className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
+                                    > {renderMessage(message, index)} </div>
+                            })}
+                        </div>
+                    )
                 })}
             </InfiniteScroll>
             {showScrollButton && (
@@ -206,7 +229,7 @@ function Content(props) {
                         left: windowSize.width > 768 ? "98vw" : "93vw"
                     }}
                 >
-                    <Icon icon="zi-chevron-down"/>
+                    <Icon icon="zi-chevron-down" />
                 </button>
             )}
 

@@ -19,11 +19,10 @@ import { setDragableAudioCall, setDragableCallQuestion, setDragableCallRequest }
 import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
 import VideoCallDragable from "../../components/webrtc/VideoCallDragable";
 import VideoCallingView from "../../components/webrtc/VideoCallingView";
-import { reRenderMessageHF } from "../../redux/reducers/renderMessage";
 import { Icon } from "zmp-ui";
 import { connect, stompClient } from "../../configs/SocketConfig";
 import { closePeer, closeStream, localPeer, localStream } from "../../configs/WebRTCConfig";
-import { setWindowSize } from "../../redux/reducers/renderReducer";
+
 
 let chatInfo = {};
 
@@ -46,8 +45,6 @@ function FullLayout(props) {
   const [remoteStreams, setRemoteStreams] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
-
-  console.log(chatInfo)
 
 
   // Hàm loại bỏ các phần tử trùng lặp từ một mảng
