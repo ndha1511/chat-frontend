@@ -7,51 +7,72 @@ import Icons from '../../icons/Icons';
 import { Icon } from 'zmp-ui';
 
 function MessageVideoCall(props) {
-    const [isHovered, setIsHovered] = useState(false);
     const userCurrent = useSelector((state) => state.userInfo.user);
-    const [showContent, setShowContent] = useState(false);
-    const [selectedEmojis, setSelectedEmojis] = useState([]);
-    const [emojiCount, setEmojiCount] = useState(0);
+    
+    const time = props.message.content.duration;
+    // Tính số giờ, phút và giây từ biến đếm
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
 
-    const handleSelectEmoji = (emoji) => {
-        setEmojiCount(prevCount => prevCount + 1);
-        setSelectedEmojis(prevEmojis => {
-            if (!prevEmojis.includes(emoji)) {
-                return [...prevEmojis, emoji];
+    // Format giờ, phút và giây để luôn hiển thị hai chữ số
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    const callStatus = props.message.content.callStatus;
+    const handleCallStatus = () => {
+        const audioCallStatus = callStatus;
+        if (userCurrent.email === props.message.senderId) {
+            switch (audioCallStatus) {
+                case 'START':
+                    return 'Đã gọi';
+                case 'CALLING':
+                    return 'Đang gọi';
+                case 'REJECT':
+                    return 'Người nhận từ chối';
+                case 'CANCEL':
+                    return 'Bạn đã hủy';
+                case 'MISSED':
+                    return 'Cuộc gọi thoại đi';
+                case 'END':
+                    return 'Cuộc gọi thoại đi';
+                default: return '';
+
             }
-            return prevEmojis;
-        });
-        setShowContent(false); // Automatically close the menu after selection
-    };
-    const handleClearEmojis = () => {
-        setSelectedEmojis([]);
-        setEmojiCount(0);
-        setShowContent(false); // Tự động đóng menu sau khi xóa
-    };
-
-    function getStyleForContent(content) {
-        if (content === '👍') {
-            return { fontSize: '30px' }; // Thay đổi kích thước phông chữ khi nội dung là 👍
         }
-        return {}; // Trả về một object style rỗng nếu không phải là 👍
-    }
+        switch (audioCallStatus) {
+            case 'START':
+                return 'Đã gọi';
+            case 'CALLING':
+                return 'Đang gọi';
+            case 'REJECT':
+                return 'Đã từ chối';
+            case 'CANCEL':
+                return 'Đã hủy';
+            case 'MISSED':
+                return 'Bạn bị nhỡ';
+            case 'END':
+                return 'Cuộc gọi thoại đến';
+            default: return '';
 
+        }
+    };
     return (
 
         <BaseMessage
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
-        // showHidden={isHovered}
+
         >
-            <div className='d-flex mess-hover-call' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
+            <div className='d-flex mess-hover-call'  >
                 <div className="d-flex  mess-text-call" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >
                     <div className='text'>
-                        <h5 style={getStyleForContent(props.message.content)}>Bạn đã hủy </h5>
+                        <h5 >{handleCallStatus()}</h5>
                         <div className='call' >
-                            <Icon style={{color:'#72808e'}}  icon='zi-video-solid' />
-                           <div style={{marginLeft:-8,marginTop:-13, marginRight:8}}>  <Icons type="iconCall" size={14} fillColor='red' /></div>
-                            <span>Cuộc gọi thoại</span>
+                            <Icon style={{ color: '#72808e' }} icon='zi-video-solid' />
+                            <div style={{ marginLeft: -8, marginTop: -13, marginRight: 8 }}>  <Icons type="iconCall" size={14} fillColor='red' /></div>
+                            <span>{formattedHours > 0 ? formattedHours + ' giờ' : ''}{formattedMinutes > 0 ? formattedMinutes + ' phút' : ''}{formattedSeconds + ' giây'}</span>
                         </div>
 
                     </div>

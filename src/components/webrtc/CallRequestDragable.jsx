@@ -71,10 +71,6 @@ function CallRequestDragable(props) {
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat'
                     }}>
-                        {/* time call */}
-                        {/* <div className="time-call">
-                                    <span>00:00</span>
-                                </div> */}
                         <Avatar user={receiver.user} width={80} height={80} />
                         <h5>{receiver.name}</h5>
                         <span>Đang đổ chuông</span>

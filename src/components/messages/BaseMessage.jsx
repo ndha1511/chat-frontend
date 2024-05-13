@@ -114,6 +114,7 @@ function BaseMessage(props) {
             case 'VIDEO_CALL':
             case 'IMAGE':
             case 'VIDEO':
+                
                 return true;
             default: return false;
         }
@@ -160,9 +161,9 @@ function BaseMessage(props) {
     return (
         <div onMouseEnter={() => setHiddenBtn(true)}
             onMouseLeave={() => setHiddenBtn(false)}
-            className="d-flex w-100 " style={{
+            className={`d-flex w-100  ${handleTime() ? "mb-3" : ""}  `}   style={{
                 flexDirection: props.isSender && props.message.messageType !== "SYSTEM" ? "row" : "row-reverse",
-                alignItems: props.message.messageType === "SYSTEM" ? "center" : "flex-end", justifyContent: props.message.messageType === "SYSTEM" ? "center" : "flex-end", position: 'relative'
+                alignItems: props.message.messageType === "SYSTEM" ? "center" : "flex-end", justifyContent: props.message.messageType === "SYSTEM" ? "center" : "flex-end", position: 'relative',
             }}>
             {hiddenBtn && props.message.messageStatus !== "REVOKED" && props.message.messageStatus !== "ERROR" && props.message.messageType !== "SYSTEM" && (
                 <div className="hidden" style={{ display: "block", marginBottom: "20px", position: 'relative' }}>
@@ -191,7 +192,7 @@ function BaseMessage(props) {
             {
                 props.lastMessage ?
                     <div className="m-2 status-message1" >
-                        {handleTime()=== true ? <div className="m-2 status-time">
+                        {handleTime() === true ? <div className="m-2 status-time">
                             <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                         </div> : <></>}
                         <div className=" status-message">
@@ -201,7 +202,12 @@ function BaseMessage(props) {
 
                     </div>
 
-                    : <></>
+                    : <div className="m-2 status-message1" >
+                        {handleTime() === true ? <div className="m-2 status-time">
+                            <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
+                        </div> : <></>}
+
+                    </div>
             }
 
             <FowardModal show={showFowardModal} handleClose={closeFowardModal} message={props.message} />

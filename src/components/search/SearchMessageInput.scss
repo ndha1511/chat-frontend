@@ -1,0 +1,17 @@
+.btn-close-search {
+    background-color: transparent;
+    border: none;
+    padding: 6px 14px 6px 14px;
+    margin-left: 16px;
+    border-radius: 16px;
+    &:hover {
+        background-color: #f0f0f0;
+    }
+}
+
+.input-search-message {
+    padding: 6px;
+    ::placeholder {
+        color: grey;
+    }
+}

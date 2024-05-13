@@ -46,7 +46,6 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
     const viewSendMessage = async () => {
         try {
             const response = await getRoomBySenderIdAndReceiverId(userCurrent.email, user.email);
-            console.log(userCurrent.email, user)
             const chatInfo = {
                 user,
                 roomId: response.roomId,
@@ -72,7 +71,6 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
         }
     }
     const unFriend = async () => {
-
 
         const emailSender = userCurrent.email
         const emailRe = user.email

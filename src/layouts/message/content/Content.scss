@@ -59,4 +59,39 @@
     }
 }
 
+.float-date {
+    position: fixed;    
+}
+
+.date-style {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    border-radius: 8px;
+    font-size:10px;
+    color: #fff;
+    
+}
+
+.search-message {
+    position: fixed;
+    top: 12vh;
+    z-index: 998;
+    background-color: #fff;
+    border-top: 2px solid #f0f0f0;
+}
+
+.search-result {
+    position: fixed;
+    z-index: 998;
+    padding-top: 16px;
+    min-height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #fff;
+    border-top: 1px solid #f0f0f0;
+}
+
+
+
 

@@ -12,9 +12,11 @@ function VideoCallingView(props) {
 
     const dispatch = useDispatch();
     const messageCall = useSelector((state) => state.message.messageCall);
+    const userCurrent = useSelector((state) => state.userInfo.user);
     const windowSize = useSelector(state => state.render.windowSize);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [counter, setCounter] = useState(0);
     const [mute, setMute] = useState(false);
     const [showCamera, setShowCamera] = useState(true);
     useEffect(() => {
@@ -25,6 +27,26 @@ function VideoCallingView(props) {
             y: windowSize.height / 2 - 100 // Giữ nguyên vị trí của chiều cao
         });
     }, [windowSize]);
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCounter(pre =>pre +1);
+        }, 1000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [])
+
+    
+    // Tính số giờ, phút và giây từ biến đếm
+    const hours = Math.floor(counter / 3600);
+    const minutes = Math.floor((counter % 3600) / 60);
+    const seconds = counter % 60;
+
+    // Format giờ, phút và giây để luôn hiển thị hai chữ số
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
     const stopCall = async () => {
         closeStream();
         await closeCall(messageCall.id);
@@ -66,7 +88,7 @@ function VideoCallingView(props) {
                         {/* <button><i className="bi bi-arrows-angle-contract"></i></button> */}
                         <div>
                             <img src="/assets/icons/iconCall.png" style={{ width: 28, height: 28, marginRight: 10, marginTop: -7 }} alt="" />
-                            <span>Zalo Call - name</span>
+                            <span>Zalo Call - {props.callerInfo.name}</span>
                         </div>
                         <div onClick={() => dispatch(setDragableAudioCall(false))}>
                             <Icon icon="zi-close" />
@@ -74,7 +96,7 @@ function VideoCallingView(props) {
                     </div>
                     <div className="center-video-call">
                         <div className="time-call-video">
-                            <span>00:00</span>
+                            <span>{formattedHours>0 ?formattedHours:''}{formattedMinutes}:{formattedSeconds}</span>
                         </div>
                         <div className="remote-video">
                             {props.remoteStreams.map((stream, index) => {
@@ -85,12 +107,12 @@ function VideoCallingView(props) {
                                 }} autoPlay muted></video>
                             })}
                              <div className="name-video-call">
-                                <span>Trần Công Minh</span>
+                                <span>{userCurrent.name}</span>
                             </div>
                         </div>
                         <div className="local-video">
                             <div className="name-video-call-1">
-                                <span>Trần Công Minh</span>
+                                <span>{props.callerInfo.name}</span>
                             </div>
                             <video ref={(ref) => {
                                 if (ref && localStream) {

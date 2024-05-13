@@ -8,7 +8,7 @@ import ChatInfoOffcanvas from "./ChatInfoOffcanvas";
 import GroupManagerOffcanvas from "./GroupManagerOffcanvas";
 import { callRequest } from "../../../services/MessageService";
 
-import { setMessageCall } from "../../../redux/reducers/messageReducer";
+import { setMessageCall, setMessageSearch } from "../../../redux/reducers/messageReducer";
 
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
@@ -22,6 +22,7 @@ import { setDragableCallRequest } from "../../../redux/reducers/dragableReducer"
 import HelloMessage from "../../../components/modal/HelloMessage";
 import GroupInfor from "../../../components/modal/GroupInfor";
 import UpdateGroupModal from "../../header/UpdateGroupModal";
+import { setShowSearchMessage } from "../../../redux/reducers/renderLayoutReducer";
 
 
 
@@ -36,6 +37,7 @@ function Header(props) {
     const [showManager, setShowManager] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const userCurrent = useSelector((state) => state.userInfo.user);
+    const showSearchMessage = useSelector((state) => state.renderView.showSearchMessage);
     const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
     const reRenderOffcanvas = useSelector(state => state.members.showOffcanvas)
     const [showGroup, setShowGroup] = useState(false)
@@ -43,7 +45,15 @@ function Header(props) {
     const [showInfor, setshowInfor] = useState(false)
     const [listMember, setListMember] = useState([])
     const dispatch = useDispatch();
-    console.log(chatInfo)
+    
+    const clearSearch = () => {
+        dispatch(setMessageSearch({
+            messages: [],
+            show: false,
+            loading: false,
+            totalPages: 0,
+        }));
+    }
     const handleShowHelloMessageModal = () => {
         setshowInfor(false);
         setShowHelloMessageModal(true)
@@ -130,7 +140,12 @@ function Header(props) {
     const clickButtonRightGroup = (index) => {
         switch (index) {
             case 0: break;
-            case 1: break;
+            case 1:
+                if(showSearchMessage) {
+                    clearSearch();
+                }
+                dispatch(setShowSearchMessage(!showSearchMessage));
+                break;
             case 2:
                 const dataVideo = {
                     senderId: userCurrent?.email,
@@ -152,7 +167,12 @@ function Header(props) {
 
     const clickButtonRight = (index) => {
         switch (index) {
-            case 0: break;
+            case 0:
+                if(showSearchMessage) {
+                    clearSearch();
+                }
+                dispatch(setShowSearchMessage(!showSearchMessage));
+                break;
             case 1:
                 const data = {
                     senderId: userCurrent?.email,

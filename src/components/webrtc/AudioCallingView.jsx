@@ -17,6 +17,7 @@ function AudioCallingView(props) {
     const windowSize = useSelector(state => state.render.windowSize);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [counter, setCounter] = useState(0);
     useEffect(() => {
         const dialogWidth = 300; // Chiều rộng cố định của hộp thoại
         const windowWidth = windowSize.width;
@@ -25,6 +26,27 @@ function AudioCallingView(props) {
             y: windowSize.height / 2 - 100 // Giữ nguyên vị trí của chiều cao
         });
     }, [windowSize]);
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCounter(pre =>pre +1);
+        }, 1000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [])
+
+    
+    // Tính số giờ, phút và giây từ biến đếm
+    const hours = Math.floor(counter / 3600);
+    const minutes = Math.floor((counter % 3600) / 60);
+    const seconds = counter % 60;
+
+    // Format giờ, phút và giây để luôn hiển thị hai chữ số
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    
     function adjustColor(color, amount) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
     }
@@ -64,7 +86,7 @@ function AudioCallingView(props) {
                     <div className="header-audio-call">
                         <div>
                             <img src="/assets/icons/iconCall.png" style={{ width: 28, height: 28, marginRight: 10, marginTop: -7 }} alt="" />
-                            <span>Zalo Call - name</span>
+                            <span>Zalo Call - {props.callerInfo.name}</span>
                         </div>
                         <div onClick={() => dispatch(setDragableAudioCall(false))}>
                             <Icon icon="zi-close" />
@@ -81,7 +103,7 @@ function AudioCallingView(props) {
                     }}>
                         {/* time call */}
                         <div className="time-call">
-                            <span>00:00</span>
+                            <span>{formattedHours>0 ?formattedHours:''}{formattedMinutes}:{formattedSeconds}</span>
                         </div>
                         <Avatar user={props.callerInfo}  width={80} height={80} />
                         <h6>{props.callerInfo.name}</h6>

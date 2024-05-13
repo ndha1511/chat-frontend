@@ -19,11 +19,12 @@ import { setDragableAudioCall, setDragableCallQuestion, setDragableCallRequest }
 import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
 import VideoCallDragable from "../../components/webrtc/VideoCallDragable";
 import VideoCallingView from "../../components/webrtc/VideoCallingView";
-import { reRenderMessageHF } from "../../redux/reducers/renderMessage";
 import { Icon } from "zmp-ui";
 import { connect, stompClient } from "../../configs/SocketConfig";
 import { closePeer, closeStream, localPeer, localStream } from "../../configs/WebRTCConfig";
-import { setWindowSize } from "../../redux/reducers/renderReducer";
+import SearchMessage from "../../components/search/SearchMessage";
+import { setShowSearchMessage } from "../../redux/reducers/renderLayoutReducer";
+
 
 let chatInfo = {};
 
@@ -38,6 +39,7 @@ function FullLayout(props) {
   const dragableAudioCall = useSelector((state) => state.dragable.dragableAudioCall);
   const dragableCallQuestion = useSelector((state) => state.dragable.dragableCallQuestion);
   const dragableCallRequest = useSelector((state) => state.dragable.dragableCallRequest);
+  const showSearchMessage = useSelector((state) => state.renderView.showSearchMessage);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
@@ -46,8 +48,8 @@ function FullLayout(props) {
   const [remoteStreams, setRemoteStreams] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
-
-  console.log(chatInfo)
+  // dùng để lưu vị trí của thanh cuộn trong một số trường hợp không muốn render
+  const [scrollMessage, setScrollMessage] = useState(0);
 
 
   // Hàm loại bỏ các phần tử trùng lặp từ một mảng
@@ -111,6 +113,7 @@ function FullLayout(props) {
   const dispatch = useDispatch();
   const changeShowComponent = () => {
     dispatch(props.action());
+    dispatch(setShowSearchMessage(false));
   }
 
   useEffect(() => {
@@ -260,7 +263,7 @@ function FullLayout(props) {
         case "ADD_MEMBER_GROUP":
           dispatch(reRenderMember());
           dispatch(reRenderRoom());
-          if(Object.keys(chatInfo).length > 0) {
+          if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
           }
           dispatch(reRenderChatInfor());
@@ -269,7 +272,7 @@ function FullLayout(props) {
         case "REMOVE_GROUP":
         case "LEAVE":
           dispatch(reRenderRoom());
-          if(Object.keys(chatInfo).length > 0) {
+          if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
           }
           dispatch(reRenderMember());
@@ -290,7 +293,7 @@ function FullLayout(props) {
           dispatch(setDragableCallQuestion(false));
           dispatch(setDragableCallRequest(false));
           dispatch(reRenderRoom());
-          if(Object.keys(chatInfo).length > 0) {
+          if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
           }
           closeStream();
@@ -298,8 +301,8 @@ function FullLayout(props) {
         case "END_CALL":
           dispatch(setDragableAudioCall(false));
           dispatch(reRenderRoom());
-          if(Object.keys(chatInfo).length > 0) {
-            if(chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+          if (Object.keys(chatInfo).length > 0) {
+            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
               dispatch(reRenderMessge());
             }
           }
@@ -311,8 +314,8 @@ function FullLayout(props) {
           dispatch(setDragableCallRequest(false));
           dispatch(setDragableAudioCall(true));
           dispatch(reRenderRoom());
-          if(Object.keys(chatInfo).length > 0) {
-            if(chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+          if (Object.keys(chatInfo).length > 0) {
+            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
               dispatch(reRenderMessge());
             }
           }
@@ -327,16 +330,16 @@ function FullLayout(props) {
           dispatch(updateRoom(roomTemp));
           break;
         case "SENT":
-          console.log(chatInfo);
-          if(Object.keys(chatInfo).length > 0) {
-            if(chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+          dispatch(reRenderRoom());
+          if (Object.keys(chatInfo).length > 0) {
+            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
               dispatch(pushMessage(dataReceived.message));
             }
           }
-          dispatch(reRenderRoom());
+          break;
         default:
           console.log("default")
-          if(Object.keys(chatInfo).length > 0) {
+          if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
             // if(chatInfo.roomId === '')
           }
@@ -445,15 +448,16 @@ function FullLayout(props) {
   return (
 
     <div className="d-flex" style={{ height: "100vh", position: "relative", width: "100wh", overflow: "hidden" }}>
-      {dragableCallQuestion ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallDragable callerInfo={callerInfo} /> : 
-      <VideoCallDragable 
+      {dragableCallQuestion ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallDragable callerInfo={callerInfo} /> :
+        <VideoCallDragable
           callerInfo={callerInfo}
           groupInfo={groupInfo}
-      /> : <></>}
-      {dragableCallRequest && <CallRequestDragable receiver={chatInfo}/>}
-      {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView  callerInfo={callerInfo}
+        /> : <></>}
+      {dragableCallRequest && <CallRequestDragable receiver={chatInfo} />}
+      {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView callerInfo={callerInfo}
 
       /> : <VideoCallingView
+        callerInfo={callerInfo}
         remoteStreams={remoteStreamsUnique}
       /> : <></>}
 
@@ -473,12 +477,17 @@ function FullLayout(props) {
 
         }}
       >
-        <div className="d-flex w-100" style={{ paddingLeft: 15 }}>
-          <Header />
-        </div>
-        <div  >
-          {props.sidebar}
-        </div>
+        {showSearchMessage ? <SearchMessage /> :
+          <div>
+            <div className="d-flex w-100" style={{ paddingLeft: 15 }}>
+              <Header />
+            </div>
+            <div  >
+              {props.sidebar}
+            </div>
+          </div>
+        }
+
       </div>
       <div className={`${Object.keys(state).length <= 0 ? "d-none" : " "} d-flex d-lg-flex d-md-flex col-12 col-md-8`} style={{
         display: "flex",

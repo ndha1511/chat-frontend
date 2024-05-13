@@ -6,7 +6,13 @@ const initialState = {
   messages: [],
   renderMessage: false,
   scrollEnd: false,
-  messageCall: {}
+  messageCall: {},
+  messageSearch: {
+    messages: [],
+    loading: false,
+    show: false,
+    totalPage: 0,
+  }
 }
 
 // cấu trúc khi dispatch 
@@ -40,7 +46,15 @@ export const messageReducer = createSlice({
       }
     },
     updateMessage: (state, action) => {
-      state.messages = [...state.messages, ...action.payload];
+      let newMessage = action.payload;
+      for(let i = 0; i < newMessage.length; i++) {
+        const index = state.messages.findIndex(msg => msg.id === newMessage[i].id);
+        if(index!== -1) {
+          state.messages[index] = newMessage[i];
+        } else {
+          state.messages = [...state.messages, newMessage[i]];
+        }
+      }
     },
     deleteMessage: (state, action) => {
       const index = action.payload;
@@ -57,6 +71,20 @@ export const messageReducer = createSlice({
     }, 
     reRenderChatInfor: (state) => {
       state.renderChatInfor = !state.renderChatInfor;
+    },
+    setMessageSearch: (state, action) => {
+      state.messageSearch = action.payload;
+    },
+    updateMessageSearch: (state, action) => {
+      let newMessage = action.payload;
+      for(let i = 0; i < newMessage.length; i++) {
+        const index = state.messageSearch.messages.findIndex(msg => msg.id === newMessage[i].id);
+        if(index!== -1) {
+          state.messageSearch.messages[index] = newMessage[i];
+        } else {
+          state.messageSearch.messages = [...state.messageSearch.messages, newMessage[i]];
+        }
+      }
     }
   },
 })
@@ -70,7 +98,9 @@ export const {
   reRenderMessge, 
   setScrollEnd,
   setMessageCall,
-  reRenderChatInfor 
+  reRenderChatInfor,
+  setMessageSearch,
+  updateMessageSearch 
 } = messageReducer.actions
 
 export default messageReducer.reducer
