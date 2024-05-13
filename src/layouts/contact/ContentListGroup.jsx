@@ -1,4 +1,4 @@
-import { Button, Dropdown } from "react-bootstrap";
+import {  Dropdown } from "react-bootstrap";
 import "./ContentLayout.scss"
 import React, { useEffect, useState } from "react";
 import Avatar from "../../components/avatar/Avatar";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
 import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
 import MessageLayout from "../message/MessageLayout";
-import { getGroupById, getUserGroupById } from "../../services/GroupService";
+import { getGroupById } from "../../services/GroupService";
 
 function ContentListGroup(props) {
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -31,6 +31,7 @@ function ContentListGroup(props) {
         setShowMessageLayout(true);
         setShowListGroup(false);
     };
+    console.log(groups.length)
     useEffect(()=>{
         setShowMessageLayout(false);
         setShowListGroup(true);
@@ -72,12 +73,12 @@ function ContentListGroup(props) {
         <div className="d-flex tong" >
             <div className=" d-flex w-100 border column ml-6 p-3 top " >
                 {props.backButton}
-                <i className="bi bi-people-fill" style={{ color: "#67ACE3", }}  ></i>
+                <i className="bi bi-people-fill" style={{ color: "#67ACE3",fontSize:25 }}  ></i>
                 <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Danh sách nhóm</span>
             </div>
             <div className="d-flex listFriend-center" >
                 <div className="txt-top">
-                    <h6>Nhóm (122)</h6>
+                    <h6 style={{marginTop:10}}>Nhóm ({groups.length})</h6>
                 </div>
                 <div className="loc">
                     <div className="loc-top">

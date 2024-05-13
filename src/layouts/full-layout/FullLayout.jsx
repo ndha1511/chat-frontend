@@ -338,6 +338,7 @@ function FullLayout(props) {
           console.log("default")
           if(Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
+            // if(chatInfo.roomId === '')
           }
           dispatch(reRenderRoom());
           break;

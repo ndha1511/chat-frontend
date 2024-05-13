@@ -15,3 +15,50 @@
 .dropdown-divider {
   margin: 0.5rem 0; // Khoảng cách cho divider
 }
+.status-message1{
+ 
+  //  border: 1px solid black;
+   position: absolute;
+
+  //  width: 18%;
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
+   bottom: -34px;
+  
+  .status-message {
+      // border: 1px solid black;
+      padding: 3px;
+      width: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // bottom: -26px;
+      border-radius: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+  
+      span {
+        font-size: 12px;
+        font-weight: 500;
+        color: white;
+      }
+  }
+  .status-time {
+    // border: 1px solid black;
+    padding: 3px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // bottom: -26px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+
+    span {
+      font-size: 12px;
+      font-weight: 500;
+      color: white;
+    }
+}
+
+}

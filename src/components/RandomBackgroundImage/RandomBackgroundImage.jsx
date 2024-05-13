@@ -42,6 +42,7 @@ const RandomBackgroundImage = () => {
             src={imageUrl}
             alt="Ảnh bìa"
             className="img-fluid"
+            style={{objectFit:'cover'}}
         />
     );
 };

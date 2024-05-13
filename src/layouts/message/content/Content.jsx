@@ -1,27 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessageByRoomId } from "../../../services/MessageService";
-
 import MessageText from "../../../components/messages/message-text/MessageText";
 import MessageFile from "../../../components/messages/message-file/MessageFile";
 import "./Content.scss";
-
 import InfiniteScroll from "react-infinite-scroll-component";
 import MessageImage from "../../../components/messages/mesage-image/MessageImage";
 import MessageError from "../../../components/messages/message-error/MessageError";
 import MessageVideo from "../../../components/messages/message-video/MessageVideo";
-
 import MessageRevoked from "../../../components/messages/message-revoked/MessageRevoked";
-
 import ImageGroup from "../../../components/messages/image-group/ImageGroup";
 import { setMessages, updateMessage } from "../../../redux/reducers/messageReducer";
 import MessageSystem from "../../../components/messages/message-system/MessageSystem";
 import { getColorForName } from "../../../utils/ExtractUsername";
-import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
 import { Spinner } from "react-bootstrap";
 import { Icon } from "zmp-ui";
-
-
+import MessageVideoCall from "../../../components/messages/message-audio-video-call/MessageVideoCall";
+import MessageAudioCall from "../../../components/messages/message-audio-video-call/MessageAudioCall";
 
 function Content(props) {
 
@@ -38,7 +33,6 @@ function Content(props) {
     const [totalPages, setTotalPages] = useState(1);
 
     const [showScrollButton, setShowScrollButton] = useState(false);
-
     const windowSize = useSelector(state => state.render.windowSize);
 
 
@@ -53,7 +47,6 @@ function Content(props) {
             case "FILE":
                 component = <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
                 return checkStatusMessage(message, index, isLatest, component);
-
             case "IMAGE":
                 component = <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
                 return checkStatusMessage(message, index, isLatest, component);
@@ -65,7 +58,12 @@ function Content(props) {
                 return checkStatusMessage(message, index, isLatest, component);
             case "SYSTEM":
                 return <MessageSystem message={message} key={index} lastMessage={false} />
-
+            case "AUDIO_CALL":
+                component = <MessageAudioCall message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />;
+                return checkStatusMessage(message, index, isLatest, component);
+            case "VIDEO_CALL":
+                component = <MessageVideoCall message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />;
+                return checkStatusMessage(message, index, isLatest, component);
             default: break;
         }
 
@@ -108,7 +106,7 @@ function Content(props) {
                 }
             }
             getMessages();
-        } else { 
+        } else {
             dispatch(setMessages([]));
             setLoadMore(false);
         }
@@ -138,17 +136,16 @@ function Content(props) {
             scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight;
         }
     }, [scrollEnd, chatInfo]);
-    
+
     const scrollEvent = () => {
-        if(scrollableDivRef.current) {
-            if(scrollableDivRef.current.scrollTop <= -400) {
+        if (scrollableDivRef.current) {
+            if (scrollableDivRef.current.scrollTop <= -400) {
                 setShowScrollButton(true);
             } else {
                 setShowScrollButton(false);
             }
         }
     }
-
     function adjustColor(color, amount) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
     }
@@ -206,7 +203,7 @@ function Content(props) {
                         left: windowSize.width > 768 ? "98vw" : "93vw"
                     }}
                 >
-                    <Icon icon="zi-chevron-down"/>
+                    <Icon icon="zi-chevron-down" />
                 </button>
             )}
 

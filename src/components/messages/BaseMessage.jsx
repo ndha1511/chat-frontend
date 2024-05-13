@@ -14,6 +14,7 @@ import Icons from "../icons/Icons";
 import AccountInfor from "../modal/AccountInfor";
 import HelloMessage from "../modal/HelloMessage";
 import { getUserGroupById } from "../../services/GroupService";
+import { arrayToDateTime } from "../../utils/DateTimeHandle";
 
 
 
@@ -89,23 +90,35 @@ function BaseMessage(props) {
 
         }
     }
-    const hanldeUserGroup = async()=>{
-        if(chatInfo.room?.roomType === "GROUP_CHAT"){
+    const hanldeUserGroup = async () => {
+        if (chatInfo.room?.roomType === "GROUP_CHAT") {
             try {
                 const rep = await getUserByEmail(props.message.senderId);
                 console.log(props.message.senderId)
                 setUserAccount(rep)
                 setShowAccountInfor(true);
             } catch (error) {
-    
+
             }
-      
-        }else{
+
+        } else {
             setUserAccount(chatInfo.user)
             setShowAccountInfor(true);
         }
     }
 
+    const handleTime = () => {
+        const messageType = props.message.messageType;
+        switch (messageType) {
+            case 'AUDIO_CALL':
+            case 'VIDEO_CALL':
+            case 'IMAGE':
+            case 'VIDEO':
+                return true;
+            default: return false;
+        }
+    }
+    console.log(props.message.messageStatus)
     const btnCT = [
         { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, },
 
@@ -171,15 +184,24 @@ function BaseMessage(props) {
 
             {props.children}
             {!props.isSender && props.message.messageType !== "SYSTEM" &&
-                <div onClick={() => {  hanldeUserGroup();}} style={{ padding: 10 }}>
+                <div onClick={() => { hanldeUserGroup(); }} style={{ padding: 10 }}>
                     <Avatar user={senderUser} width={40} height={40} />
                 </div>}
 
             {
                 props.lastMessage ?
-                    <div className="m-2" style={{ position: "absolute", bottom: -60, padding: 10 }}>
-                        <p>{checkStatusMessage()}</p>
-                    </div> : <></>
+                    <div className="m-2 status-message1" >
+                        {handleTime()=== true ? <div className="m-2 status-time">
+                            <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
+                        </div> : <></>}
+                        <div className=" status-message">
+                            <div style={{ marginTop: -10, marginRight: 6 }}> <Icons type='iconTic' size={18} fillColor='white' /></div>
+                            <span>  {checkStatusMessage()}</span>
+                        </div>
+
+                    </div>
+
+                    : <></>
             }
 
             <FowardModal show={showFowardModal} handleClose={closeFowardModal} message={props.message} />

@@ -22,6 +22,7 @@ function ContentListFriend(props) {
         setShowMessageLayout(true);
         setShowListFriend(false);
     };
+
     useEffect(() => {
         setShowMessageLayout(false);
         setShowListFriend(true);
@@ -76,13 +77,13 @@ function ContentListFriend(props) {
 
                         <div className=" d-flex w-100 border column ml-6 p-3 top " >
                             {props.backButton}
-                            <i className="bi bi-person-lines-fill" style={{ color: "#67ACE3", }}  ></i>
+                            <i className="bi bi-person-lines-fill" style={{ color: "#67ACE3",fontSize:25 }}  ></i>
                             <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Danh sách bạn bè</span>
                         </div>
 
                         <div className="d-flex listFriend-center" >
                             <div className="txt-top">
-                                <h6>Bạn bè (122)</h6>
+                                <h6 style={{marginTop:10}}>Bạn bè ({friends.length})</h6>
                             </div>
                             <div className="loc">
                                 <div className="loc-top">

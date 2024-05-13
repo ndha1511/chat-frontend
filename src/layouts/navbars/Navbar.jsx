@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import {  Dropdown } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import Avatar from "../../components/avatar/Avatar";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
@@ -21,7 +21,7 @@ function Navbar() {
     const buttons = navbarIcon;
     const navigate = useNavigate();
     const user = useSelector((state) => state.userInfo.user);
-    const viewIndex =useSelector((state) => state.renderView.viewIndex);
+    const viewIndex = useSelector((state) => state.renderView.viewIndex);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -42,7 +42,7 @@ function Navbar() {
     const handleCloseChangePasswordModal = () => {
         setShowChangePasswordModal(false);
     };
-    const handleShowChangeProfileModal =()=>{
+    const handleShowChangeProfileModal = () => {
         handleCloseChangePasswordModal();
         setShowProfileModal(true);
         setShowUpdateModal(false);
@@ -62,18 +62,18 @@ function Navbar() {
 
     const clickButton = (index) => {
         switch (index) {
-            case 0: 
+            case 0:
                 dispatch(setViewIndedx(0));
                 break;
             case 1:
                 dispatch(setViewIndedx(1));
                 dispatch(reRenderMessageLayout());
                 break;
-            default: 
+            default:
                 dispatch(setViewIndedx(2));
-                
+
                 break;
-             
+
         }
     }
     useEffect(() => {
@@ -87,7 +87,7 @@ function Navbar() {
                     <div className="d-flex justify-content-center align-items-center m-2  mb-4 mt-4">
                         <Dropdown>
                             <Dropdown.Toggle as={CustomToggle}>
-                                <Avatar  user={user} title={user && user.name ? user.name : ""} />
+                                <Avatar user={user} title={user && user.name ? user.name : ""} />
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu className="dropdown-menu-right custom-dropdown-menu">
@@ -100,10 +100,10 @@ function Navbar() {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                    {/* Modal  */}               
-                        <ProfileModal show={showProfileModal} onClose={handleCloseProfileModal} onOpenChangePassword={handleShowChangePasswordModal} onOpenUpdateModal={changeUpdateModal} />
-                        <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />
-                        <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal}/>
+                    {/* Modal  */}
+                    <ProfileModal show={showProfileModal} onClose={handleCloseProfileModal} onOpenChangePassword={handleShowChangePasswordModal} onOpenUpdateModal={changeUpdateModal} />
+                    <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />
+                    <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal} />
                     <div>
                         <ButtonGroup buttons={buttons} vertical
                             handle={clickButton}
@@ -124,10 +124,25 @@ function Navbar() {
                         width={68}
                         height={65}
                         title="Cài đặt"
-                        hoverColor="#87cefa"
+                        hoverColor="#0082E5"
 
                     >
-                        <i className="bi bi-gear" style={{ fontSize: "27px",color:'white' }}></i>
+                        <Dropdown>
+                            <Dropdown.Toggle as={CustomToggle1} >
+                                <i className="bi bi-gear" style={{ fontSize: "27px", color: 'white' }}></i>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu className="">
+
+                                <Dropdown.Item><i className="bi bi-clipboard-check pe-3 "></i>Thông tin tài khoản</Dropdown.Item>
+                                <Dropdown.Item ><i className="bi bi-pin-angle pe-3" ></i>Cài đặt</Dropdown.Item>
+                                <Dropdown.Item ><i className="bi bi-star pe-3"></i>Cho phép nhắn tin</Dropdown.Item>
+                                <Dropdown.Item ><i className="bi bi-download pe-3"></i>Cho phép gọi điện</Dropdown.Item>
+                                <Dropdown.Divider />
+                                <Dropdown.Item style={{ color: 'red' }}  >Đăng xuất</Dropdown.Item>
+                                <Dropdown.Item  >Thoát</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </ButtonIcon>
                 </div>
             </div>
@@ -145,6 +160,19 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             onClick(e);
         }}
         className="avatar-dropdown" // Thêm class cho avatar dropdown
+    >
+        {children}
+    </a>
+));
+const CustomToggle1 = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href="/"
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+        className="setting-dropdown" // Thêm class cho avatar dropdown
     >
         {children}
     </a>

@@ -96,6 +96,10 @@ function Footer(props) {
                     request.append("messageType", "IMAGE_GROUP");
                     request.append("messageStatus", "SENDING");
                     const msg = await sendImgaeGroup(request);
+                    if(chatInfo.roomId === ''){
+                        const chatInfor = {...chatInfo,roomId:msg.roomId}
+                        dispatch(setChatInfo(chatInfor))
+                    }    
                     dispatch(pushMessage(msg));
                     dispatch(reRenderRoom());
                     // findRoomId();
@@ -209,6 +213,11 @@ function Footer(props) {
                 request.append("hiddenSenderSide", false);
                 setTextContent("");
                 const msg = await sendMessageToUser(request);
+                if(chatInfo.roomId === ''){
+                    const chatInfor = {...chatInfo,roomId:msg.roomId}
+                    dispatch(setChatInfo(chatInfor))
+                }
+                
                 // dispatch(pushMessage(msg));
                 // dispatch(reRenderMessge());
                 dispatch(setScrollEnd())
