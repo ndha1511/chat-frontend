@@ -10,8 +10,6 @@ import { updateRoom } from "../../redux/reducers/renderRoom";
 import { getGroupById } from "../../services/GroupService";
 import { Dropdown } from "react-bootstrap";
 import { Icon } from "zmp-ui";
-import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
-
 function BoxChat(props) {
     const [hiddenButton, setHiddenButton] = useState(true);
     const [date, setDate] = useState(displayDateTime(props.room.time));

@@ -12,7 +12,7 @@ import ChangePasswordModal from "../../components/modal/ChangePasswordModal";
 import { useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../redux/reducers/userReducer";
 import UpdateInfoModal from "../../components/modal/UpdateInfoModal";
-import { setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
+import { setShowSearchMessage, setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
 import { reRenderMessageLayout } from "../../redux/reducers/renderReducer";
 import { disconnect } from "../../configs/SocketConfig";
 
@@ -64,14 +64,16 @@ function Navbar() {
         switch (index) {
             case 0: 
                 dispatch(setViewIndedx(0));
+                dispatch(setShowSearchMessage(false));
                 break;
             case 1:
                 dispatch(setViewIndedx(1));
                 dispatch(reRenderMessageLayout());
+                dispatch(setShowSearchMessage(false));
                 break;
             default: 
                 dispatch(setViewIndedx(2));
-                
+                dispatch(setShowSearchMessage(false));
                 break;
              
         }

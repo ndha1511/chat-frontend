@@ -73,3 +73,12 @@ export const closeCall = async (data) => {
         return Promise.reject(error);
     }
 }
+
+export const findMessage = async (roomId, content, currentId, senderId = "", startDate = "", endDate = "", page = 0, limit = 40) => {
+    try {
+        const response = await requestApi(`/messages/query?roomId=${roomId}&senderId=${senderId}&content=${content}&currentId=${currentId}&startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
