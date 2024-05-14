@@ -13,6 +13,7 @@ import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
 import MessageLayout from "../message/MessageLayout";
 import { reRender } from "../../redux/reducers/renderReducer";
 import { reRenderGroup } from "../../redux/reducers/groupReducer";
+import { Icon } from "zmp-ui";
 
 
 function ContentLayout(props) {
@@ -113,13 +114,13 @@ function ContentLayout(props) {
             <div className="d-flex tong" >
                 <div className=" d-flex w-100 border column ml-6 p-3 top " >
                     {props.backButton}
-                    <i className="bi bi-envelope-open-fill" style={{ color: "#67ACE3", }}  ></i>
+                    <Icon  style={{color:"#67ACE3",fontSize:28,}} icon = 'zi-stranger-solid'/>
                     <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Lời mời kết bạn</span>
 
                 </div>
                 <div className="d-flex center" >
                     <div className="txt-top">
-                        <h6>Lời mời kết bạn {numOfInvite}</h6>
+                        <h6>Lời mời kết bạn ({numOfInvite})</h6>
                     </div>
                     <div className="ketBan">
                         {friends.map((friend, index) => {

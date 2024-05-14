@@ -172,8 +172,13 @@ function Footer(props) {
                 request.append("senderName", userCurrent.name);
                 setTextContent("");
                 const msg = await sendMessageToUser(request);
+
+                if(chatInfo.roomId === ''){
+                    const chatInfor = {...chatInfo,roomId:msg.roomId}
+                    dispatch(setChatInfo(chatInfor))
+                }
                 dispatch(pushMessage(msg));
-                // dispatch(reRenderMessge());
+                
                 dispatch(setScrollEnd())
                 // findRoomId();
                 dispatch(setViewIndedx(0));

@@ -60,7 +60,7 @@ function VideoCallDragable(props) {
                 <audio controls autoPlay loop style={{ display: "none" }}>
                     <source src="assets/mp3/nhac_chuong.mp3" type="audio/mpeg" />
                 </audio>
-                <div className="draggable-window">
+                <div className="draggable-window-receive">
                     <button style={{
                         position: "fixed", top: 0, right: 0,
                         backgroundColor: "#fff",
@@ -70,11 +70,11 @@ function VideoCallDragable(props) {
                     <Avatar user={props.callerInfo} />
                     <h6>{props.callerInfo.name}</h6>
                     <span>Cuộc gọi đến</span>
-                    <div className="group-btn-audio-call">
+                    <div className="group-btn-audio-call-receive">
                         <button onClick={reject}
-                            className="btn-audio-call btn-reject"><i className="bi bi-telephone-fill"></i></button>
+                            className="btn-audio-call-receive btn-reject-receive"><i className="bi bi-telephone-fill"></i></button>
                         <button onClick={accept}
-                            className="btn-audio-call btn-accept"><i className="bi bi-camera-video-fill"></i></button>
+                            className="btn-audio-call-receive btn-accept-receive"><i className="bi bi-camera-video-fill"></i></button>
                     </div>
                 </div>
             </div>

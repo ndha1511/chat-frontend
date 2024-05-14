@@ -4,49 +4,70 @@ import "./MessageImage.scss";
 import { emojis } from "../../../configs/button_group_icon_config";
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 import { Dropdown } from 'react-bootstrap';
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 
 
 
 function MessageImage(props) {
-    const userCurrent = useSelector((state) => state.userInfo.user);
 
     const fileInfo = props.message.content;
+    const userCurrent = useSelector((state) => state.userInfo.user);
     const messageStatus = props.message.messageStatus;
     const [isHovered, setIsHovered] = useState(false);
     const [showContent, setShowContent] = useState(false);
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [emojiCount, setEmojiCount] = useState(0);
+    const [showMenu, setShowMenu] = useState(true);
+
 
     const handleSelectEmoji = (emoji) => {
         setEmojiCount(prevCount => prevCount + 1);
         setSelectedEmojis(prevEmojis => {
             if (!prevEmojis.includes(emoji)) {
-                return [...prevEmojis, emoji];
+                const newEmojis = [...prevEmojis, emoji];
+                launchHeartEmojiConfetti();  // Gọi hiệu ứng pháo bông khi thêm mới emoji
+                return newEmojis;
             }
             return prevEmojis;
         });
-        setShowContent(false); // Automatically close the menu after selection
+        setShowMenu(false)
     };
+    const hanldeHoverLike = () => {
+        setShowContent(true);
+        setShowMenu(true);
+    }
+    const handleDisplayLike = () => {
+        if (emojiCount > 0) {
+            setIsHovered(true);
+            setShowMenu(false)
+        } else {
+            setIsHovered(false);
+            setShowMenu(false)
+        }
+
+    }
     const handleClearEmojis = () => {
         setSelectedEmojis([]);
         setEmojiCount(0);
         setShowContent(false); // Tự động đóng menu sau khi xóa
     };
-    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-        <a
-            href="/"
-            ref={ref}
-            onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
-            }}
-            className="" // Thêm class cho avatar dropdown
-        >
-            {children}
-        </a>
-    ));
 
+  
+
+
+    const launchHeartEmojiConfetti = () => {
+        // Bắn ra chính xác 15 emoji ❤️
+        for (let i = 0; i < 15; i++) {
+            confetti({
+                particleCount: 1,
+                spread: 60,
+                shapes: ['❤️'], // Sử dụng emoji ❤️ làm hình dạng
+                colors: ['#ff0000'],
+                disableForReducedMotion: true // Tắt hiệu ứng khi hệ thống yêu cầu giảm chuyển động
+            });
+        }
+    };
     return (
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId} lastMessage={props.lastMessage ? true : false}>
             {messageStatus === "SENDING" ? (
@@ -92,10 +113,25 @@ function MessageImage(props) {
                     </div>
                 )} */}
 
+
                 </div>
             )}
         </BaseMessage>
     );
 }
+
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href="/"
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+        className="" // Thêm class cho avatar dropdown
+    >
+        {children}
+    </a>
+));
 
 export default MessageImage;

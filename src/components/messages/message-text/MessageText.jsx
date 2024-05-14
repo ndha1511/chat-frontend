@@ -6,6 +6,7 @@ import { Dropdown } from 'react-bootstrap';
 import './MessageText.scss';
 import { emojis } from '../../../configs/button_group_icon_config';
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
+import confetti from 'canvas-confetti';
 
 function MessageText(props) {
     const [isHovered, setIsHovered] = useState(false);
@@ -13,78 +14,122 @@ function MessageText(props) {
     const [showContent, setShowContent] = useState(false);
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [emojiCount, setEmojiCount] = useState(0);
+    const [hoveredEmoji, setHoveredEmoji] = useState(null);
+    const [showMenu, setShowMenu] = useState(true);
+
 
     const handleSelectEmoji = (emoji) => {
+        setHoveredEmoji(null);
         setEmojiCount(prevCount => prevCount + 1);
         setSelectedEmojis(prevEmojis => {
             if (!prevEmojis.includes(emoji)) {
-                return [...prevEmojis, emoji];
+                const newEmojis = [...prevEmojis, emoji];
+                launchHeartEmojiConfetti();  // Gọi hiệu ứng pháo bông khi thêm mới emoji
+                return newEmojis;
             }
             return prevEmojis;
         });
-        setShowContent(false); // Automatically close the menu after selection
+        setShowContent(false);
+        setShowMenu(false)
     };
     const handleClearEmojis = () => {
         setSelectedEmojis([]);
         setEmojiCount(0);
         setShowContent(false); // Tự động đóng menu sau khi xóa
+        setHoveredEmoji(null);
     };
 
-    function getStyleForContent(content) {
-        if (content === '👍') {
-            return { fontSize: '30px' }; // Thay đổi kích thước phông chữ khi nội dung là 👍
-        }
-        return {}; // Trả về một object style rỗng nếu không phải là 👍
-    }
 
+    const hanldeHoverLike = () => {
+        setShowContent(true);
+        setShowMenu(true);
+    }
+    const handleDisplayLike = () => {
+        if (emojiCount > 0) {
+            setIsHovered(true);
+            setShowMenu(false)
+        } else {
+            setIsHovered(false);
+            setShowMenu(false)
+        }
+
+    }
+    const launchHeartEmojiConfetti = () => {
+        // Bắn ra chính xác 15 emoji ❤️
+        for (let i = 0; i < 15; i++) {
+            confetti({
+                particleCount: 1,
+                spread: 60,
+                shapes: ['❤️'], // Sử dụng emoji ❤️ làm hình dạng
+                colors: ['#ff0000'],
+                disableForReducedMotion: true // Tắt hiệu ứng khi hệ thống yêu cầu giảm chuyển động
+            });
+        }
+    };
     return (
 
         <BaseMessage
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
+            showAvatar={props.showAvatar}
         // showHidden={isHovered}
         >
-            <div className='d-flex mess-hover' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
-                <div className="d-flex  mess-text" style={{backgroundColor:userCurrent.email === props.message.senderId?'#e5efff':'white'}} >
-                    <div className='text'> <pre style={getStyleForContent(props.message.content)}>{props.message.content}</pre></div>
+            <div className='d-flex mess-hover' style={{ marginTop: userCurrent.email === props.message.senderId ? 15 : 3,
+                marginBottom: emojiCount>0?16:3
+
+            }}
+             onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike} >
+                <div className="d-flex  mess-text" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >
+                    <div className='text'> <pre >{props.message.content}</pre></div>
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                     {selectedEmojis.length > 0 && (
                         <div className='btn-icon-custom-s'>
                             {selectedEmojis.slice(0, 3).map(emoji => (
-                                <span key={emoji}>{emoji}</span>
+                                <span style={{ fontSize: 19 }} key={emoji}>{emoji}</span>
                             ))}
-                            {emojiCount > 0 && <span> {emojiCount}</span>}
+                            {emojiCount > 0 && <span style={{fontSize:13}}> {emojiCount}</span>}
                         </div>
                     )}
 
 
                     {isHovered && (
-                        <div onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
-                            <Dropdown show={showContent}>
-                                <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
+                        <div onMouseEnter={hanldeHoverLike} onMouseLeave={() => setShowContent(false)}>
+
+                            <Dropdown show={showContent} className='drop-message_text'   >
+                                <Dropdown.Toggle as={CustomToggle}>
                                     <div className='btn-icon-custom'>
-                                        {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : '👍'}
-
+                                        {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : <img style={{ width: 14, height: 14, }} src='./assets/icons/like.png' />}
                                     </div>
-
                                 </Dropdown.Toggle>
-
-                                <Dropdown.Menu className='dropd-menu'>
-                                    <div className="btn-emoji">
-                                        {emojis.map((emoji, index) => (
-                                            <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
-                                                {emoji.icon}
-                                            </Dropdown.Item>
-                                        ))}
-                                        {selectedEmojis.length > 0 && (
-                                            <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
-                                                <i className="bi bi-x-lg"></i>
-                                            </Dropdown.Item>
-                                        )}
-                                    </div>
-                                </Dropdown.Menu>
+                                {showMenu && (
+                                    <Dropdown.Menu className='dropd-menu'>
+                                        <div className="btn-emoji">
+                                            {emojis.map((emoji, index) => (
+                                                <div
+                                                    className={`emoji-wrapper ${hoveredEmoji === emoji.icon ? 'hovered' : ''}`}
+                                                    key={index}
+                                                    onMouseEnter={() => setHoveredEmoji(emoji.icon)}
+                                                    onMouseLeave={() => setHoveredEmoji(null)}
+                                                >
+                                                    <Dropdown.Item
+                                                        className="emoji-item"
+                                                        onClick={() => handleSelectEmoji(emoji.icon)}
+                                                    >
+                                                        {emoji.icon}
+                                                    </Dropdown.Item>
+                                                </div>
+                                            ))}
+                                            {selectedEmojis.length > 0 && (
+                                                <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
+                                                    <i className="bi bi-x-lg"></i>
+                                                </Dropdown.Item>
+                                            )}
+                                        </div>
+                                    </Dropdown.Menu>
+                                )}
                             </Dropdown>
+
                         </div>
                     )}
                 </div>

@@ -6,7 +6,9 @@
     // align-items: flex-end;
     width: auto;
     max-width: 50%;
-    margin: 10px;
+    margin: 3px 10px 3px 10px;
+    height: auto;
+    // z-index: 999;
 
     .mess-text {
         display: flex;
@@ -20,6 +22,7 @@
         // justify-content: flex-end;
         // align-items: flex-end;
         position: relative;
+        height: auto;
 
         .text {
 
@@ -35,8 +38,8 @@
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
                     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
                     sans-serif;
-                    width: 100%;
-                    white-space: pre-wrap;
+                width: 100%;
+                white-space: pre-wrap;
             }
         }
 
@@ -51,63 +54,88 @@
 }
 
 .btn-icon-custom {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 26px;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     border: none;
     position: absolute;
     border-radius: 50%;
-    bottom: -25px;
+    bottom: -20px;
     margin-right: -15px;
     right: 10px;
-    background-color: #f0f0f0;
-
-
+    background-color: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+    z-index: 999;
+    padding: 0;
+    font-size: 19px;
 }
 
 .btn-icon-custom-s {
+    height: 26px;
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
+    right: 35px;
     width: auto;
-    height: 30px;
     border-radius: 14px;
-    // margin-bottom: -25px;
-    // margin-top: 53px;
-    // margin-left: 20px;
-    bottom: -10px;
-    background-color: #f0f0f0;
-    font-size: 11px;
-    padding: 5px;
-
+    bottom: -10.5px;
+    background-color: white;
+    padding: 0px 5px 0px 5px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+    
 }
 
-.dropd-menu {
-    margin-top: -50px;
+.drop-message_text {
+    position: absolute;
+    right: 12px;
+}
+
+.dropd-menu{
     display: flex;
     flex-direction: row;
-    // position: relative;
     border-radius: 30px;
     padding: 2px;
-    position: absolute;
-
+    margin-left: -140px;
+    background-color: white;
+    border: none;
+    height: auto;
+    width: auto;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    margin-top: -55px;
+    // border: 1px solid red;
     .btn-emoji {
         display: flex;
-        flex-direction: column;
-        gap: 5px;
-
+        
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        // border: 1px solid blue;
+        border-radius: 30px;
+        padding: 2px 5px 2px 5px;
+        border: none;
+        gap: 7px;
         .emoji-item {
-            padding: 5px;
+            background-color: transparent;
+            font-size: 22px;
             /* Đệm cho mỗi emoji */
+            // border: 1px solid blue;
+            padding: 0;
             cursor: pointer;
+            transition: transform 0.3s ease;
             border-radius: 20px;
+
+            &:hover {
+                transform: scale(1.5);
+            }
         }
     }
 
 }
+
 
 .mess-text-cs {
     display: flex;

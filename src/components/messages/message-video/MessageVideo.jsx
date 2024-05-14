@@ -9,7 +9,7 @@ function MessageVideo(props) {
         <BaseMessage
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
-            lastMessage={props.lastMessage ? true : false}
+            lastMessage={props.lastMessage ? true : false}    showAvatar={props.showAvatar}
         >
             <div style={{display:'flex',flexDirection:'column'}}>
                 <video width="350" height="500" controls >

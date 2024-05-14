@@ -1,0 +1,81 @@
+.mess-hover-call {
+    display: flex;
+    // border: 1px solid black;
+    justify-content: space-around;
+    flex-direction: column;
+    // align-items: flex-end;
+    width: 18%;
+    // max-width: 50%;
+    margin: 10px;
+ 
+
+    .mess-text-call {
+        display: flex;
+        background-color: white;
+        flex-direction: column;
+        padding: 5px;
+        width: 100%;
+        border-radius: 10px;
+        min-width: 110px;
+        position: relative;
+
+        .text {
+
+            // border: 1px solid rgb(151, 40, 40);
+            // max-width: 100%;
+            word-wrap: break-word;
+            /* Đối với tương thích ngược */
+            overflow-wrap: break-word;
+            /* Thuộc tính tiêu chuẩn */
+
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+          
+            h5 {
+                font-weight: 500;
+                width: 100%;
+                white-space: pre-wrap;
+                // border: 1px solid gainsboro;
+                font-size: 15px;
+            }
+            .call {
+                width: 100%;
+                display: flex;
+                margin-top: 4px;
+                padding-bottom: 10px;
+                border-bottom: 0.5px solid rgb(210, 203, 203);
+              
+            }
+
+        }
+
+        .btn-call {
+            width: 100%;
+            // margin-top: 5px;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+       
+            button {
+                border: none;
+                // background-color: #e5efff;
+                color: blue;
+                font-weight: 600;
+            }
+        }
+
+        span {
+            // border: 1px solid gainsboro;
+            font-size: 15px;
+            color: rgb(141, 134, 134);
+            font-weight: 400;
+        }
+    }
+
+
+}

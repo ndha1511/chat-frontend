@@ -341,6 +341,7 @@ function FullLayout(props) {
           console.log("default")
           if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
+            // if(chatInfo.roomId === '')
           }
           dispatch(reRenderRoom());
           break;
@@ -456,6 +457,7 @@ function FullLayout(props) {
       {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView callerInfo={callerInfo}
 
       /> : <VideoCallingView
+        callerInfo={callerInfo}
         remoteStreams={remoteStreamsUnique}
       /> : <></>}
 

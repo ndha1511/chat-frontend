@@ -66,6 +66,7 @@ function MessageFile(props) {
     ));
     return (
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId}
+            showAvatar={props.showAvatar}
             lastMessage={props.lastMessage ? true : false}>
             {/* <div className="mess-file" style={{ position: "relative" }} onClick={downloadFile}>
                 <div className="mess-ct">
@@ -84,7 +85,7 @@ function MessageFile(props) {
                 <button className="btn-icon-custom">👍</button>
             </div> */}
             {props.message.messageStatus === "SENDING" ?
-                <div className="mess-file" style={{  backgroundColor: "gray" }} >
+                <div className="mess-file" style={{ backgroundColor: "gray" }} >
                     <div className="mess-ct">
                         <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
                         <div className="mess-text">
@@ -95,7 +96,7 @@ function MessageFile(props) {
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                 </div>
                 :
-                <div className="mess-file" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}  onClick={downloadFile}>
+                <div className="mess-file" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={downloadFile}>
                     <div className="mess-ct">
                         <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
                         <div className="mess-text">
@@ -106,45 +107,45 @@ function MessageFile(props) {
                             <button ><i className="bi bi-box-arrow-in-down"></i></button>
                         </div>
                         {selectedEmojis.length > 0 && (
-                        <div className='btn-icon-custom-s'>
-                            {selectedEmojis.slice(0, 3).map(emoji => (
-                                <span key={emoji}>{emoji}</span>
-                            ))}
-                            {emojiCount > 0 && <span> {emojiCount}</span>}
-                        </div>
-                    )}
-                    {isHovered && (
-                        <div onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
-                            <Dropdown show={showContent}>
-                                <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
-                                    <div className='btn-icon-custom-file'>
-                                        👍
-                                    </div>
+                            <div className='btn-icon-custom-s'>
+                                {selectedEmojis.slice(0, 3).map(emoji => (
+                                    <span key={emoji}>{emoji}</span>
+                                ))}
+                                {emojiCount > 0 && <span> {emojiCount}</span>}
+                            </div>
+                        )}
+                        {isHovered && (
+                            <div onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
+                                <Dropdown show={showContent}>
+                                    <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
+                                        <div className='btn-icon-custom-file'>
+                                            <img style={{ width: 14, height: 14, }} src='./assets/icons/like.png' />
+                                        </div>
 
-                                </Dropdown.Toggle>
+                                    </Dropdown.Toggle>
 
-                                <Dropdown.Menu className='dropd-menu'>
-                                    <div className="btn-emoji">
-                                        {emojis.map((emoji, index) => (
-                                            <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
-                                                {emoji.icon}
-                                            </Dropdown.Item>
-                                        ))}
-                                        {selectedEmojis.length > 0 && (
-                                            <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
-                                                <i className="bi bi-x-lg"></i>
-                                            </Dropdown.Item>
-                                        )}
-                                    </div>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                                    <Dropdown.Menu className='dropd-menu'>
+                                        <div className="btn-emoji">
+                                            {emojis.map((emoji, index) => (
+                                                <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
+                                                    {emoji.icon}
+                                                </Dropdown.Item>
+                                            ))}
+                                            {selectedEmojis.length > 0 && (
+                                                <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
+                                                    <i className="bi bi-x-lg"></i>
+                                                </Dropdown.Item>
+                                            )}
+                                        </div>
+                                    </Dropdown.Menu>
+                                </Dropdown>
 
-                        </div>
-                    )}
+                            </div>
+                        )}
                     </div>
-                 
+
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
-                 
+
 
                 </div>
             }
