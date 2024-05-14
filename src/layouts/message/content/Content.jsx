@@ -20,6 +20,7 @@ import MessageVideoCall from "../../../components/messages/message-audio-video-c
 import MessageAudioCall from "../../../components/messages/message-audio-video-call/MessageAudioCall";
 
 import SearchMessageInput from "../../../components/search/SearchMessageInput";
+import { arrayToDateTime } from "../../../utils/DateTimeHandle";
 
 
 
@@ -53,33 +54,53 @@ function Content(props) {
         }
     }, [showSearchMessage]);
 
-
+    const displayAvatar =(message, index,)=>{
+        if(index+1 === messages.length){
+            return true;
+        }
+        const startTime = arrayToDateTime(message.sendDate);
+        const endTime = arrayToDateTime(messages[index+1].sendDate);
+        // Tính toán sự khác biệt giữa hai thời điểm (được tính bằng mili giây)
+        const timeDifferenceInMilliseconds = Math.abs(endTime - startTime);
+        // Chuyển đổi sự khác biệt thành số phút
+        const timeDifferenceInMinutes = timeDifferenceInMilliseconds / (1000 * 60);
+        console.log(timeDifferenceInMinutes)
+  
+        if (message.senderId === userCurrent.email) {
+            return false;
+        }
+        if(timeDifferenceInMinutes<1 && message.senderId === messages[index + 1].senderId && startTime.getDate() === endTime.getDate()){
+            return false;
+        }
+        return true;
+    }
     const renderMessage = (message, index, isLatest = false) => {
         var component = <></>;
+        var showAvatar = displayAvatar(message,index);
         const messageType = message.messageType;
         switch (messageType) {
             case "TEXT":
-                component = <MessageText message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />;
+                component = <MessageText   message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false}showAvatar={showAvatar}  />;
                 return checkStatusMessage(message, index, isLatest, component);
             case "FILE":
-                component = <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                component = <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
                 return checkStatusMessage(message, index, isLatest, component);
             case "IMAGE":
-                component = <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                component = <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false}showAvatar={showAvatar}  />
                 return checkStatusMessage(message, index, isLatest, component);
             case "VIDEO":
-                component = <MessageVideo message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                component = <MessageVideo message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
                 return checkStatusMessage(message, index, isLatest, component);
             case "IMAGE_GROUP":
-                component = <ImageGroup message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+                component = <ImageGroup message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
                 return checkStatusMessage(message, index, isLatest, component);
             case "SYSTEM":
-                return <MessageSystem message={message} key={index} lastMessage={false} />
+                return <MessageSystem message={message} key={index} lastMessage={false} showAvatar={showAvatar} />
             case "AUDIO_CALL":
-                component = <MessageAudioCall message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />;
+                component = <MessageAudioCall message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />;
                 return checkStatusMessage(message, index, isLatest, component);
             case "VIDEO_CALL":
-                component = <MessageVideoCall message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />;
+                component = <MessageVideoCall message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />;
                 return checkStatusMessage(message, index, isLatest, component);
             default: break;
         }
@@ -87,10 +108,11 @@ function Content(props) {
     }
 
     const checkStatusMessage = (message, index, isLatest, component) => {
+        var showAvatar = displayAvatar(message,index);
         if (message.messageStatus === "ERROR") {
-            return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+            return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar}  />
         } else if (message.messageStatus === "REVOKED") {
-            return <MessageRevoked message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} />
+            return <MessageRevoked message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar}  />
         }
         return component;
     }
@@ -330,7 +352,7 @@ function Content(props) {
                 >{compareWithCurrentDate(displayDate)}</div>
             )}
             {showSearchMessage && <div ref={firstDivRef} className={`search-message ${windowSize.width > 768 ? "col-9" : "col-12"}`}><SearchMessageInput /></div>}
-            
+
             {/* view for mobile */}
             {messageSearch.show && windowSize.width <= 768 ?
                 <div className="search-result col-12"

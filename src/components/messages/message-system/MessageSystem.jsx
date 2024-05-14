@@ -5,6 +5,7 @@ function MessageSystem(props) {
         <BaseMessage
             message={props.message}
             lastMessage={props.lastMessage ? true : false}
+            showAvatar={props.showAvatar}
         // showHidden={isHovered}
         >
             <div>

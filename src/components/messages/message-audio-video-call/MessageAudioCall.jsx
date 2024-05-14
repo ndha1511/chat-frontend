@@ -8,6 +8,7 @@ import { Icon } from 'zmp-ui';
 
 function MessageAudioCall(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
+    const windowSize = useSelector(state => state.render.windowSize);
     const callStatus = props.message.content.callStatus;
     const handleCallStatus = () => {
         const audioCallStatus = callStatus;
@@ -15,16 +16,23 @@ function MessageAudioCall(props) {
             switch (audioCallStatus) {
                 case 'START':
                     return 'Đã gọi';
-                case 'CALLING':
-                    return 'Đang gọi';
                 case 'REJECT':
-                    return 'Người nhận từ chối';
+                    return {
+                        title: 'Người nhận từ chối',
+                        text: 'Cuộc gọi thoại',
+                    };
                 case 'CANCEL':
-                    return 'Bạn đã hủy';
+                    return {
+                        title: 'Bạn đã hủy',
+                        text: 'Cuộc gọi thoại',
+                    };
+                case 'CALLING':
                 case 'MISSED':
-                    return 'Cuộc gọi thoại đi';
                 case 'END':
-                    return 'Cuộc gọi thoại đi';
+                    return {
+                        title: 'Cuộc gọi thoại đi',
+                        text: `${formattedHours > 0 ? formattedHours + ' giờ' : ''}${formattedMinutes > 0 ? formattedMinutes + ' phút' : ''}${formattedSeconds + ' giây'}`,
+                    };
                 default: return '';
 
             }
@@ -32,16 +40,27 @@ function MessageAudioCall(props) {
         switch (audioCallStatus) {
             case 'START':
                 return 'Đã gọi';
-            case 'CALLING':
-                return 'Đang gọi';
             case 'REJECT':
-                return 'Đã từ chối';
+                return {
+                    title: 'Bạn đã từ chối',
+                    text: 'Cuộc gọi thoại',
+                };
             case 'CANCEL':
-                return 'Đã hủy';
+                return {
+                    title: 'Bạn đã hủy',
+                    text: 'Cuộc gọi thoại',
+                };
             case 'MISSED':
-                return 'Bạn bị nhỡ';
+                return {
+                    title: 'Bạn bị nhỡ',
+                    text: 'Cuộc gọi thoại',
+                };
+            case 'CALLING':
             case 'END':
-                return 'Cuộc gọi thoại đến';
+                return {
+                    title: 'Cuộc gọi thoại đến',
+                    text: `${formattedHours > 0 ? formattedHours + ' giờ' : ''}${formattedMinutes > 0 ? formattedMinutes + ' phút' : ''}${formattedSeconds + ' giây'}`,
+                };
             default: return '';
 
         }
@@ -51,33 +70,33 @@ function MessageAudioCall(props) {
         if (userCurrent.email === props.message.senderId) {
             switch (audioCallStatus) {
                 case 'START':
-                    return 'zi-call-solid';
+                    return './assets/iconCall/cancel-audio-call.svg';
                 case 'CALLING':
-                    return 'zi-call-solid';
+                    return './assets/iconCall/cancel-audio-call.svg';
                 case 'REJECT':
-                    return 'zi-call-solid';
+                    return './assets/iconCall/rejected.svg';
                 case 'CANCEL':
-                    return 'zi-call-solid';
+                    return './assets/iconCall/cancel-audio-call.svg';
                 case 'MISSED':
-                    return 'zi-call-solid';
+                    return './assets/iconCall/cancel-audio-call.svg';
                 case 'END':
-                    return 'zi-call-solid';
+                    return './assets/iconCall/call-me.svg';
                 default: return '';
             }
         }
         switch (audioCallStatus) {
             case 'START':
-                return 'zi-call-solid';
+                return './assets/iconCall/rejected.svg';
             case 'CALLING':
-                return 'zi-call-solid';
+                return './assets/iconCall/rejected.svg';
             case 'REJECT':
-                return 'zi-call-solid';
+                return './assets/iconCall/rejected.svg';
             case 'CANCEL':
-                return 'zi-call-solid';
+                return './assets/iconCall/rejected.svg';
             case 'MISSED':
-                return 'zi-call-solid';
+                return './assets/iconCall/call-missed.svg';
             case 'END':
-                return 'zi-call-solid';
+                return './assets/iconCall/call-you.svg';
             default: return '';
         }
     };
@@ -97,15 +116,15 @@ function MessageAudioCall(props) {
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
             lastMessage={props.lastMessage ? true : false}
+            showAvatar={props.showAvatar}
         >
-            <div className='d-flex mess-hover-call'  >
+            <div className='d-flex mess-hover-call ' style={{ width: windowSize.width > 768 ? 180 : 160 }}  >
                 <div className="d-flex  mess-text-call" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >
                     <div className='text'>
-                        <h5 >{handleCallStatus()}</h5>
+                        <h5 >{handleCallStatus().title}</h5>
                         <div className='call' >
-                            <Icon style={{ color: '#72808e' }} icon={`${handleIconCall()}`} />
-                            <div style={{ marginLeft: -12, marginTop: -10, marginRight: 10 }}>  <Icons type="iconCall" size={14} fillColor='red' /></div>
-                            <span>{formattedHours > 0 ? formattedHours + ' giờ' : ''}{formattedMinutes > 0 ? formattedMinutes + ' phút' : ''}{formattedSeconds + ' giây'}</span>
+                            <img src={`${handleIconCall()}`} style={{ width: 25, height: 25, marginRight: 10 }} ></img>
+                            <span> {handleCallStatus().text}</span>
                         </div>
                     </div>
                     <div className='btn-call'><button style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >GỌI LẠI</button></div>

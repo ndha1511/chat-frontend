@@ -28,6 +28,7 @@ function BaseMessage(props) {
     const [showFowardModal, setShowFowardModal] = useState(false);
     const [showAccountInfor, setShowAccountInfor] = useState(false);
     const [showHelloMessageModal, setShowHelloMessageModal] = useState(false)
+    const [showAvatar, setShowAvatar] = useState(false);
     const handleShowHelloMessageModal = () => {
         setShowAccountInfor(false);
         setShowHelloMessageModal(true)
@@ -56,6 +57,14 @@ function BaseMessage(props) {
             default: return "";
         }
     }
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowAvatar(true);
+        }, 60000); // 60,000 milliseconds = 1 minute
+
+        // Clean up the timer if the component unmounts
+        return () => clearTimeout(timer);
+    }, []);
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <span
@@ -114,12 +123,11 @@ function BaseMessage(props) {
             case 'VIDEO_CALL':
             case 'IMAGE':
             case 'VIDEO':
-                
+
                 return true;
             default: return false;
         }
     }
-    console.log(props.message.messageStatus)
     const btnCT = [
         { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, },
 
@@ -161,11 +169,12 @@ function BaseMessage(props) {
     return (
         <div onMouseEnter={() => setHiddenBtn(true)}
             onMouseLeave={() => setHiddenBtn(false)}
-            className={`d-flex w-100  ${handleTime() ? "mb-3" : ""}  `}   style={{
+            className={`d-flex w-100  ${handleTime()  ? "mb-3" : ""}  `} style={{
                 flexDirection: props.isSender && props.message.messageType !== "SYSTEM" ? "row" : "row-reverse",
                 alignItems: props.message.messageType === "SYSTEM" ? "center" : "flex-end", justifyContent: props.message.messageType === "SYSTEM" ? "center" : "flex-end", position: 'relative',
             }}>
-            {hiddenBtn && props.message.messageStatus !== "REVOKED" && props.message.messageStatus !== "ERROR" && props.message.messageType !== "SYSTEM" && (
+            {hiddenBtn && props.message.messageStatus !== "REVOKED" && props.message.messageStatus !== "ERROR" && props.message.messageType !== "SYSTEM"
+            && props.message.messageType !=="AUDIO_CALL"  && props.message.messageType !=="VIDEO_CALL" && (
                 <div className="hidden" style={{ display: "block", marginBottom: "20px", position: 'relative' }}>
                     <div className="hoverText" style={{ backgroundColor: '#dde8ec', borderRadius: 5, border: 'none', }}>
                         <ButtonGroup buttons={btnCT}
@@ -184,10 +193,16 @@ function BaseMessage(props) {
             )}
 
             {props.children}
-            {!props.isSender && props.message.messageType !== "SYSTEM" &&
-                <div onClick={() => { hanldeUserGroup(); }} style={{ padding: 10 }}>
+            {!props.isSender && props.message.messageType !== "SYSTEM" && props.showAvatar ?
+                <div className="avatar-receive" onClick={() => { hanldeUserGroup(); }} style={{ height: handleTime() ? 145 : 120, padding: 10 }}>
                     <Avatar user={senderUser} width={40} height={40} />
-                </div>}
+                </div>
+                :
+                !props.isSender &&
+                <div className="avatar-receive" style={{ width:61.5,padding:10}}>
+                    
+                </div>
+            }
 
             {
                 props.lastMessage ?
@@ -202,7 +217,7 @@ function BaseMessage(props) {
 
                     </div>
 
-                    : <div className="m-2 status-message1" >
+                    : <div className="m-2 status-message1" style={{ paddingLeft: 60 }}  >
                         {handleTime() === true ? <div className="m-2 status-time">
                             <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                         </div> : <></>}

@@ -94,7 +94,7 @@ export const btnCT = [
 export const emojis = [
     {
         id: "6610ff903df61304b883dce3",
-        icon: "❤",
+        icon: "❤️",
         emoji_type: "HEART"
     },
     {
