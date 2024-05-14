@@ -48,8 +48,6 @@ function FullLayout(props) {
   const [remoteStreams, setRemoteStreams] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
-  // dùng để lưu vị trí của thanh cuộn trong một số trường hợp không muốn render
-  const [scrollMessage, setScrollMessage] = useState(0);
 
 
   // Hàm loại bỏ các phần tử trùng lặp từ một mảng
@@ -266,7 +264,8 @@ function FullLayout(props) {
           if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
           }
-          dispatch(reRenderChatInfor());
+          dispatch(reRenderChatInfor(true));
+          dispatch(reRenderChatInfor(false));
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
@@ -276,7 +275,8 @@ function FullLayout(props) {
             dispatch(reRenderMessge());
           }
           dispatch(reRenderMember());
-          dispatch(reRenderChatInfor());
+          dispatch(reRenderChatInfor(true));
+          dispatch(reRenderChatInfor(false));
           stompClient.unsubscribe(room.roomId);
           stompClient.unsubscribe(`${room.roomId}_call`);
           break;
@@ -504,6 +504,16 @@ function FullLayout(props) {
             <></>
         })}
       </div>
+      {/* <ImageViewer
+        onClose={() => setVisible(false)}
+        activeIndex={activeIndex}
+        images={images}
+        visible={visible}
+      />
+      <button onClick={() => {
+        setActiveIndex(0);
+        setVisible(true);
+      }}>open image viewer</button> */}
     </div>
   );
 }

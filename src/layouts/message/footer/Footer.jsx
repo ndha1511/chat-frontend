@@ -70,70 +70,32 @@ function Footer(props) {
         return;
     }
     const changeFile = async (event) => {
-
         if (event.target.files) {
-            if (event.target.files.length > 1) {
-                try {
-                    const fileList = event.target.files;
-                    const request = new FormData();
-                    for (let i = 0; i < fileList.length; i++) {
-                        const file = fileList[i];
-                        const filename = file.name;
-                        const fileExtension = filename.split(".").pop();
-
-                        if (checkExtensionFile(fileExtension) !== "IMAGE") {
-                            alert("Bạn chỉ có thể upload nhiều file ảnh cùng lúc");
-                            fileInputRef.current.value = null;
-                            return;
-                        }
-
-                        // Thêm từng file vào FormData
-                        request.append("filesContent", file);
-                    }
-
-                    request.append("senderId", userCurrent.email);
-                    request.append("receiverId", chatInfo.user.email);
-                    request.append("messageType", "IMAGE_GROUP");
-                    request.append("messageStatus", "SENDING");
-                    const msg = await sendImgaeGroup(request);
-                    dispatch(pushMessage(msg));
-                    dispatch(reRenderRoom());
-                    // findRoomId();
-                    dispatch(setViewIndedx(0));
-                    fileInputRef.current.value = null;
-                } catch (error) {
-                    console.error(error);
-                    fileInputRef.current.value = null;
-                }
-
-            } else {
-                try {
-                    const fileList = event.target.files;
-                    const selectedFile = fileList[0];
-                    let fileName = "";
-                    if (selectedFile.name)
-                        fileName = selectedFile.name;
-                    const fileExtension = fileName.split('.').pop();
+            try {
+                const fileList = event.target.files;
+                for (let i = 0; i < fileList.length; i++) {
+                    const file = fileList[i];
+                    const filename = file.name;
+                    const fileExtension = filename.split('.').pop();
                     const fileType = checkExtensionFile(fileExtension);
                     const request = new FormData();
                     request.append("senderId", userCurrent.email);
                     request.append("receiverId", chatInfo.user.email);
                     request.append("messageType", fileType);
-                    request.append("fileContent", selectedFile);
+                    request.append("fileContent", file);
                     request.append("hiddenSenderSide", false);
+                    request.append("senderName", userCurrent.name);
                     const msg = await sendMessageToUser(request);
                     dispatch(pushMessage(msg));
-                    dispatch(reRenderRoom());
-                    // findRoomId();
-                    dispatch(setViewIndedx(0));
-                    fileInputRef.current.value = null;
-                } catch (error) {
-                    console.error(error);
-                    fileInputRef.current.value = null;
+                    dispatch(setScrollEnd());
                 }
+
+                dispatch(setViewIndedx(0));
+                fileInputRef.current.value = null;
+            } catch (error) {
+                console.error(error);
+                fileInputRef.current.value = null;
             }
-
-
 
         }
     }
@@ -207,9 +169,10 @@ function Footer(props) {
                 request.append("textContent", textContent);
                 request.append("messageType", "TEXT");
                 request.append("hiddenSenderSide", false);
+                request.append("senderName", userCurrent.name);
                 setTextContent("");
                 const msg = await sendMessageToUser(request);
-                // dispatch(pushMessage(msg));
+                dispatch(pushMessage(msg));
                 // dispatch(reRenderMessge());
                 dispatch(setScrollEnd())
                 // findRoomId();
@@ -270,8 +233,8 @@ function Footer(props) {
                         className="input-message w-100"
                     />
                 </label>
-                <button className="btn-smile" onClick={() => {setShowEmojiPicker(!showEmojiPicker);  }} ><i className="bi bi-emoji-smile"></i></button>
-                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ paddingBottom: 4 }}><Icons type="like" fillColor="#F7CE6C" size={28}/></button>}
+                <button className="btn-smile" onClick={() => { setShowEmojiPicker(!showEmojiPicker); }} ><i className="bi bi-emoji-smile"></i></button>
+                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ paddingBottom: 4 }}><Icons type="like" fillColor="#F7CE6C" size={28} /></button>}
                 {isActive1 ? (
                     <button className=" btn-send" onClick={sendMessage}>
                         <Icon icon='zi-send-solid' size={30} />
@@ -288,12 +251,13 @@ function Footer(props) {
         request.append("textContent", likeMessage);
         request.append("messageType", "TEXT");
         request.append("hiddenSenderSide", false);
+        request.append("senderName", userCurrent.name);
 
         // Gửi tin nhắn ngay lập tức
         try {
             const sendMessageAsync = async () => {
                 const msg = await sendMessageToUser(request);
-                // dispatch(pushMessage(msg));
+                dispatch(pushMessage(msg));
                 dispatch(setScrollEnd());
                 findRoomId();
             };
@@ -322,7 +286,7 @@ function Footer(props) {
     }
 
 
-  
+
     const renderFooter = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
             if (chatInfo?.user.groupStatus === "INACTIVE") {
@@ -335,7 +299,7 @@ function Footer(props) {
                 (userCurrent.email !== chatInfo?.user.owner && !chatInfo?.user.admins.includes(userCurrent.email))) {
                 return groupNotPermission();
             }
-           
+
             return chatField();
         } else {
             return chatField();

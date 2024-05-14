@@ -69,8 +69,8 @@ export const messageReducer = createSlice({
     setMessageCall: (state, action) => {
       state.messageCall = action.payload;
     }, 
-    reRenderChatInfor: (state) => {
-      state.renderChatInfor = !state.renderChatInfor;
+    reRenderChatInfor: (state, action) => {
+      state.renderChatInfor = action.payload;
     },
     setMessageSearch: (state, action) => {
       state.messageSearch = action.payload;

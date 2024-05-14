@@ -49,26 +49,25 @@ function MessageImage(props) {
 
     return (
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId} lastMessage={props.lastMessage ? true : false}>
-        {messageStatus === "SENDING" ? (
-            <div style={{ position: "relative", padding: 10 }}>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVf3Y4C59D3Y_SOFpvOnqh64ON-yo7CkaXOJGflrjqAA&s"
-                    style={{ maxHeight: "800px", maxWidth: "300px", borderRadius: "10px" }}
-                />
-                <button className="btn-icon-custom">👍</button>
-            </div>
-        ) : (
-            <div style={{ position: "relative", padding: 10 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-                <img src={fileInfo.filePath} style={{ maxHeight: "500px", maxWidth: "45vh", borderRadius: "10px" }} />
-                {selectedEmojis.length > 0 && (
-                    <div className='btn-icon-custom-s'>
-                        {selectedEmojis.slice(0, 3).map(emoji => (
-                            <span key={emoji}>{emoji}</span>
-                        ))}
-                        {emojiCount > 0 && <span>{emojiCount}</span>}
+            {messageStatus === "SENDING" ? (
+                <div style={{ position: "relative", padding: 10 }}>
+                    <div className="image-sending">
+                        <div className="spiner-custom"></div>
                     </div>
-                )}
-                {isHovered && (
-                    <div onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
+                </div>
+            ) : (
+                <div className="d-flex justify-content-end col-6" style={{ position: "relative", padding: 10 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                    <img src={fileInfo.filePath} style={{ maxWidth: "100%", borderRadius: "10px" }} />
+                    {selectedEmojis.length > 0 && (
+                        <div className='btn-icon-custom-s'>
+                            {selectedEmojis.slice(0, 3).map(emoji => (
+                                <span key={emoji}>{emoji}</span>
+                            ))}
+                            {emojiCount > 0 && <span>{emojiCount}</span>}
+                        </div>
+                    )}
+                    {/* {isHovered && (
+                    <div className="" onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
                         <Dropdown show={showContent}>
                             <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
                                 <div className='btn-icon-custom-img'>
@@ -91,11 +90,12 @@ function MessageImage(props) {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                )}
-            </div>
-        )}
-    </BaseMessage>
-);
+                )} */}
+
+                </div>
+            )}
+        </BaseMessage>
+    );
 }
- 
+
 export default MessageImage;

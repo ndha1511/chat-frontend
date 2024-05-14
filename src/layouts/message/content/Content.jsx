@@ -22,7 +22,6 @@ import { Icon } from "zmp-ui";
 import SearchMessageInput from "../../../components/search/SearchMessageInput";
 
 
-
 function Content(props) {
 
     const messages = useSelector(state => state.message.messages);
@@ -209,11 +208,11 @@ function Content(props) {
         if (currentDate.getTime() === messageDate.getTime()) {
             return "Hôm nay";
         }
+        const dayName = daysOfWeek[messageDate.getDay()];
         messageDate.setDate(messageDate.getDate() + 1);
         if (currentDate.getTime() === messageDate.getTime()) {
             return "Hôm qua";
         }
-        const dayName = daysOfWeek[messageDate.getDay()];
         return `${dayName} ${day}/${month}/${year}`;
     }
     const getMessage = (message, index) => {
@@ -358,6 +357,7 @@ function Content(props) {
                     </div>
                 </div>
                 : <></>}
+              
         </div>
     );
 }
