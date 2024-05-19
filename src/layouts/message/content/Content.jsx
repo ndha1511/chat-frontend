@@ -53,39 +53,39 @@ function Content(props) {
         }
     }, [showSearchMessage]);
 
-    const displayAvatar =(message, index,)=>{
-        if(index+1 === messages.length){
+
+    const displayAvatar = (message, index,) => {
+        if (index + 1 === messages.length) {
             return true;
         }
         const startTime = arrayToDateTime(message.sendDate);
-        const endTime = arrayToDateTime(messages[index+1].sendDate);
+        const endTime = arrayToDateTime(messages[index + 1].sendDate);
         // Tính toán sự khác biệt giữa hai thời điểm (được tính bằng mili giây)
         const timeDifferenceInMilliseconds = Math.abs(endTime - startTime);
         // Chuyển đổi sự khác biệt thành số phút
         const timeDifferenceInMinutes = timeDifferenceInMilliseconds / (1000 * 60);
-        console.log(timeDifferenceInMinutes)
-  
+
         if (message.senderId === userCurrent.email) {
             return false;
         }
-        if(timeDifferenceInMinutes<1 && message.senderId === messages[index + 1].senderId && startTime.getDate() === endTime.getDate()){
+        if (timeDifferenceInMinutes < 1 && message.senderId === messages[index + 1].senderId && startTime.getDate() === endTime.getDate()) {
             return false;
         }
         return true;
     }
     const renderMessage = (message, index, isLatest = false) => {
         var component = <></>;
-        var showAvatar = displayAvatar(message,index);
+        var showAvatar = displayAvatar(message, index);
         const messageType = message.messageType;
         switch (messageType) {
             case "TEXT":
-                component = <MessageText   message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false}showAvatar={showAvatar}  />;
+                component = <MessageText currentPage={currentPage} scrollToMessage={scrollToMessage} message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />;
                 return checkStatusMessage(message, index, isLatest, component);
             case "FILE":
                 component = <MessageFile message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
                 return checkStatusMessage(message, index, isLatest, component);
             case "IMAGE":
-                component = <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false}showAvatar={showAvatar}  />
+                component = <MessageImage message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
                 return checkStatusMessage(message, index, isLatest, component);
             case "VIDEO":
                 component = <MessageVideo message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
@@ -107,11 +107,11 @@ function Content(props) {
     }
 
     const checkStatusMessage = (message, index, isLatest, component) => {
-        var showAvatar = displayAvatar(message,index);
+        var showAvatar = displayAvatar(message, index);
         if (message.messageStatus === "ERROR") {
-            return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar}  />
+            return <MessageError message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
         } else if (message.messageStatus === "REVOKED") {
-            return <MessageRevoked message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar}  />
+            return <MessageRevoked message={message} key={index} lastMessage={isLatest && message.senderId === userCurrent.email ? true : false} showAvatar={showAvatar} />
         }
         return component;
     }
@@ -124,6 +124,19 @@ function Content(props) {
             const messagesMore = response.messages.reverse();
             setTotalPages(response.totalPage);
             dispatch(updateMessage(messagesMore));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchMore2 = async (nextPage) => {
+        console.log("Fetching more data");
+        try {
+            const response = await getMessageByRoomId(userCurrent.email, props.roomId, nextPage);
+            const messagesMore = response.messages.reverse();
+            setTotalPages(response.totalPage);
+            dispatch(updateMessage(messagesMore));
+            setCurrentPage(nextPage);
         } catch (error) {
             console.log(error);
         }
@@ -158,6 +171,31 @@ function Content(props) {
             setShowScrollButton(false);
         }
     };
+
+    const scrollToMessage = async (messageParent, nextPage) => {
+
+        if (scrollableDivRef.current) {
+            const message = document.getElementById(messageParent.id);
+            if (message) {
+                scrollableDivRef.current.scrollTop = message.offsetTop - 100;
+                console.log(message);
+                const child = message.querySelector(".mess-text");
+                if (child) {
+                    child.style.backgroundColor = "#a7e2bb";
+                    setTimeout(function () {
+                        child.style.backgroundColor = messageParent.senderId === userCurrent.email ? "rgb(229, 239, 255)" : "white";
+                    }, 1000);
+                }
+
+            } else {
+                if (loadMore) {
+                    await fetchMore2(nextPage);
+                    scrollToMessage(messageParent, nextPage + 1);
+                }
+            }
+        }
+    }
+
 
     useEffect(() => {
         if (totalPages === 1 || totalPages === 0) {
@@ -245,14 +283,14 @@ function Content(props) {
             if (index + 1 < messages.length) {
                 if (getMessageDate(messages[index + 1]) === getMessageDate(message)) {
                     return (
-                        <div key={message.id}
+                        <div key={message.id} id={message.id}
                             className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
 
                             {renderMessage(message, index, true)}  </div>
                     )
                 }
                 return (
-                    <div key={message.id}>
+                    <div key={message.id} id={message.id}>
                         <div className="message message-center date" datadate={getMessageDate(message)}><span className="date-style">{compareWithCurrentDate(getMessageDate(message))}</span></div>
                         <div
                             className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
@@ -262,7 +300,7 @@ function Content(props) {
                 )
             }
             return (
-                <div key={message.id}>
+                <div key={message.id} id={message.id}>
                     <div className="message message-center date" datadate={getMessageDate(message)}><span className="date-style">{compareWithCurrentDate(getMessageDate(message))}</span></div>
                     <div
                         className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}>
@@ -274,13 +312,13 @@ function Content(props) {
             if (index + 1 < messages.length) {
                 if (getMessageDate(messages[index + 1]) === getMessageDate(message)) {
                     return (
-                        <div key={message.id}
+                        <div key={message.id} id={message.id}
                             className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
                         > {renderMessage(message, index)} </div>
                     )
                 }
                 return (
-                    <div key={message.id}>
+                    <div key={message.id} id={message.id}>
                         <div className="message message-center date" datadate={getMessageDate(message)}><span className="date-style">{compareWithCurrentDate(getMessageDate(message))}</span></div>
                         <div
                             className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
@@ -289,7 +327,7 @@ function Content(props) {
                 )
             }
             return (
-                <div key={message.id}>
+                <div key={message.id} id={message.id}>
                     <div className="message message-center date" datadate={getMessageDate(message)}><span className="date-style">{compareWithCurrentDate(getMessageDate(message))}</span></div>
                     <div
                         className={`message message-slide-in ${message.senderId === userCurrent.email ? "message-right" : "message-left"}`}
@@ -382,7 +420,7 @@ function Content(props) {
                     </div>
                 </div>
                 : <></>}
-              
+
         </div>
     );
 }

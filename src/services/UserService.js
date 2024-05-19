@@ -30,3 +30,21 @@ export const updateUser = async (newUser) => {
         return Promise.reject(error);
     }
 }
+
+export const blockUser = async (data) => {
+    try {
+        const response = await requestApi(`/users/blockUser`, "PUT", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export const unblockUser = async (data) => {
+    try {
+        const response = await requestApi(`/users/unblockUser`, "PUT", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

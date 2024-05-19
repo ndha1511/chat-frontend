@@ -3,11 +3,19 @@ import Content from "./content/Content";
 import Footer from "./footer/Footer";
 import Header from "./header/Header";
 import "./MessageLayout.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "zmp-ui";
 
 function MessageLayout(props) {
     const chatInfo = useSelector(state => state.message.chatInfo);
+    const messageReply = useSelector(state => state.message.messageReply);
+    const checkKeyMessageReply = () => {
+        if(Object.keys(messageReply).length > 0 ) {
+            return true;
+        }
+        return false;
+    }
+    
 
     const images = [
 
@@ -48,10 +56,10 @@ function MessageLayout(props) {
                         <Header/>
 
                     </div>
-                    <div className="w-100" style={{ height: "70%", width: '100%' }}>
+                    <div className="w-100" style={{  height: checkKeyMessageReply() ? "50%" : "70%", width: '100%' }}>
                         <Content roomId={chatInfo.roomId} />
                     </div>
-                    <div className="d-flex w-100" style={{ height: "18%" }}>
+                    <div className="d-flex w-100" style={{ height: checkKeyMessageReply() ? "38%" : "18%", zIndex: 998 }}>
                         <Footer user={chatInfo.user} />
                     </div>
                 </div> :

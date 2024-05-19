@@ -19,6 +19,7 @@ function MessageImage(props) {
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [emojiCount, setEmojiCount] = useState(0);
     const [showMenu, setShowMenu] = useState(true);
+    const windowSize = useSelector(state => state.render.windowSize);
 
 
     const handleSelectEmoji = (emoji) => {
@@ -77,8 +78,8 @@ function MessageImage(props) {
                     </div>
                 </div>
             ) : (
-                <div className="d-flex justify-content-end col-6" style={{ position: "relative", padding: 10 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-                    <img src={fileInfo.filePath} style={{ maxWidth: "100%", borderRadius: "10px" }} />
+                <div className={`d-flex justify-content-end ${windowSize.width <= 768 ? "col-6" : ""}`} style={{ position: "relative", padding: 10, cursor: "pointer" }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                    <img src={fileInfo.filePath} style={{ maxWidth: "100%", maxHeight: "400px",borderRadius: "10px" }} />
                     {selectedEmojis.length > 0 && (
                         <div className='btn-icon-custom-s'>
                             {selectedEmojis.slice(0, 3).map(emoji => (

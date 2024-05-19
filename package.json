@@ -34,7 +34,7 @@
     "toastr": "^2.1.4",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0",
-    "zmp-ui": "^1.9.4"
+    "zmp-ui": "^1.5.5"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

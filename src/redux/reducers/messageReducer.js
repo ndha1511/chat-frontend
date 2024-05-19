@@ -12,7 +12,9 @@ const initialState = {
     loading: false,
     show: false,
     totalPage: 0,
-  }
+  },
+  bytesUpload: [],
+  messageReply: {}
 }
 
 // cấu trúc khi dispatch 
@@ -85,6 +87,30 @@ export const messageReducer = createSlice({
           state.messageSearch.messages = [...state.messageSearch.messages, newMessage[i]];
         }
       }
+    },
+    pushBytesUpload: (state, action) => {
+      const bytesUpload = action.payload;
+      let flag = false;
+      for(let i = 0; i < state.bytesUpload.length; i++) {
+        if(state.bytesUpload[i].id === bytesUpload.id) {
+          state.bytesUpload[i] = bytesUpload;
+          flag = true;
+          return;
+        }
+      }
+      if(!flag) {
+        state.bytesUpload = [...state.bytesUpload, bytesUpload];
+        return;
+      }
+    },
+    deleteBytesUpload: (state, action) => {
+      const index = state.bytesUpload.findIndex(bytes => bytes.id === action.payload.id);
+      if(index !== -1) {
+        state.bytesUpload.splice(index, 1);
+      }
+    },
+    setMessageReply: (state, action) => {
+      state.messageReply = action.payload;
     }
   },
 })
@@ -100,7 +126,10 @@ export const {
   setMessageCall,
   reRenderChatInfor,
   setMessageSearch,
-  updateMessageSearch 
+  updateMessageSearch,
+  pushBytesUpload,
+  deleteBytesUpload,
+  setMessageReply
 } = messageReducer.actions
 
 export default messageReducer.reducer

@@ -3,7 +3,7 @@ import Header from "../header/Header";
 import Navbar from "../navbars/Navbar";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
 import { useDispatch, useSelector } from "react-redux";
-import { pushMessage, reRenderChatInfor, reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
+import { deleteBytesUpload, pushBytesUpload, pushMessage, reRenderChatInfor, reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom, updateRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ import { connect, stompClient } from "../../configs/SocketConfig";
 import { closePeer, closeStream, localPeer, localStream } from "../../configs/WebRTCConfig";
 import SearchMessage from "../../components/search/SearchMessage";
 import { setShowSearchMessage } from "../../redux/reducers/renderLayoutReducer";
+import { setWindowSize } from "../../redux/reducers/renderReducer";
 
 
 let chatInfo = {};
@@ -103,7 +104,7 @@ function FullLayout(props) {
 
   const state = props.state;
   const windowSizeRedux = useSelector(state => state.render.windowSize);
-  const [windowSize, setWindowSize] = useState({
+  const [windowSize, setWindowSize2] = useState({
     width: windowSizeRedux.width,
     height: windowSizeRedux.height
   });
@@ -113,9 +114,23 @@ function FullLayout(props) {
     dispatch(props.action());
     dispatch(setShowSearchMessage(false));
   }
+  useEffect(() => {
+    function handleResize() {
+      dispatch(setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      }));
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
-    setWindowSize(windowSizeRedux);
+    setWindowSize2(windowSizeRedux);
   }, [windowSizeRedux])
 
   const onCallReceived = (call) => {
@@ -242,6 +257,16 @@ function FullLayout(props) {
     dispatch(reRenderGroup())
   };
 
+  const onProgressReceived = (payload) => {
+    const progress = JSON.parse(payload.body);
+    const messageProgress = {
+      id: progress.id,
+      bytesTransferred: progress.bytesTransferred
+    }
+    dispatch(pushBytesUpload(messageProgress));
+
+  }
+
 
   const onEventReceived = (payload) => {
     const dataReceived = JSON.parse(payload.body);
@@ -328,6 +353,7 @@ function FullLayout(props) {
           }
           dispatch(pushMessage(dataReceived.message));
           dispatch(updateRoom(roomTemp));
+          dispatch(deleteBytesUpload(dataReceived.message));
           break;
         case "SENT":
           dispatch(reRenderRoom());
@@ -378,6 +404,7 @@ function FullLayout(props) {
         stompClient.subscribe(`/user/${user.email}/topic/offer`, onOfferReceived);
         stompClient.subscribe(`/user/${user.email}/topic/answer`, onAnswerReceived);
         stompClient.subscribe(`/user/${user.email}/topic/candidate`, onCandidateReceived);
+        stompClient.subscribe(`/user/${user.email}/queue/progress`, onProgressReceived);
       }
       setConnection(true);
     }
@@ -506,16 +533,6 @@ function FullLayout(props) {
             <></>
         })}
       </div>
-      {/* <ImageViewer
-        onClose={() => setVisible(false)}
-        activeIndex={activeIndex}
-        images={images}
-        visible={visible}
-      />
-      <button onClick={() => {
-        setActiveIndex(0);
-        setVisible(true);
-      }}>open image viewer</button> */}
     </div>
   );
 }

@@ -9,7 +9,6 @@ import { setChatInfo } from "./redux/reducers/messageReducer";
 import ContacLayoutMenu from "./layouts/contact/ContactLayoutMenu";
 import ContentLayout from "./layouts/contact/ContentLayout";
 import { setViewContent } from "./redux/reducers/renderLayoutReducer";
-import 'zmp-ui/image-viewer/styles/image-viewer.css';
 
 
 
