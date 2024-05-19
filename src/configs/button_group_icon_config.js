@@ -13,7 +13,7 @@ export const navbarIcon = [
         title: "Danh bạ"
     },
     {
-        item:      <Icons type="video" fillColor="white" size={25} />,
+        item: <Icons type="video" fillColor="white" size={25} />,
         title: "Meeting"
     },
 ]

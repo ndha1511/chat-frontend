@@ -19,6 +19,7 @@ function MessageImage(props) {
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [emojiCount, setEmojiCount] = useState(0);
     const [showMenu, setShowMenu] = useState(true);
+    const windowSize = useSelector(state => state.render.windowSize);
 
 
     const handleSelectEmoji = (emoji) => {
@@ -69,67 +70,57 @@ function MessageImage(props) {
         }
     };
     return (
-        <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId} lastMessage={props.lastMessage ? true : false} showAvatar={props.showAvatar}>
+        <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId} lastMessage={props.lastMessage ? true : false}>
             {messageStatus === "SENDING" ? (
                 <div style={{ position: "relative", padding: 10 }}>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVf3Y4C59D3Y_SOFpvOnqh64ON-yo7CkaXOJGflrjqAA&s"
-                        style={{ maxHeight: "800px", maxWidth: "300px", borderRadius: "10px" }}
-                    />
+                    <div className="image-sending">
+                        <div className="spiner-custom"></div>
+                    </div>
                 </div>
             ) : (
-                <div style={{ position: "relative", padding: 10, marginBottom: emojiCount > 0 ? 15 : 0 }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike}>
-                    <div className="img-message"><img src={fileInfo.filePath} style={{ maxHeight: "500px", maxWidth: "45vh", borderRadius: "10px", }} /></div>
+                <div className={`d-flex justify-content-end ${windowSize.width <= 768 ? "col-6" : ""}`} style={{ position: "relative", padding: 10, cursor: "pointer" }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                    <img src={fileInfo.filePath} style={{ maxWidth: "100%", maxHeight: "400px",borderRadius: "10px" }} />
                     {selectedEmojis.length > 0 && (
-                        <div className='btn-icon-custom-img-s'>
+                        <div className='btn-icon-custom-s'>
                             {selectedEmojis.slice(0, 3).map(emoji => (
-                                <span style={{ fontSize: 20 }} key={emoji}>{emoji}</span>
+                                <span key={emoji}>{emoji}</span>
                             ))}
-                            {emojiCount > 0 && <span style={{ fontSize: 12, color: 'rgb(154, 150, 150)' }}>{emojiCount}</span>}
+                            {emojiCount > 0 && <span>{emojiCount}</span>}
                         </div>
                     )}
-                    {isHovered && (
-                        <div onMouseEnter={hanldeHoverLike} onMouseLeave={() => setShowContent(false)}>
+                    {/* {isHovered && (
+                    <div className="" onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
+                        <Dropdown show={showContent}>
+                            <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
+                                <div className='btn-icon-custom-img'>
+                                    {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : '👍'}
+                                </div>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className='dropd-menu'>
+                                <div className="btn-emoji">
+                                    {emojis.map((emoji, index) => (
+                                        <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
+                                            {emoji.icon}
+                                        </Dropdown.Item>
+                                    ))}
+                                    {selectedEmojis.length > 0 && (
+                                        <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
+                                            <i className="bi bi-x-lg"></i>
+                                        </Dropdown.Item>
+                                    )}
+                                </div>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                )} */}
 
-                            <Dropdown show={showContent} className='drop-message-img' >
 
-                                <Dropdown.Toggle as={CustomToggle}>
-                                    <div className='btn-icon-custom-img'>
-                                        {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : <img style={{ width: 14, height: 14, }} src='./assets/icons/like.png' />}
-                                    </div>
-                                </Dropdown.Toggle>
-
-                                {showMenu && (
-                                    <Dropdown.Menu className='dropd-menu-img'>
-                                        <div className="btn-emoji-img">
-                                            {emojis.map((emoji, index) => (
-                                                <div
-
-                                                >
-                                                    <Dropdown.Item
-                                                        className="emoji-item-img"
-                                                        onClick={() => handleSelectEmoji(emoji.icon)}
-                                                    >
-                                                        {emoji.icon}
-                                                    </Dropdown.Item>
-                                                </div>
-                                            ))}
-                                            {selectedEmojis.length > 0 && (
-                                                <Dropdown.Item className='emoji-item-img' onClick={handleClearEmojis}>
-                                                    <i className="bi bi-x-lg"></i>
-                                                </Dropdown.Item>
-                                            )}
-                                        </div>
-                                    </Dropdown.Menu>
-                                )}
-                            </Dropdown>
-
-                        </div>
-                    )}
                 </div>
             )}
         </BaseMessage>
     );
 }
+
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         href="/"
@@ -143,4 +134,5 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         {children}
     </a>
 ));
+
 export default MessageImage;

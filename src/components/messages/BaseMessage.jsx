@@ -5,7 +5,7 @@ import ButtonGroup from "../buttons/button-group/ButtonGroup";
 import { btnCT } from "../../configs/button_group_icon_config";
 import { Button, Dropdown, Form, ListGroup, Modal } from "react-bootstrap";
 import { deleteMessage, revokeMessage } from "../../services/MessageService";
-import { pushMessage, reRenderMessge } from "../../redux/reducers/messageReducer";
+import { pushMessage, reRenderMessge, setMessageReply } from "../../redux/reducers/messageReducer";
 import Avatar from "../avatar/Avatar";
 import { getUserByEmail } from "../../services/UserService";
 import FowardModal from "../modal/foward-modal/FowardModal";
@@ -129,9 +129,9 @@ function BaseMessage(props) {
         }
     }
     const btnCT = [
-        { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, },
+        { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, title: "Trả lời"},
 
-        { item: <Icon onClick={openFowardModal} icon="zi-share-solid" size={18} /> },
+        { item: <Icon icon="zi-share-solid" size={18} />, title: "Chia sẻ" },
 
         {
             item: <Dropdown>
@@ -155,7 +155,8 @@ function BaseMessage(props) {
                     }
                     <Dropdown.Item style={{ color: 'red' }}  ><i className="bi bi-trash pe-3"></i>Xóa ở phía tôi</Dropdown.Item>
                 </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown>,
+            title: "Thêm"
         }
 
     ]
@@ -165,17 +166,29 @@ function BaseMessage(props) {
         name: props.message.senderName
     }
 
+    const handleMessage = (index) => {
+        switch(index) {
+            case 0:
+                dispatch(setMessageReply(props.message));
+                break;
+            case 1: 
+                openFowardModal();
+                break;
+            default:
+                break;
+        }
+    }
 
     return (
         <div onMouseEnter={() => setHiddenBtn(true)}
             onMouseLeave={() => setHiddenBtn(false)}
             className={`d-flex w-100  ${handleTime()  ? "mb-3" : ""}  `} style={{
                 flexDirection: props.isSender && props.message.messageType !== "SYSTEM" ? "row" : "row-reverse",
-                alignItems: props.message.messageType === "SYSTEM" ? "center" : "flex-end", justifyContent: props.message.messageType === "SYSTEM" ? "center" : "flex-end", position: 'relative',
+                alignItems: props.message.messageType === "SYSTEM" ? "center" : "flex-start", justifyContent: props.message.messageType === "SYSTEM" ? "center" : "flex-end", position: 'relative',
             }}>
             {hiddenBtn && props.message.messageStatus !== "REVOKED" && props.message.messageStatus !== "ERROR" && props.message.messageType !== "SYSTEM"
             && props.message.messageType !=="AUDIO_CALL"  && props.message.messageType !=="VIDEO_CALL" && (
-                <div className="hidden" style={{ display: "block", marginBottom: "20px", position: 'relative' }}>
+                <div className="hidden d-flex align-items-end" style={{  marginBottom: "20px", position: 'relative', height: "100%" }}>
                     <div className="hoverText" style={{ backgroundColor: '#dde8ec', borderRadius: 5, border: 'none', }}>
                         <ButtonGroup buttons={btnCT}
                             className="btn-hover"
@@ -187,6 +200,7 @@ function BaseMessage(props) {
                             borderRadius={5}
                             color='red'
                             color1='#7589a3'
+                            handle={handleMessage}
                         />
                     </div>
                 </div>
@@ -194,12 +208,12 @@ function BaseMessage(props) {
 
             {props.children}
             {!props.isSender && props.message.messageType !== "SYSTEM" && props.showAvatar ?
-                <div className="avatar-receive" onClick={() => { hanldeUserGroup(); }} style={{ height: handleTime() ? 145 : 120, padding: 10 }}>
+                <div onClick={() => { hanldeUserGroup(); }}>
                     <Avatar user={senderUser} width={40} height={40} />
                 </div>
                 :
                 !props.isSender &&
-                <div className="avatar-receive" style={{ width:61.5,padding:10}}>
+                <div  style={{ width:40,padding:10}}>
                     
                 </div>
             }

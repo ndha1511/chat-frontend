@@ -7,6 +7,8 @@ import ProfileModal from "../../components/modal/ProfileModal";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
 import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
 import MessageLayout from "../message/MessageLayout";
+import { blockUser, getUserByEmail, unblockUser } from "../../services/UserService";
+import { setUserInfo } from "../../redux/reducers/userReducer";
 
 
 function ContentListFriend(props) {
@@ -16,7 +18,8 @@ function ContentListFriend(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [showListFriend, setShowListFriend] = useState(true)
     const [showMessageLayout, setShowMessageLayout] = useState(false);
-    const rederMessageLayout = useSelector(state => state.render.renderMessageLayout)
+    const rederMessageLayout = useSelector(state => state.render.renderMessageLayout);
+    const userBlocks = userCurrent.blockUsers;
 
     const handleShowMessageLayout = () => {
         setShowMessageLayout(true);
@@ -61,6 +64,7 @@ function ContentListFriend(props) {
             ref={ref}
             onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation(); 
                 onClick(e);
             }}
             className="dropdown-menu1" // Thêm class cho avatar dropdown
@@ -68,6 +72,37 @@ function ContentListFriend(props) {
             {children}
         </a>
     ));
+
+    const handleBlock = async (block) => {
+        try {
+            const data = {
+                senderId: userCurrent.email,
+                blockId: block.email
+            }
+            const response = await blockUser(data);
+            const userUpdate = await getUserByEmail(userCurrent.email);
+            localStorage.setItem("user", JSON.stringify(userUpdate));
+            dispatch(setUserInfo(userUpdate));
+            alert(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleUnblock = async (unblock) => {
+        try {
+            const data = {
+                senderId: userCurrent.email,
+                blockId: unblock.email
+            }
+            const response = await unblockUser(data);
+            const userUpdate = await getUserByEmail(userCurrent.email);
+            localStorage.setItem("user", JSON.stringify(userUpdate));
+            dispatch(setUserInfo(userUpdate));
+            alert(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <>
@@ -139,7 +174,9 @@ function ContentListFriend(props) {
                                                         <Dropdown.Item onClick={() => handleShowProfile(item)} >Xem thông tin</Dropdown.Item>
                                                         <Dropdown.Item >Phân loại </Dropdown.Item>
                                                         <Dropdown.Item >Đặt tên gợi nhớ</Dropdown.Item>
-                                                        <Dropdown.Item >Chặn người này</Dropdown.Item>
+                                                        {userBlocks && userBlocks.includes(item.email) ?
+                                                        <Dropdown.Item onClick={(e) => {handleUnblock(item); e.stopPropagation()}}>Bỏ chặn</Dropdown.Item> :
+                                                        <Dropdown.Item onClick={(e) => {handleBlock(item); e.stopPropagation()}}>Chặn người này</Dropdown.Item>}
                                                         <Dropdown.Item >Xóa bạn</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>

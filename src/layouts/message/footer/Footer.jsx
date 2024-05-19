@@ -4,12 +4,13 @@ import { useDispatch } from "react-redux";
 import "./Footer.scss";
 import { sendImgaeGroup, sendMessageToUser } from "../../../services/ChatService";
 import { useEffect, useRef, useState } from "react";
-import { pushMessage, setChatInfo, setScrollEnd } from "../../../redux/reducers/messageReducer";
+import { pushMessage, setChatInfo, setMessageReply, setScrollEnd } from "../../../redux/reducers/messageReducer";
 import { reRenderRoom } from "../../../redux/reducers/renderRoom";
 import { getRoomBySenderIdAndReceiverId } from "../../../services/RoomService";
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
 import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
+import ReplyMessageFooter from "./ReplyMessageFooter";
 
 
 function Footer(props) {
@@ -25,7 +26,15 @@ function Footer(props) {
     const stickerIconRef = useRef(null);
     const emoji_string = "😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🤩 🥳 🙂‍ 😏 😒 🙂‍ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾";
     const emojis = emoji_string.split(" ");
+    const messageReply = useSelector(state => state.message.messageReply);
+    const areaRef = useRef(null);
 
+    
+    useEffect(() => {
+        if(Object.keys(messageReply).length > 0) {
+            areaRef.current.focus();
+        }
+    }, [messageReply])
 
 
     useEffect(() => {
@@ -70,74 +79,32 @@ function Footer(props) {
         return;
     }
     const changeFile = async (event) => {
-
         if (event.target.files) {
-            if (event.target.files.length > 1) {
-                try {
-                    const fileList = event.target.files;
-                    const request = new FormData();
-                    for (let i = 0; i < fileList.length; i++) {
-                        const file = fileList[i];
-                        const filename = file.name;
-                        const fileExtension = filename.split(".").pop();
-
-                        if (checkExtensionFile(fileExtension) !== "IMAGE") {
-                            alert("Bạn chỉ có thể upload nhiều file ảnh cùng lúc");
-                            fileInputRef.current.value = null;
-                            return;
-                        }
-
-                        // Thêm từng file vào FormData
-                        request.append("filesContent", file);
-                    }
-
-                    request.append("senderId", userCurrent.email);
-                    request.append("receiverId", chatInfo.user.email);
-                    request.append("messageType", "IMAGE_GROUP");
-                    request.append("messageStatus", "SENDING");
-                    const msg = await sendImgaeGroup(request);
-                    if(chatInfo.roomId === ''){
-                        const chatInfor = {...chatInfo,roomId:msg.roomId}
-                        dispatch(setChatInfo(chatInfor))
-                    }    
-                    dispatch(pushMessage(msg));
-                    dispatch(reRenderRoom());
-                    // findRoomId();
-                    dispatch(setViewIndedx(0));
-                    fileInputRef.current.value = null;
-                } catch (error) {
-                    console.error(error);
-                    fileInputRef.current.value = null;
-                }
-
-            } else {
-                try {
-                    const fileList = event.target.files;
-                    const selectedFile = fileList[0];
-                    let fileName = "";
-                    if (selectedFile.name)
-                        fileName = selectedFile.name;
-                    const fileExtension = fileName.split('.').pop();
+            try {
+                const fileList = event.target.files;
+                for (let i = 0; i < fileList.length; i++) {
+                    const file = fileList[i];
+                    const filename = file.name;
+                    const fileExtension = filename.split('.').pop();
                     const fileType = checkExtensionFile(fileExtension);
                     const request = new FormData();
                     request.append("senderId", userCurrent.email);
                     request.append("receiverId", chatInfo.user.email);
                     request.append("messageType", fileType);
-                    request.append("fileContent", selectedFile);
+                    request.append("fileContent", file);
                     request.append("hiddenSenderSide", false);
+                    request.append("senderName", userCurrent.name);
                     const msg = await sendMessageToUser(request);
                     dispatch(pushMessage(msg));
-                    dispatch(reRenderRoom());
-                    // findRoomId();
-                    dispatch(setViewIndedx(0));
-                    fileInputRef.current.value = null;
-                } catch (error) {
-                    console.error(error);
-                    fileInputRef.current.value = null;
+                    dispatch(setScrollEnd());
                 }
+
+                dispatch(setViewIndedx(0));
+                fileInputRef.current.value = null;
+            } catch (error) {
+                console.error(error);
+                fileInputRef.current.value = null;
             }
-
-
 
         }
     }
@@ -211,21 +178,35 @@ function Footer(props) {
                 request.append("textContent", textContent);
                 request.append("messageType", "TEXT");
                 request.append("hiddenSenderSide", false);
+                request.append("senderName", userCurrent.name);
+                if(Object.keys(messageReply).length > 0) {
+                    request.append("messageParent", JSON.stringify(messageReply));
+                }
                 setTextContent("");
                 const msg = await sendMessageToUser(request);
+
                 if(chatInfo.roomId === ''){
                     const chatInfor = {...chatInfo,roomId:msg.roomId}
                     dispatch(setChatInfo(chatInfor))
                 }
+                dispatch(pushMessage(msg));
+                dispatch(setMessageReply({}));
                 
-                // dispatch(pushMessage(msg));
-                // dispatch(reRenderMessge());
                 dispatch(setScrollEnd())
                 // findRoomId();
                 dispatch(setViewIndedx(0));
 
             } catch (error) {
-                console.log(error);
+                const status = error.response.status;
+                switch(status) {
+                    case 410:
+                        alert("Người nhận hiện không muốn nhận tin nhắn");
+                        break;
+                    case 411:
+                        alert("Người nhận không nhận tin nhắn từ người lạ");
+                        break;
+                    default: break;
+                }
             }
         }
         return;
@@ -253,7 +234,7 @@ function Footer(props) {
 
     const chatField = () => {
         return <div className="d-flex w-100" style={{ height: "100%", flexDirection: 'column' }}>
-            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "40%", alignItems: "center", position: 'relative', borderTop: '1px solid rgb(200, 220, 220)' }}>
+            <div className="d-flex w-100" style={{ paddingLeft: 15, height: "50px", alignItems: "center", position: 'relative', borderTop: '1px solid rgb(200, 220, 220)' }}>
                 <ButtonGroup handle={handleButton} buttons={actionChatIcon} className="btn-hover"
                     marginRight={15}
                     width={40} height={40}
@@ -261,9 +242,12 @@ function Footer(props) {
                 />
                 {renderEmojiPicker()}
             </div>
-            <div className={`d-flex w-100 ${isActive ? "border-top-success" : "border-top-gray"}`} style={{ height: "54%", alignItems: 'center' }}>
-                <label htmlFor="input-msg" style={{ width: "100%" }} className="">
+            <div className={`d-flex flex-column w-100 ${isActive ? "border-top-success" : "border-top-gray"}`} style={{ height: "54%", alignItems: 'center' }}>
+                {Object.keys(messageReply).length > 0 && <ReplyMessageFooter messageReply={messageReply}/>}
+                <div className="d-flex w-100" style={{height: "100px"}}>
+                <label htmlFor="input-msg" style={{ width: "100%"}} className="">
                     <textarea
+                        ref={areaRef}
                         onChange={changeMessageContent}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
@@ -279,13 +263,14 @@ function Footer(props) {
                         className="input-message w-100"
                     />
                 </label>
-                <button className="btn-smile" onClick={() => {setShowEmojiPicker(!showEmojiPicker);  }} ><i className="bi bi-emoji-smile"></i></button>
-                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ paddingBottom: 4 }}><Icons type="like" fillColor="#F7CE6C" size={28}/></button>}
+                <button className="btn-smile" onClick={() => { setShowEmojiPicker(!showEmojiPicker); }} ><i className="bi bi-emoji-smile"></i></button>
+                {isActive1 ? null : <button className="btn-send" onClick={sendLike} style={{ paddingBottom: 4 }}><Icons type="like" fillColor="#F7CE6C" size={28} /></button>}
                 {isActive1 ? (
                     <button className=" btn-send" onClick={sendMessage}>
                         <Icon icon='zi-send-solid' size={30} />
                     </button>
                 ) : null}
+                </div>
             </div>
         </div>
     }
@@ -297,12 +282,13 @@ function Footer(props) {
         request.append("textContent", likeMessage);
         request.append("messageType", "TEXT");
         request.append("hiddenSenderSide", false);
+        request.append("senderName", userCurrent.name);
 
         // Gửi tin nhắn ngay lập tức
         try {
             const sendMessageAsync = async () => {
                 const msg = await sendMessageToUser(request);
-                // dispatch(pushMessage(msg));
+                dispatch(pushMessage(msg));
                 dispatch(setScrollEnd());
                 findRoomId();
             };
@@ -331,7 +317,7 @@ function Footer(props) {
     }
 
 
-  
+
     const renderFooter = () => {
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
             if (chatInfo?.user.groupStatus === "INACTIVE") {
@@ -344,7 +330,7 @@ function Footer(props) {
                 (userCurrent.email !== chatInfo?.user.owner && !chatInfo?.user.admins.includes(userCurrent.email))) {
                 return groupNotPermission();
             }
-           
+
             return chatField();
         } else {
             return chatField();

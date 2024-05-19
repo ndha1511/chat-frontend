@@ -17,7 +17,6 @@ function MessageText(props) {
     const [hoveredEmoji, setHoveredEmoji] = useState(null);
     const [showMenu, setShowMenu] = useState(true);
 
-
     const handleSelectEmoji = (emoji) => {
         setHoveredEmoji(null);
         setEmojiCount(prevCount => prevCount + 1);
@@ -38,6 +37,10 @@ function MessageText(props) {
         setShowContent(false); // Tự động đóng menu sau khi xóa
         setHoveredEmoji(null);
     };
+
+    const scrollToMessage = (id) => {
+        props.scrollToMessage(id, props.currentPage);
+    }
 
 
     const hanldeHoverLike = () => {
@@ -66,6 +69,38 @@ function MessageText(props) {
             });
         }
     };
+
+    const displayMsgParent = () => {
+        const msgType = props.message.messagesParent.messageType;
+        const msgParent = props.message.messagesParent;
+        switch (msgType) {
+            case "TEXT":
+                return <p>{msgParent.content}</p>;
+            case "FILE":
+                return <div className="d-flex align-items-center">
+                    <i className={`bi bi-filetype-${msgParent.content.fileExtension}`} style={{ fontSize: 30 }}></i>
+                    <div className="mess-text">
+                        <div>{msgParent.content.filename}</div>
+                    </div>
+                </div>;
+            case "IMAGE":
+                return <div className="d-flex align-items-center">
+                    <img src={msgParent.content.filePath} width={60} height={60} alt={msgParent.content.filename}></img>
+                    <span className="p-2">Hình ảnh</span>
+                </div>;
+            case "VIDEO":
+                return <div className="d-flex align-items-center">
+                    <video width="50" height="50">
+                        <source src={msgParent.content.filePath} type="video/mp4" />
+                    </video>
+                    <span className="p-2">Video</span>
+                </div>;
+            case "AUDIO":
+                return;
+            default:
+                return "";
+        }
+    }
     return (
 
         <BaseMessage
@@ -75,20 +110,36 @@ function MessageText(props) {
             showAvatar={props.showAvatar}
         // showHidden={isHovered}
         >
-            <div className='d-flex mess-hover' style={{ marginTop: userCurrent.email === props.message.senderId ? 15 : 3,
-                marginBottom: emojiCount>0?16:3
+            <div className='d-flex mess-hover' style={{
+                marginTop: userCurrent.email === props.message.senderId ? 15 : 3,
+                marginBottom: emojiCount > 0 ? 16 : 3
 
             }}
-             onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike} >
+                onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike} >
                 <div className="d-flex  mess-text" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >
-                    <div className='text'> <pre >{props.message.content}</pre></div>
-                    <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
+                    {props.message.messagesParent ? <div onClick={() => scrollToMessage(props.message.messagesParent)} style={{cursor: "pointer"}}>
+                        <div className="d-flex p-2" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#c7e0ff' : '#f0f0f0', margin: 5, width: "100%", borderRadius: 5 }}>
+                            <div className="d-flex flex-column w-100" style={{
+                                borderLeft: "2px solid blue",
+                                paddingLeft: 5
+                            }}>
+                                <div>
+                                    <div><span>{props.message.messagesParent.senderName}</span></div>
+                                    {displayMsgParent()}
+                                </div>
+                            </div>
+                        </div>
+                        <div className='text'> <pre >{props.message.content}</pre></div>
+                        <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
+                    </div> :
+                        <div><div className='text'> <pre >{props.message.content}</pre></div>
+                            <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span></div>}
                     {selectedEmojis.length > 0 && (
                         <div className='btn-icon-custom-s'>
                             {selectedEmojis.slice(0, 3).map(emoji => (
                                 <span style={{ fontSize: 19 }} key={emoji}>{emoji}</span>
                             ))}
-                            {emojiCount > 0 && <span style={{fontSize:13}}> {emojiCount}</span>}
+                            {emojiCount > 0 && <span style={{ fontSize: 13 }}> {emojiCount}</span>}
                         </div>
                     )}
 

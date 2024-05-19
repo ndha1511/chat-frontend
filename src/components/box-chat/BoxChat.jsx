@@ -94,33 +94,35 @@ function BoxChat(props) {
 
     useEffect(() => {
         const updateChatInfo = async () => {
-            if (Object.keys(chatInfor).length > 0) {
-                if (props.room.roomId === chatInfor.roomId) {
-                    if (props.room.roomType === "GROUP_CHAT") {
-                        const response = await getGroupById(props.room.receiverId);
-                        const userData = {
-                            name: response.groupName,
-                            email: response.id,
-                            ...response
+            if (renderChatInfor) {
+                if (Object.keys(chatInfor).length > 0) {
+                    if (props.room.roomId === chatInfor.roomId) {
+                        if (props.room.roomType === "GROUP_CHAT") {
+                            const response = await getGroupById(props.room.receiverId);
+                            const userData = {
+                                name: response.groupName,
+                                email: response.id,
+                                ...response
+                            }
+                            const chatInfo = {
+                                user: userData,
+                                roomId: props.room.roomId,
+                                room: props.room
+                            };
+
+                            dispatch(setChatInfo(chatInfo));
+                        } else {
+                            const response = await getUserByEmail(props.room.receiverId);
+                            console.log(response);
+                            const chatInfo = {
+                                user: { ...response },
+                                roomId: props.room.roomId,
+                                room: props.room
+                            };
+                            dispatch(setChatInfo(chatInfo));
                         }
-                        const chatInfo = {
-                            user: userData,
-                            roomId: props.room.roomId,
-                            room: props.room
-                        };
 
-                        dispatch(setChatInfo(chatInfo));
-                    } else {
-                        const response = await getUserByEmail(props.room.receiverId);
-                        console.log(response);
-                        const chatInfo = {
-                            user: { ...response },
-                            roomId: props.room.roomId,
-                            room: props.room
-                        };
-                        dispatch(setChatInfo(chatInfo));
                     }
-
                 }
             }
         }
@@ -214,7 +216,7 @@ function BoxChat(props) {
                             </Dropdown>
 
 
-                            </div>}
+                        </div>}
                 </div>
                 {
                     props.room.numberOfUnreadMessage > 0 ?

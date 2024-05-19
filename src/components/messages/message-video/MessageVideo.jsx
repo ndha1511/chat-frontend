@@ -5,23 +5,26 @@ import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 function MessageVideo(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const fileInfo = props.message.content;
+    const messageStatus = props.message.messageStatus;
     return (
         <BaseMessage
             message={props.message}
             isSender={userCurrent.email === props.message.senderId}
-            lastMessage={props.lastMessage ? true : false}    showAvatar={props.showAvatar}
+            lastMessage={props.lastMessage ? true : false} showAvatar={props.showAvatar}
         >
-            <div style={{display:'flex',flexDirection:'column'}}>
-                <video width="350" height="500" controls >
-                    <source src={fileInfo.filePath} type="video/mp4" />
-                </video>
-            <div style={{display:'flex',justifyContent:'flex-end',marginTop:10}}>
-            <span style={{fontSize:12, color:'white',border:'0.5px solid rgb(154, 150, 150)', backgroundColor:'grey',width:45,
-                borderRadius:10, display:'flex',alignItems:'center',justifyContent:'center',height:30
+            {messageStatus === "SENDING" ? (<div style={{ position: "relative", padding: 10 }}>
+                <div className="image-sending">
+                    <div className="spiner-custom"></div>
+                </div>
+            </div>) :
+                <div className="col-6" style={{ marginRight: 8, display: 'flex', flexDirection: 'column', cursor: "pointer", maxWidth: "300px" }}>
+                    <video controls style={{maxHeight: "400px"}}>
+                        <source src={fileInfo.filePath} type="video/mp4" />
+                    </video>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
 
-            }}>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
-            </div>
-            </div>
+                    </div>
+                </div>}
 
         </BaseMessage>
     );

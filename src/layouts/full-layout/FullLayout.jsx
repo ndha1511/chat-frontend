@@ -3,7 +3,7 @@ import Header from "../header/Header";
 import Navbar from "../navbars/Navbar";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
 import { useDispatch, useSelector } from "react-redux";
-import { pushMessage, reRenderChatInfor, reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
+import { deleteBytesUpload, pushBytesUpload, pushMessage, reRenderChatInfor, reRenderMessge, setMessageCall } from "../../redux/reducers/messageReducer";
 import { createRooms, reRenderRoom, updateRoom } from "../../redux/reducers/renderRoom";
 import { getRoomsBySenderId } from "../../services/RoomService";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ import { connect, stompClient } from "../../configs/SocketConfig";
 import { closePeer, closeStream, localPeer, localStream } from "../../configs/WebRTCConfig";
 import SearchMessage from "../../components/search/SearchMessage";
 import { setShowSearchMessage } from "../../redux/reducers/renderLayoutReducer";
+import { setWindowSize } from "../../redux/reducers/renderReducer";
 
 
 let chatInfo = {};
@@ -48,8 +49,7 @@ function FullLayout(props) {
   const [remoteStreams, setRemoteStreams] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
-  // dùng để lưu vị trí của thanh cuộn trong một số trường hợp không muốn render
-  const [scrollMessage, setScrollMessage] = useState(0);
+  const [remoteStream, setRemoteStream] = useState(null);
 
 
   // Hàm loại bỏ các phần tử trùng lặp từ một mảng
@@ -105,7 +105,7 @@ function FullLayout(props) {
 
   const state = props.state;
   const windowSizeRedux = useSelector(state => state.render.windowSize);
-  const [windowSize, setWindowSize] = useState({
+  const [windowSize, setWindowSize2] = useState({
     width: windowSizeRedux.width,
     height: windowSizeRedux.height
   });
@@ -115,9 +115,23 @@ function FullLayout(props) {
     dispatch(props.action());
     dispatch(setShowSearchMessage(false));
   }
+  useEffect(() => {
+    function handleResize() {
+      dispatch(setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      }));
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
-    setWindowSize(windowSizeRedux);
+    setWindowSize2(windowSizeRedux);
   }, [windowSizeRedux])
 
   const onCallReceived = (call) => {
@@ -133,10 +147,11 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
-      if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
-        // Thêm stream mới vào danh sách remoteStreams
-        setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
-      }
+      // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+      //   // Thêm stream mới vào danh sách remoteStreams
+      //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      // }
+      setRemoteStream(event.streams[0]);
     }
 
     localPeer.onicecandidate = (event) => {
@@ -182,10 +197,11 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
-      if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
-        // Thêm stream mới vào danh sách remoteStreams
-        setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
-      }
+      // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+      //   // Thêm stream mới vào danh sách remoteStreams
+      //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      // }
+      setRemoteStream(event.streams[0]);
     }
 
     localPeer.onicecandidate = (event) => {
@@ -244,6 +260,16 @@ function FullLayout(props) {
     dispatch(reRenderGroup())
   };
 
+  const onProgressReceived = (payload) => {
+    const progress = JSON.parse(payload.body);
+    const messageProgress = {
+      id: progress.id,
+      bytesTransferred: progress.bytesTransferred
+    }
+    dispatch(pushBytesUpload(messageProgress));
+
+  }
+
 
   const onEventReceived = (payload) => {
     const dataReceived = JSON.parse(payload.body);
@@ -266,7 +292,8 @@ function FullLayout(props) {
           if (Object.keys(chatInfo).length > 0) {
             dispatch(reRenderMessge());
           }
-          dispatch(reRenderChatInfor());
+          dispatch(reRenderChatInfor(true));
+          dispatch(reRenderChatInfor(false));
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
@@ -276,7 +303,8 @@ function FullLayout(props) {
             dispatch(reRenderMessge());
           }
           dispatch(reRenderMember());
-          dispatch(reRenderChatInfor());
+          dispatch(reRenderChatInfor(true));
+          dispatch(reRenderChatInfor(false));
           stompClient.unsubscribe(room.roomId);
           stompClient.unsubscribe(`${room.roomId}_call`);
           break;
@@ -328,6 +356,7 @@ function FullLayout(props) {
           }
           dispatch(pushMessage(dataReceived.message));
           dispatch(updateRoom(roomTemp));
+          dispatch(deleteBytesUpload(dataReceived.message));
           break;
         case "SENT":
           dispatch(reRenderRoom());
@@ -378,6 +407,7 @@ function FullLayout(props) {
         stompClient.subscribe(`/user/${user.email}/topic/offer`, onOfferReceived);
         stompClient.subscribe(`/user/${user.email}/topic/answer`, onAnswerReceived);
         stompClient.subscribe(`/user/${user.email}/topic/candidate`, onCandidateReceived);
+        stompClient.subscribe(`/user/${user.email}/queue/progress`, onProgressReceived);
       }
       setConnection(true);
     }
@@ -458,7 +488,7 @@ function FullLayout(props) {
 
       /> : <VideoCallingView
         callerInfo={callerInfo}
-        remoteStreams={remoteStreamsUnique}
+        remoteStream={remoteStream}
       /> : <></>}
 
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>

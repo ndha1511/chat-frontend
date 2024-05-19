@@ -104,9 +104,9 @@ function Navbar() {
                         </Dropdown>
                     </div>
                     {/* Modal  */}
-                    <ProfileModal show={showProfileModal} onClose={handleCloseProfileModal} onOpenChangePassword={handleShowChangePasswordModal} onOpenUpdateModal={changeUpdateModal} />
-                    <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />
-                    <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal} />
+                    {showProfileModal && <ProfileModal show={showProfileModal} onClose={handleCloseProfileModal} onOpenChangePassword={handleShowChangePasswordModal} onOpenUpdateModal={changeUpdateModal} />}
+                    {showChangePasswordModal && <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />}
+                    {showUpdateModal && <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal} />}
                     <div>
                         <ButtonGroup buttons={buttons} vertical
                             handle={clickButton}
@@ -120,6 +120,7 @@ function Navbar() {
                         />
                     </div>
                 </div>
+                
 
                 <div className="footer">
                     <ButtonIcon
@@ -135,12 +136,10 @@ function Navbar() {
                                 <i className="bi bi-gear" style={{ fontSize: "27px", color: 'white' }}></i>
                             </Dropdown.Toggle>
 
-                            <Dropdown.Menu className="">
+                            <Dropdown.Menu>
 
                                 <Dropdown.Item><i className="bi bi-clipboard-check pe-3 "></i>Thông tin tài khoản</Dropdown.Item>
-                                <Dropdown.Item ><i className="bi bi-pin-angle pe-3" ></i>Cài đặt</Dropdown.Item>
-                                <Dropdown.Item ><i className="bi bi-star pe-3"></i>Cho phép nhắn tin</Dropdown.Item>
-                                <Dropdown.Item ><i className="bi bi-download pe-3"></i>Cho phép gọi điện</Dropdown.Item>
+                                <Dropdown.Item ><i className="bi bi-gear pe-3"></i>Cài đặt</Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item style={{ color: 'red' }}  >Đăng xuất</Dropdown.Item>
                                 <Dropdown.Item  >Thoát</Dropdown.Item>

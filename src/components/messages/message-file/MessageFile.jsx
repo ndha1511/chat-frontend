@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux";
 import BaseMessage from "../BaseMessage";
 import "./MessageFile.scss";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { arrayToDateTime } from "../../../utils/DateTimeHandle";
 import { downFile } from "../../../services/FileService";
 import { Dropdown } from 'react-bootstrap';
 import { emojis } from "../../../configs/button_group_icon_config";
+import { formatFileSize } from "../../../utils/FormatFileSize";
 
 
 
@@ -17,6 +18,26 @@ function MessageFile(props) {
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
     const [emojiCount, setEmojiCount] = useState(0);
+    const [progress, setProgress] = useState({
+        bytesUpload: 0,
+        percentUpload: ""
+    });
+    const bytesUpload = useSelector(state => state.message.bytesUpload);
+
+    useEffect(() => {
+        if (bytesUpload.length > 0) {
+            const item = bytesUpload.findIndex(val => val.id === props.message.id);
+            if (item !== -1) {
+                const bytesTransferred = bytesUpload[item].bytesTransferred;
+                const percentUpload = (bytesTransferred / props.message.content.size) * 100;
+
+                setProgress({
+                    bytesUpload: bytesTransferred,
+                    percentUpload: percentUpload + '%',
+                });
+            }
+        }
+    }, [bytesUpload]);
 
     const handleSelectEmoji = (emoji) => {
         setEmojiCount(prevCount => prevCount + 1);
@@ -28,6 +49,7 @@ function MessageFile(props) {
         });
         setShowContent(false); // Automatically close the menu after selection
     };
+
     const downloadFile = async () => {
 
         try {
@@ -68,40 +90,32 @@ function MessageFile(props) {
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId}
             showAvatar={props.showAvatar}
             lastMessage={props.lastMessage ? true : false}>
-            {/* <div className="mess-file" style={{ position: "relative" }} onClick={downloadFile}>
-                <div className="mess-ct">
-                    <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
-                    <div className="mess-text">
-                        <div><h6>{originalName}</h6></div>
-                        <div> <span>885B</span></div>
-                    </div>
-                    <div className="btn-down">
-                        <button ><i className="bi bi-box-arrow-in-down"></i></button>
-                    </div>
-                </div>
-
-
-                <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
-                <button className="btn-icon-custom">👍</button>
-            </div> */}
             {props.message.messageStatus === "SENDING" ?
-                <div className="mess-file" style={{ backgroundColor: "gray" }} >
+                <div className="mess-file" style={{ backgroundColor: "#fff" }} >
                     <div className="mess-ct">
                         <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
                         <div className="mess-text">
                             <div><h6>{originalName}</h6></div>
-                            <div> <span>885B</span></div>
+                            <div className="d-flex flex-column">
+                                <div>
+                                    <span>{formatFileSize(progress.bytesUpload)} / </span>
+                                    <span>{formatFileSize(fileInfo.size)}</span>
+                                </div>
+                                <div className="progress-custom">
+                                    <div className="progress-bar" style={{ width: progress.percentUpload }}></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                 </div>
                 :
-                <div className="mess-file" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={downloadFile}>
+                <div className="mess-file " onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={downloadFile}>
                     <div className="mess-ct">
                         <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
                         <div className="mess-text">
                             <div><h6>{originalName}</h6></div>
-                            <div> <span>885B</span></div>
+                            <div> <span>{formatFileSize(fileInfo.size)}</span></div>
                         </div>
                         <div className="btn-down">
                             <button ><i className="bi bi-box-arrow-in-down"></i></button>
