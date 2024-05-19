@@ -99,13 +99,19 @@ function VideoCallingView(props) {
                             <span>{formattedHours>0 ?formattedHours:''}{formattedMinutes}:{formattedSeconds}</span>
                         </div>
                         <div className="remote-video">
-                            {props.remoteStreams.map((stream, index) => {
+                            {/* {props.remoteStreams.map((stream, index) => {
                                 return <video key={index} ref={(ref) => {
                                     if (ref && stream) {
                                         ref.srcObject = stream;
                                     }
                                 }} autoPlay muted></video>
-                            })}
+                            })} */}
+                            <video ref={(ref) => {
+                                if(ref) {
+                                    ref.srcObject = props.remoteStream;
+                                }
+                            }} autoPlay>
+                            </video>
                              <div className="name-video-call">
                                 <span>{userCurrent.name}</span>
                             </div>
