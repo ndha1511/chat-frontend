@@ -207,7 +207,7 @@ function Header(props) {
 
     const handleCallRequest = async (data, media) => {
         setLocalPeer();
-        setLocalStream(media);
+        await setLocalStream(media);
         try {
             const response = await callRequest(data);
             dispatch(setMessageCall(response));

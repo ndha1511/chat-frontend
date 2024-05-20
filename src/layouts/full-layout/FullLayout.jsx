@@ -145,6 +145,7 @@ function FullLayout(props) {
       const audioElement = document.createElement('audio');
       audioElement.srcObject = event.streams[0];
       audioElement.onloadedmetadata = (e) => {
+        console.log("vào được audio call");
         audioElement.play();
       };
       // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
@@ -152,6 +153,7 @@ function FullLayout(props) {
       //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
       // }
       setRemoteStream(event.streams[0]);
+      console.log("set thành công remote stream call");
     }
 
     localPeer.onicecandidate = (event) => {
@@ -195,6 +197,7 @@ function FullLayout(props) {
       const audioElement = document.createElement('audio');
       audioElement.srcObject = event.streams[0];
       audioElement.onloadedmetadata = (e) => {
+        console.log("vào dược audio offer");
         audioElement.play();
       };
       // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
@@ -202,6 +205,7 @@ function FullLayout(props) {
       //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
       // }
       setRemoteStream(event.streams[0]);
+      console.log("set thành công remote stream offer");
     }
 
     localPeer.onicecandidate = (event) => {
