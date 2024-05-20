@@ -28,8 +28,6 @@ import { setWindowSize } from "../../redux/reducers/renderReducer";
 
 
 let chatInfo = {};
-let remoteDescriptionSet = false;
-let pendingCandidates = [];
 
 
 function FullLayout(props) {
@@ -187,9 +185,11 @@ function FullLayout(props) {
   }
 
 
-  const onOfferReceived = async (offer) => {
+
+  const onOfferReceived = (offer) => {
     var o = JSON.parse(offer.body)["offer"];
     getCallerInfo(JSON.parse(offer.body)["fromUser"]);
+
 
     localPeer.ontrack = (event) => {
       const audioElement = document.createElement('audio');
@@ -197,6 +197,10 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
+      // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+      //   // Thêm stream mới vào danh sách remoteStreams
+      //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      // }
       setRemoteStream(event.streams[0]);
     }
 
@@ -211,28 +215,28 @@ function FullLayout(props) {
           receiverId: JSON.parse(offer.body)["fromUser"],
           fromUser: user.email,
           candidate: candidate
-        }));
+        }))
       }
     }
 
-    await localPeer.setRemoteDescription(new RTCSessionDescription(o));
-    remoteDescriptionSet = true;
-  
-    pendingCandidates.forEach(candidate => {
-      localPeer.addIceCandidate(candidate);
-    });
-    pendingCandidates = [];
 
-    const description = await localPeer.createAnswer();
-    await localPeer.setLocalDescription(description);
-    stompClient.send("/app/answer", {}, JSON.stringify({
-      receiverId: JSON.parse(offer.body)["fromUser"],
-      fromUser: user.email,
-      answer: {
-        type: "answer",
-        sdp: description.sdp,
-      }
-    }));
+
+    localPeer.setRemoteDescription(new RTCSessionDescription(o));
+
+    localPeer.createAnswer().then(description => {
+      localPeer.setLocalDescription(description)
+      console.log("Setting Local Description")
+      console.log(description)
+      stompClient.send("/app/answer", {}, JSON.stringify({
+        receiverId: JSON.parse(offer.body)["fromUser"],
+        fromUser: user.email,
+        answer: {
+          type: "answer",
+          sdp: description.sdp,
+        }
+      }));
+
+    })
   }
 
   const onAnswerReceived = (answer) => {
@@ -246,14 +250,8 @@ function FullLayout(props) {
     var iceCandidate = new RTCIceCandidate({
       sdpMLineIndex: c["label"],
       candidate: c["id"],
-    });
-  
-    // Kiểm tra nếu remoteDescription đã được thiết lập
-    if (remoteDescriptionSet) {
-      localPeer.addIceCandidate(iceCandidate);
-    } else {
-      pendingCandidates.push(iceCandidate);
-    }
+    })
+    localPeer.addIceCandidate(iceCandidate)
   }
 
 
