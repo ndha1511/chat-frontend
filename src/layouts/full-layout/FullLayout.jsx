@@ -47,6 +47,7 @@ function FullLayout(props) {
   const [connection, setConnection] = useState(false);
   const [callerInfo, setCallerInfo] = useState({});
   const [remoteStreams, setRemoteStreams] = useState([]);
+  const [remoteStream, setRemoteStream] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
 
@@ -144,8 +145,10 @@ function FullLayout(props) {
       const audioElement = document.createElement('audio');
       audioElement.srcObject = event.streams[0];
       audioElement.onloadedmetadata = (e) => {
+        console.log("vào được audio call");
         audioElement.play();
       };
+
       if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
         // Thêm stream mới vào danh sách remoteStreams
         setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
@@ -193,12 +196,15 @@ function FullLayout(props) {
       const audioElement = document.createElement('audio');
       audioElement.srcObject = event.streams[0];
       audioElement.onloadedmetadata = (e) => {
+        console.log("vào dược audio offer");
         audioElement.play();
       };
+
       if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
         // Thêm stream mới vào danh sách remoteStreams
         setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
       }
+
     }
 
     localPeer.onicecandidate = (event) => {
@@ -266,6 +272,7 @@ function FullLayout(props) {
     dispatch(pushBytesUpload(messageProgress));
 
   }
+  
 
 
   const onEventReceived = (payload) => {
@@ -290,7 +297,9 @@ function FullLayout(props) {
             dispatch(reRenderMessge());
           }
           dispatch(reRenderChatInfor(true));
-          dispatch(reRenderChatInfor(false));
+          setTimeout(() => {
+            dispatch(reRenderChatInfor(false));
+          }, 0);
           break;
         case "REMOVE_MEMBER":
         case "REMOVE_GROUP":
@@ -301,7 +310,9 @@ function FullLayout(props) {
           }
           dispatch(reRenderMember());
           dispatch(reRenderChatInfor(true));
-          dispatch(reRenderChatInfor(false));
+          setTimeout(() => {
+            dispatch(reRenderChatInfor(false));
+          }, 0);
           stompClient.unsubscribe(room.roomId);
           stompClient.unsubscribe(`${room.roomId}_call`);
           break;
