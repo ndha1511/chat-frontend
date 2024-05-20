@@ -49,7 +49,6 @@ function FullLayout(props) {
   const [remoteStreams, setRemoteStreams] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
-  const [remoteStream, setRemoteStream] = useState(null);
 
 
   // Hàm loại bỏ các phần tử trùng lặp từ một mảng
@@ -147,11 +146,10 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
-      // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
-      //   // Thêm stream mới vào danh sách remoteStreams
-      //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
-      // }
-      setRemoteStream(event.streams[0]);
+      if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+        // Thêm stream mới vào danh sách remoteStreams
+        setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      }
     }
 
     localPeer.onicecandidate = (event) => {
@@ -197,11 +195,10 @@ function FullLayout(props) {
       audioElement.onloadedmetadata = (e) => {
         audioElement.play();
       };
-      // if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
-      //   // Thêm stream mới vào danh sách remoteStreams
-      //   setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
-      // }
-      setRemoteStream(event.streams[0]);
+      if (!remoteStreams.some(stream => stream.id === event.streams[0].id)) {
+        // Thêm stream mới vào danh sách remoteStreams
+        setRemoteStreams(prevStreams => [...prevStreams, event.streams[0]]);
+      }
     }
 
     localPeer.onicecandidate = (event) => {
@@ -488,7 +485,7 @@ function FullLayout(props) {
 
       /> : <VideoCallingView
         callerInfo={callerInfo}
-        remoteStream={remoteStream}
+        remoteStreams={remoteStreamsUnique}
       /> : <></>}
 
       <div className={`${Object.keys(state).length > 0 ? "d-none" : ""} d-lg-flex d-md-flex`}>

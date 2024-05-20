@@ -17,7 +17,7 @@ function AudioCallDragable(props) {
 
     const accept = async () => {
         setLocalPeer();
-        await setLocalStream({ video: false, audio: true });
+        setLocalStream({ video: false, audio: true });
         try {
             await acceptCallRequest(messageCall.id);
             sendCall(messageCall, user);

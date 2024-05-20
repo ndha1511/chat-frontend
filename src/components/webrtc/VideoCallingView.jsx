@@ -8,10 +8,13 @@ import { Icon } from "zmp-ui";
 import Icons from "../icons/Icons";
 
 function VideoCallingView(props) {
+    console.log(props.remoteStreams);
+
     const dispatch = useDispatch();
     const messageCall = useSelector((state) => state.message.messageCall);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const windowSize = useSelector(state => state.render.windowSize);
+    const chatInfo = useSelector(state => state.message.chatInfo);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [counter, setCounter] = useState(0);
     const [mute, setMute] = useState(false);
@@ -96,19 +99,13 @@ function VideoCallingView(props) {
                             <span>{formattedHours>0 ?formattedHours:''}{formattedMinutes}:{formattedSeconds}</span>
                         </div>
                         <div className="remote-video">
-                            {/* {props.remoteStreams.map((stream, index) => {
+                            {props.remoteStreams.map((stream, index) => {
                                 return <video key={index} ref={(ref) => {
                                     if (ref && stream) {
                                         ref.srcObject = stream;
                                     }
                                 }} autoPlay muted></video>
-                            })} */}
-                            <video ref={(ref) => {
-                                if(ref) {
-                                    ref.srcObject = props.remoteStream;
-                                }
-                            }} autoPlay>
-                            </video>
+                            })}
                              <div className="name-video-call">
                                 <span>{userCurrent.name}</span>
                             </div>
