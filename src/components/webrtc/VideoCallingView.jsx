@@ -8,13 +8,10 @@ import { Icon } from "zmp-ui";
 import Icons from "../icons/Icons";
 
 function VideoCallingView(props) {
-    console.log(props.remoteStreams);
-
     const dispatch = useDispatch();
     const messageCall = useSelector((state) => state.message.messageCall);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const windowSize = useSelector(state => state.render.windowSize);
-    const chatInfo = useSelector(state => state.message.chatInfo);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [counter, setCounter] = useState(0);
     const [mute, setMute] = useState(false);
