@@ -362,7 +362,9 @@ function FullLayout(props) {
             avatar: chatInfo.user.avatar,
             name: chatInfo.user.name,
           }
-          dispatch(pushMessage(dataReceived.message));
+          if(dataReceived.message.roomId === chatInfo?.roomId) {
+            dispatch(pushMessage(dataReceived.message));
+          }
           dispatch(updateRoom(roomTemp));
           dispatch(deleteBytesUpload(dataReceived.message));
           break;

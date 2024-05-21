@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Form } from "react-bootstrap";
 import Avatar from "../../components/avatar/Avatar";
 import ButtonGroup from "../../components/buttons/button-group/ButtonGroup";
 import ButtonIcon from "../../components/buttons/button-icon/ButtonIcon";
@@ -15,6 +15,8 @@ import UpdateInfoModal from "../../components/modal/UpdateInfoModal";
 import { setShowSearchMessage, setViewIndedx } from "../../redux/reducers/renderLayoutReducer";
 import { reRenderMessageLayout } from "../../redux/reducers/renderReducer";
 import { disconnect } from "../../configs/SocketConfig";
+import SimpleBar from "simplebar-react";
+import { Icon } from "zmp-ui";
 
 
 function Navbar() {
@@ -24,15 +26,27 @@ function Navbar() {
     const viewIndex = useSelector((state) => state.renderView.viewIndex);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+    const [isBlocked, setIsBlocked] = useState(false); // Quản lý trạng thái của công tắc
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const handleCloseProfileModal = () => setShowProfileModal(false);
+    const [showBlockedMenu, setShowBlockedMenu] = useState(false);
+    const [icon, setIcon] = useState(false);
     const dispatch = useDispatch();
     const handleShowChangePasswordModal = () => {
-        // setShowUpdateModal(false);
         setShowChangePasswordModal(true);
-        handleCloseProfileModal(); // Đóng modal thông tin cá nhân khi mở modal thay đổi mật khẩu
+        handleCloseProfileModal();
     };
 
+    const handleBlockedMenuClick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setShowBlockedMenu(!showBlockedMenu);
+        setIcon(!icon)
+    };
+    const handleToggleChange = (event) => {
+        event.stopPropagation();
+        setIsBlocked(!isBlocked);
+    };
     const changeUpdateModal = () => {
         setShowUpdateModal(true);
         handleCloseProfileModal();
@@ -83,6 +97,12 @@ function Navbar() {
         if (!user) navigate("/auth/login");
     })
 
+    const listBlock = [
+        { name: "Trần Công Minh" },
+        { name: "Nguyễn Đình Hoàng Anh" },
+        { name: "Nguyễn Đình Hoàng Anh" },
+    ]
+
     return (
         <nav className="bg-info navbar-vertical">
             <div className="d-flex flex-column justify-content-between navbar-backgroup-color h-100">
@@ -120,7 +140,7 @@ function Navbar() {
                         />
                     </div>
                 </div>
-                
+
 
                 <div className="footer">
                     <ButtonIcon
@@ -138,7 +158,38 @@ function Navbar() {
 
                             <Dropdown.Menu>
 
-                                <Dropdown.Item><i className="bi bi-clipboard-check pe-3 "></i>Thông tin tài khoản</Dropdown.Item>
+                                <Dropdown.Item onClick={(e) => handleBlockedMenuClick(e)}>Danh sách chặn <Icon style={{marginLeft:85, transform: icon ? 'rotate(90deg)':''}} icon='zi-chevron-right' size={25} /></Dropdown.Item>
+                                {showBlockedMenu && (
+                                    <SimpleBar style={{ height: 100,marginBottom:10 }}>
+                                        <span style={{ fontSize: 11, fontWeight: 500, marginLeft: 12, }}>* Những người không thể nhắn tin cho bạn</span>
+                                        {listBlock.map((item) => (
+                                            <div style={{
+                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                                padding: "2px 5px 2px 12px", marginTop: 5, backgroundColor: "rgb(247, 247, 247)"
+                                            }}>
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                                                    <Avatar user ={user} width={20} height={20} />
+                                                    <span style={{ marginLeft: 10, marginTop: -4,fontSize:13 }}>{item.name}</span>
+                                                </div>
+                                                <button className="btn-chan">Bỏ chặn</button>
+                                            </div>
+                                        ))}
+
+                                    </SimpleBar>
+
+                                )}
+                                <Dropdown.Item onClick={handleToggleChange}>
+                                    <div className="d-flex">
+                                        <span className="me-3">Chặn tin nhắn từ người lạ</span>
+                                        <Form.Check
+                                            type="switch"
+                                            id="block-messages-switch"
+                                            checked={isBlocked} // Liên kết với trạng thái
+                                            onChange={handleToggleChange} // Cập nhật trạng thái khi thay đổi
+                                            className="form-switch"
+                                        />
+                                    </div>
+                                </Dropdown.Item>
                                 <Dropdown.Item ><i className="bi bi-gear pe-3"></i>Cài đặt</Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item style={{ color: 'red' }}  >Đăng xuất</Dropdown.Item>

@@ -19,6 +19,7 @@
     "normalize.css": "^8.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
+    "react-datepicker": "^6.9.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
     "react-infinite-scroll-component": "^6.1.0",

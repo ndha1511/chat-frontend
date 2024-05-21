@@ -130,7 +130,7 @@
         padding: 10px;
         background-color: white;
         .loc-top{
-            max-width: 80%;
+            max-width: 100%;
             // border: 1px solid black;
             height: 80px;
             display: flex;
@@ -143,20 +143,24 @@
                 margin-top: -10px;
             }
             .menu1{
-                max-width: 30%;
+                width: 30%;
+                margin-top: -10px;
                 height: 40px;
                 border-radius: 8px;
                 // border: 1px solid black;  
                 .dropdown-menu1{
                     display: flex;
                     padding: 10px;
-                    background-color: gainsboro;
+                    background-color: rgb(233, 233, 233);
                     justify-content: space-between;
                     align-items: center;
-                    width: 250px;
+                    width: 100%;
                     border: none;
                     border-radius: 5px; 
                     height: 40px;
+                    text-decoration: none;
+                    color: black;
+                  
               
                 }
                 .list-item{
