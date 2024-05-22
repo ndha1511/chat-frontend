@@ -95,32 +95,32 @@ export const emojis = [
     {
         id: "6610ff903df61304b883dce3",
         icon: "❤️",
-        emoji_type: "HEART"
+        emojiType: "HEART"
     },
     {
         id: "6610ffd93df61304b883dce4",
         icon: "👍",
-        emoji_type: "LIKE"
+        emojiType: "LIKE"
     },
     {
         id: "661100463df61304b883dce5",
         icon: "😆",
-        emoji_type: "SMILE"
+        emojiType: "SMILE"
     },
     {
         id: "661100b23df61304b883dce6",
         icon: "😭",
-        emoji_type: "CRY"
+        emojiType: "CRY"
     },
     {
         id: "661101803df61304b883dce7",
         icon: "😠",
-        emoji_type: "ANGRY"
+        emojiType: "ANGRY"
     },
     {
         id: "6611056c3df61304b883dce8",
         icon: "😮",
-        emoji_type: "WOW"
+        emojiType: "WOW"
     }
 ]
 

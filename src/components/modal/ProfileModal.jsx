@@ -1,15 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, ListGroup, Button } from 'react-bootstrap';
 import "./ProfileModal.scss"; // Đảm bảo file SCSS được chỉnh sửa để phù hợp
 import Avatar from '../avatar/Avatar';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from 'zmp-ui';
 import RandomBackgroundImage from '../RandomBackgroundImage/RandomBackgroundImage';
 import SimpleBar from 'simplebar-react';
+import { uploadImage } from '../../services/UploadService';
+import { updateUser } from '../../services/UserService';
+import { setUserInfo } from '../../redux/reducers/userReducer';
 
 const ProfileModal = ({ show, onClose, friend, onOpenChangePassword, onOpenUpdateModal }) => {
     let user = useSelector((state) => state.userInfo.user);
+    const dispatch = useDispatch();
     if (friend) {
         user = friend
     }
@@ -17,6 +21,29 @@ const ProfileModal = ({ show, onClose, friend, onOpenChangePassword, onOpenUpdat
     useEffect(() => {
         if (!user) navigate("/auth/login");
     })
+    const [image, setImage] = useState(null);
+    useEffect(() => {
+        const updateAvatar = async () => {
+            if (image) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', image);
+                    const response = await uploadImage(formData);
+                    const newUser = {
+                        ...user,
+                        avatar: response
+                    }
+                    const userUpdated = await updateUser(newUser);
+                    localStorage.setItem('user', JSON.stringify(userUpdated));
+                    dispatch(setUserInfo(userUpdated));
+                    setImage(null);
+                } catch (error) {
+
+                }
+            }
+        }
+        updateAvatar();
+    }, [image])
     return (
         <Modal show={show} onHide={onClose} size="md" centered>
             <Modal.Header closeButton className='modal-header-cs'>
@@ -29,7 +56,17 @@ const ProfileModal = ({ show, onClose, friend, onOpenChangePassword, onOpenUpdat
                             <RandomBackgroundImage />
                         </div>
                         <div className="profile-avatar">
-                            <Avatar user={user} width={70} height={70} />
+                            <div style={{ position: "relative" }}>
+                                <Avatar user={user} width={70} height={70} />
+                                <div className='camera'>
+                                    <label htmlFor='image-avatar' style={{ cursor: "pointer" }}>
+                                        <input id='image-avatar' type='file' accept="image/*" style={{ display: "none" }}
+                                            onChange={(e) => setImage(e.target.files[0])}
+                                        />
+                                        <Icon icon='zi-camera' size={30} />
+                                    </label>
+                                </div>
+                            </div>
                             <h5 className="text-center mt-2">{user && user.name ? user.name : ""}</h5>
                             <button><Icon icon='zi-edit-text' size={20} /></button>
                         </div>

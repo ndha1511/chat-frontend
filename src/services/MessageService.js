@@ -82,3 +82,12 @@ export const findMessage = async (roomId, content, currentId, senderId = "", sta
         return Promise.reject(error);
     }
 }
+
+export const receiveMessage = async (message) => {
+    try {
+        const response = await requestApi(`/messages/receiveMessage`, "PUT", message, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

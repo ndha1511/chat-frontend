@@ -21,11 +21,14 @@ import MessageAudioCall from "../../../components/messages/message-audio-video-c
 
 import SearchMessageInput from "../../../components/search/SearchMessageInput";
 import { arrayToDateTime } from "../../../utils/DateTimeHandle";
+import Avatar from "../../../components/avatar/Avatar";
+import { setTypingChat } from "../../../redux/reducers/renderMessage";
 
 
 function Content(props) {
 
     const messages = useSelector(state => state.message.messages);
+    const typingChat = useSelector(state => state.renderMessage.typingChat);
     const reRenderMessage = useSelector(state => state.message.renderMessage);
     const scrollEnd = useSelector(state => state.message.scrollEnd);
     const userCurrent = useSelector((state) => state.userInfo.user);
@@ -52,6 +55,17 @@ function Content(props) {
             setFirstDivHeight(height);
         }
     }, [showSearchMessage]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => dispatch(setTypingChat(
+            {user: {},
+            showTyping: false}
+        )), 1000);
+
+        return () => {
+            clearTimeout(handler);
+        }
+    }, [typingChat])
 
 
     const displayAvatar = (message, index,) => {
@@ -420,6 +434,20 @@ function Content(props) {
                     </div>
                 </div>
                 : <></>}
+            {Object.keys(typingChat.user).length > 0 && <div className="d-flex" style={{ position: "fixed", bottom: props.heightFooter }}>
+                <div style={{bottom: -100}}><Avatar width={30} height={30} user={typingChat.user}/></div>
+                <div className="message incoming">
+                    <div className="message-bubble">
+                        <div className="message-content" id="typingAnimation">
+                            <div className="typing-dots">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>}
 
         </div>
     );

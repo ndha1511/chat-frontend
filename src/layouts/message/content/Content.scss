@@ -92,6 +92,51 @@
     border-top: 1px solid #f0f0f0;
 }
 
+.message.incoming .message-bubble {
+    background-color: #0091FF;
+    border-radius: 0 10px 10px 10px;
+    bottom: -18px
+  }
+  
+  .message-bubble {
+    max-width: 100%;
+    padding: 10px;
+    position: relative;
+  }
+  
+  .typing-dots {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 40px;
+  }
+  
+  .typing-dots div {
+    width: 8px;
+    height: 8px;
+    background-color: black;
+    border-radius: 50%;
+    animation: typing 1s infinite;
+  }
+  
+  .typing-dots div:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-dots div:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes typing {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.3;
+    }
+    30% {
+      transform: translateY(-6px);
+      opacity: 1;
+    }
+  }
 
 
 

@@ -25,6 +25,8 @@ import { closePeer, closeStream, localPeer, localStream } from "../../configs/We
 import SearchMessage from "../../components/search/SearchMessage";
 import { setShowSearchMessage } from "../../redux/reducers/renderLayoutReducer";
 import { setWindowSize } from "../../redux/reducers/renderReducer";
+import { receiveMessage } from "../../services/MessageService";
+import { setTypingChat } from "../../redux/reducers/renderMessage";
 
 
 let chatInfo = {};
@@ -35,6 +37,7 @@ function FullLayout(props) {
   const rooms = useSelector((state) => state.room.rooms);
   const messageCall = useSelector((state) => state.message.messageCall);
   chatInfo = useSelector(state => state.message.chatInfo);
+  const typingChat = useSelector(state => state.renderMessage.typingChat);
   const rerenderRoom = useSelector((state) => state.room.reRender);
   const renderGroup = useSelector((state) => state.group.renderGroup);
   const dragableAudioCall = useSelector((state) => state.dragable.dragableAudioCall);
@@ -275,7 +278,7 @@ function FullLayout(props) {
   
 
 
-  const onEventReceived = (payload) => {
+  const onEventReceived = async (payload) => {
     const dataReceived = JSON.parse(payload.body);
     if (dataReceived.hasOwnProperty("status")) {
       const status = dataReceived.status;
@@ -369,7 +372,32 @@ function FullLayout(props) {
         case "SENT":
           dispatch(reRenderRoom());
           if (Object.keys(chatInfo).length > 0) {
-            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
+            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user?.email === dataReceived.receiverId) { 
+              let message = dataReceived.message;
+              let newMessage = {
+                ...message,
+                messageStatus: "RECEIVED"
+              }
+              dispatch(pushMessage(newMessage));
+              await receiveMessage(newMessage);
+            }
+          }
+          break;
+        case "TYPING":
+          if(chatInfo?.roomId === dataReceived.roomId) {
+            dispatch(setTypingChat({
+              user: {
+                email: dataReceived.senderId,
+                name: dataReceived.senderName,
+                avatar: dataReceived.senderAvatar,
+              },
+              showTyping: !typingChat.showTyping
+            }))
+          }
+          break;
+        case "RECEIVED_MESSAGE":
+          if (Object.keys(chatInfo).length > 0) {
+            if (chatInfo?.user?.email === dataReceived.message.senderId || chatInfo?.user?.email === dataReceived.message.receiverId) { 
               dispatch(pushMessage(dataReceived.message));
             }
           }

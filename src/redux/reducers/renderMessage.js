@@ -2,6 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     renderMessage: false,
+    typingChat: {
+        user: {},
+        showTyping: false
+    }
 }
 
 export const renderMessage = createSlice({
@@ -11,9 +15,12 @@ export const renderMessage = createSlice({
         reRenderMessageHF: (state) => {
             state.renderMessage = !state.renderMessage;
         },
+        setTypingChat: (state, action) => {
+            state.typingChat = action.payload;
+        }
     },
 })
 
-export const { reRenderMessageHF} = renderMessage.actions
+export const { reRenderMessageHF, setTypingChat} = renderMessage.actions
 
 export default renderMessage.reducer

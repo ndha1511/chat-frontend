@@ -11,6 +11,8 @@ import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
 import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
 import ReplyMessageFooter from "./ReplyMessageFooter";
+import { useRangeCalendar } from "react-aria";
+import { stompClient } from "../../../configs/SocketConfig";
 
 
 function Footer(props) {
@@ -94,6 +96,7 @@ function Footer(props) {
                     request.append("fileContent", file);
                     request.append("hiddenSenderSide", false);
                     request.append("senderName", userCurrent.name);
+                    request.append("senderAvatar", userCurrent.avatar);
                     const msg = await sendMessageToUser(request);
                     dispatch(pushMessage(msg));
                     dispatch(setScrollEnd());
@@ -179,6 +182,7 @@ function Footer(props) {
                 request.append("messageType", "TEXT");
                 request.append("hiddenSenderSide", false);
                 request.append("senderName", userCurrent.name);
+                request.append("senderAvatar", userCurrent.avatar);
                 if(Object.keys(messageReply).length > 0) {
                     request.append("messageParent", JSON.stringify(messageReply));
                 }
@@ -217,7 +221,14 @@ function Footer(props) {
 
     const changeMessageContent = (e) => {
         setTextContent(e.target.value);
-        // if (!isActive) setIsActive(true);
+        stompClient.send("/app/typing", {}, JSON.stringify({
+            status: "TYPING",
+            senderId: userCurrent.email,
+            receiverId: chatInfo.user.email,
+            roomId: chatInfo.roomId,
+            senderName: userCurrent.name,
+            senderAvatar: userCurrent.avatar
+        }));
         setIsActive1(e.target.value.trim() !== '');
     }
     const handleFocus = () => {
@@ -283,6 +294,7 @@ function Footer(props) {
         request.append("messageType", "TEXT");
         request.append("hiddenSenderSide", false);
         request.append("senderName", userCurrent.name);
+        request.append("senderAvatar", userCurrent.avatar);
 
         // Gửi tin nhắn ngay lập tức
         try {

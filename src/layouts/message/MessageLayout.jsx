@@ -15,7 +15,31 @@ function MessageLayout(props) {
         }
         return false;
     }
-    
+    const [heightFooter, setHeightFooter] = useState();
+
+    const footer = useRef(null);
+
+    useEffect(() => {
+        const observer = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                if (entry.target === footer.current) {
+                    setHeightFooter(entry.contentRect.height);
+                }
+            }
+        });
+
+        if (footer.current) {
+            observer.observe(footer.current);
+        }
+
+        // Cleanup observer on component unmount
+        return () => {
+            if (footer.current) {
+                observer.unobserve(footer.current);
+            }
+        };
+    }, [footer]);
+     
 
     const images = [
 
@@ -57,9 +81,9 @@ function MessageLayout(props) {
 
                     </div>
                     <div className="w-100" style={{  height: checkKeyMessageReply() ? "50%" : "70%", width: '100%' }}>
-                        <Content roomId={chatInfo.roomId} />
+                        <Content roomId={chatInfo.roomId} heightFooter={heightFooter}/>
                     </div>
-                    <div className="d-flex w-100" style={{ height: checkKeyMessageReply() ? "38%" : "18%", zIndex: 998 }}>
+                    <div ref={footer} className="d-flex w-100" style={{ height: checkKeyMessageReply() ? "38%" : "18%", zIndex: 990 }}>
                         <Footer user={chatInfo.user} />
                     </div>
                 </div> :

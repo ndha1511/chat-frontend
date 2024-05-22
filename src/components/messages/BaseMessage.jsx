@@ -50,10 +50,22 @@ function BaseMessage(props) {
     const checkStatusMessage = () => {
         const status = props.message.messageStatus;
         switch (status) {
-            case "SENDING": return "Đang gửi";
-            case "SENT": return "Đã gửi";
-            case "SEEN": return "Đã xem";
+            case "SENDING": return <div className=" status-message">
+                <span>Đang gửi</span>
+            </div>;
+            case "SENT": return <div className=" status-message">
+                <div style={{ marginTop: -10, marginRight: 6 }}> <Icons type='iconTic' size={18} fillColor='white' /></div>
+                <span>Đã gửi</span>
+            </div>;
+            case "SEEN": return <div className=" status-message">
+                <div style={{ marginTop: -10, marginRight: 6 }}><Icons type='doubleTick' size={18} fillColor='white' /></div>
+                <span>Đã xem</span>
+            </div>;
             case "ERROR": return "Lỗi";
+            case "RECEIVED": return <div className=" status-message">
+                <div style={{ marginTop: -10, marginRight: 6 }}><Icons type='doubleTick' size={18} fillColor='white' /></div>
+                <span>Đã nhận</span>
+            </div>;
             default: return "";
         }
     }
@@ -129,7 +141,7 @@ function BaseMessage(props) {
         }
     }
     const btnCT = [
-        { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, title: "Trả lời"},
+        { item: <i className="bi bi-quote" style={{ transform: 'scaleX(-1) scaleY(-1)', fontSize: 22, }}></i>, title: "Trả lời" },
 
         { item: <Icon icon="zi-share-solid" size={18} />, title: "Chia sẻ" },
 
@@ -167,11 +179,11 @@ function BaseMessage(props) {
     }
 
     const handleMessage = (index) => {
-        switch(index) {
+        switch (index) {
             case 0:
                 dispatch(setMessageReply(props.message));
                 break;
-            case 1: 
+            case 1:
                 openFowardModal();
                 break;
             default:
@@ -182,30 +194,29 @@ function BaseMessage(props) {
     return (
         <div onMouseEnter={() => setHiddenBtn(true)}
             onMouseLeave={() => setHiddenBtn(false)}
-            className={`d-flex w-100  ${handleTime()  ? "mb-3" : ""}  `} style={{
+            className={`d-flex w-100  ${handleTime() ? "mb-3" : ""}  `} style={{
                 flexDirection: props.isSender && props.message.messageType !== "SYSTEM" ? "row" : "row-reverse",
                 alignItems: props.message.messageType === "SYSTEM" ? "center" : "flex-start", justifyContent: props.message.messageType === "SYSTEM" ? "center" : "flex-end", position: 'relative',
             }}>
             {hiddenBtn && props.message.messageStatus !== "REVOKED" && props.message.messageStatus !== "ERROR" && props.message.messageType !== "SYSTEM"
-            && props.message.messageType !=="AUDIO_CALL"  && props.message.messageType !=="VIDEO_CALL" && (
-                <div className="hidden d-flex align-items-end" style={{  marginBottom: "20px", position: 'relative', height: "100%" }}>
-                    <div className="hoverText" style={{ backgroundColor: '#dde8ec', borderRadius: 5, border: 'none', }}>
-                        <ButtonGroup buttons={btnCT}
-                            className="btn-hover"
-                            width={30}
-                            height={25}
-                            hoverColor="#dde8ec"
-                            textHoverColor="blue"
-                            fontSize={18}
-                            borderRadius={5}
-                            color='red'
-                            color1='#7589a3'
-                            handle={handleMessage}
-                        />
+                && props.message.messageType !== "AUDIO_CALL" && props.message.messageType !== "VIDEO_CALL" && (
+                    <div className="hidden d-flex align-items-end" style={{ marginBottom: "20px", position: 'relative', height: "100%" }}>
+                        <div className="hoverText" style={{ backgroundColor: '#dde8ec', borderRadius: 5, border: 'none', }}>
+                            <ButtonGroup buttons={btnCT}
+                                className="btn-hover"
+                                width={30}
+                                height={25}
+                                hoverColor="#dde8ec"
+                                textHoverColor="blue"
+                                fontSize={18}
+                                borderRadius={5}
+                                color='red'
+                                color1='#7589a3'
+                                handle={handleMessage}
+                            />
+                        </div>
                     </div>
-                </div>
-            )}
-
+                )}
             {props.children}
             {!props.isSender && props.message.messageType !== "SYSTEM" && props.showAvatar ?
                 <div onClick={() => { hanldeUserGroup(); }}>
@@ -213,8 +224,8 @@ function BaseMessage(props) {
                 </div>
                 :
                 !props.isSender &&
-                <div  style={{ width:40,padding:10}}>
-                    
+                <div style={{ width: 40, padding: 10 }}>
+
                 </div>
             }
 
@@ -224,10 +235,7 @@ function BaseMessage(props) {
                         {handleTime() === true ? <div className="m-2 status-time">
                             <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                         </div> : <></>}
-                        <div className=" status-message">
-                            <div style={{ marginTop: -10, marginRight: 6 }}> <Icons type='iconTic' size={18} fillColor='white' /></div>
-                            <span>  {checkStatusMessage()}</span>
-                        </div>
+                        {checkStatusMessage()}
 
                     </div>
 

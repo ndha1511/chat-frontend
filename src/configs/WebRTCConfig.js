@@ -2,9 +2,16 @@
 import { stompClient } from "./SocketConfig";
 
 export const iceServers = {
-    iceServer: {
-        urls: "stun:stun.l.google.com:19302"
-    }
+    iceServer: [
+        {
+            urls: "stun:stun.l.google.com:19302"
+        },
+        {
+            urls: "turn:relay1.expressturn.com:3478",
+            username: "efG2POA1I8C0LY0AMG",
+            credential: "gFkpmRvk98yQWbqX"
+        }
+    ]
 }
 
 export let localPeer;
@@ -47,5 +54,4 @@ export const closeStream = () => {
 export const sendCall = (messageCall, user) => {
     const callTo = messageCall.receiverId === user.email ? messageCall.senderId : messageCall.receiverId
     stompClient.send("/app/call", {}, JSON.stringify({ callTo: callTo, callFrom: user.email }));
-    console.error(callTo);
 }
