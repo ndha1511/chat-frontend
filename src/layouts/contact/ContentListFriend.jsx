@@ -58,20 +58,7 @@ function ContentListFriend(props) {
             // onClose()
         }
     }
-    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-        <a
-            href="/"
-            ref={ref}
-            onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation(); 
-                onClick(e);
-            }}
-            className="dropdown-menu1" // Thêm class cho avatar dropdown
-        >
-            {children}
-        </a>
-    ));
+
 
     const handleBlock = async (block) => {
         try {
@@ -112,13 +99,13 @@ function ContentListFriend(props) {
 
                         <div className=" d-flex w-100 border column ml-6 p-3 top " >
                             {props.backButton}
-                            <i className="bi bi-person-lines-fill" style={{ color: "#67ACE3",fontSize:25 }}  ></i>
+                            <i className="bi bi-person-lines-fill" style={{ color: "#67ACE3", fontSize: 25 }}  ></i>
                             <span className="d-flex " style={{ fontWeight: '500', marginLeft: '10px' }}>Danh sách bạn bè</span>
                         </div>
 
                         <div className="d-flex listFriend-center" >
                             <div className="txt-top">
-                                <h6 style={{marginTop:10}}>Bạn bè ({friends.length})</h6>
+                                <h6 style={{ marginTop: 10 }}>Bạn bè ({friends.length})</h6>
                             </div>
                             <div className="loc">
                                 <div className="loc-top">
@@ -128,10 +115,15 @@ function ContentListFriend(props) {
                                     </div>
                                     <div className="menu1">
                                         <Dropdown className="">
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic" as={CustomToggle}>
-                                                <i className="bi bi-arrow-down-up"></i>
-                                                <span>A-Z</span>
-                                                <i className="bi bi-caret-down-fill"></i>
+                                            <Dropdown.Toggle as={CustomToggle}>
+
+                                                <div style={{ width: 700, display: 'flex', justifyContent: 'space-between' }}>
+                                                    <div style={{ display: "flex", }}>
+                                                        <i className="bi bi-arrow-down-up"></i>
+                                                        <span style={{ marginLeft: 15 }} >A-Z</span>
+                                                    </div>
+                                                    <i className="bi bi-caret-down-fill"></i>
+                                                </div>
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu className="list-item">
@@ -144,9 +136,15 @@ function ContentListFriend(props) {
                                     <div className="menu1">
                                         <Dropdown className="">
                                             <Dropdown.Toggle variant="success" id="dropdown-basic" as={CustomToggle}>
-                                                <i className="bi bi-arrow-down-up"></i>
-                                                <span>A-Z</span>
-                                                <i className="bi bi-caret-down-fill"></i>
+
+                                                <div style={{ width: 700, display: 'flex', justifyContent: 'space-between' }}>
+                                                    <div style={{ display: "flex", }}>
+                                                        <i className="bi bi-arrow-down-up"></i>
+                                                        <span style={{ marginLeft: 10 }} >A-Z</span>
+                                                    </div>
+                                                    <i className="bi bi-caret-down-fill"></i>
+                                                </div>
+
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu className="list-item" >
@@ -175,8 +173,8 @@ function ContentListFriend(props) {
                                                         <Dropdown.Item >Phân loại </Dropdown.Item>
                                                         <Dropdown.Item >Đặt tên gợi nhớ</Dropdown.Item>
                                                         {userBlocks && userBlocks.includes(item.email) ?
-                                                        <Dropdown.Item onClick={(e) => {handleUnblock(item); e.stopPropagation()}}>Bỏ chặn</Dropdown.Item> :
-                                                        <Dropdown.Item onClick={(e) => {handleBlock(item); e.stopPropagation()}}>Chặn người này</Dropdown.Item>}
+                                                            <Dropdown.Item onClick={(e) => { handleUnblock(item); e.stopPropagation() }}>Bỏ chặn</Dropdown.Item> :
+                                                            <Dropdown.Item onClick={(e) => { handleBlock(item); e.stopPropagation() }}>Chặn người này</Dropdown.Item>}
                                                         <Dropdown.Item >Xóa bạn</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
@@ -195,9 +193,24 @@ function ContentListFriend(props) {
                 </>
             )}
             {showMessageLayout && <MessageLayout backButton={props.backButton} />}
+
         </>
+
     );
 
 }
-
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href="/"
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onClick(e);
+        }}
+        className="dropdown-menu1" // Thêm class cho avatar dropdown
+    >
+        {children}
+    </a>
+));
 export default ContentListFriend;

@@ -9,19 +9,25 @@ import { findMessage } from "../../services/MessageService";
 import "zmp-ui/icon/styles/icon.css";
 import Avatar from "../avatar/Avatar";
 import SimpleBar from "simplebar-react";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 function SearchMessageInput() {
     const dispatch = useDispatch();
     const [showButtonDelete, setShowButtonDelete] = useState(false);
     const [showButtonDelete1, setShowButtonDelete1] = useState(false);
     const [showMenuSender, setShowMenuSender] = useState(false);
+    const [showMenuSentDate, setShowMenuSentDate] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [valueSearch, setValueSearch] = useState("");
     const [valueSearch1, setValueSearch1] = useState("");
     const user = useSelector((state) => state.userInfo.user);
     const divRef = useRef(null);
     const debounce = useDebounce(valueSearch, 500);
-    console.log(user)
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const startDatePickerRef = useRef(null);
+    const endDatePickerRef = useRef(null);
     const inputRef = useRef(null);
 
     const clearSearch = () => {
@@ -53,19 +59,22 @@ function SearchMessageInput() {
     }, [valueSearch]);
     useEffect(() => {
         function handleClickOutside(event) {
-          if (divRef.current && !divRef.current.contains(event.target)) {
-            // Click ra ngoài div, đóng div
-            setShowMenuSender(false);
-          }
+            if (divRef.current && !divRef.current.contains(event.target)) {
+                // Click ra ngoài div, đóng div
+                setShowMenuSender(false);
+                setShowMenuSentDate(false);
+                setStartDate(null);
+                setEndDate(null);
+            }
         }
-    
+
         // Lắng nghe sự kiện click ở cấp độ toàn bộ tài liệu
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
-          // Loại bỏ lắng nghe sự kiện khi component unmount
-          document.removeEventListener("mousedown", handleClickOutside);
+            // Loại bỏ lắng nghe sự kiện khi component unmount
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-      }, []);
+    }, []);
     useEffect(() => {
         const search = async () => {
             if (debounce.trim() === "") {
@@ -108,9 +117,17 @@ function SearchMessageInput() {
             setShowButtonDelete1(true);
         }
     };
-    const hanldeShowMenu = (e) => {
+    const hanldeShowMenu = () => {
         setShowMenuSender(!showMenuSender)
     }
+    const hanldeShowMenuSentDate = () => {
+        setShowMenuSentDate(!showMenuSentDate)
+    }
+const CustomInput = ({ value, onClick, label }) => (
+    <div onClick={onClick} className="custom-datepicker-input">
+        {value ? <span>{value}</span> : <span>{label}</span>}
+    </div>
+);
     return (
         <div className="p-1">
             <div className="d-flex flex-column" style={{ paddingLeft: 25 }}>
@@ -140,32 +157,69 @@ function SearchMessageInput() {
                         <small className="filter-search"  >Người gửi <Icon style={{ marginLeft: 5, }} icon="zi-chevron-down" /></small>
                     </div>
                     {showMenuSender && (
-                          <div ref={divRef} className="menu-sender" >
-                          <div className="sendre">
-                              <div className="col-11 d-flex align-items-center input-sender" style={{ paddingLeft: 5 }}>
-                                  <Icon icon="zi-search" size={20} />
-                                  <input ref={inputRef} className="input-search-message col-10" type="text"
-                                      onChange={handleSearch1}
-                                      value={valueSearch1}
-                                      style={{ backgroundColor: "transparent", border: "none", outline: "none" }} placeholder="Tìm tin nhắn" />
-                                  {showButtonDelete1 && <button onClick={() => { setValueSearch1(""); setShowButtonDelete1(false) }} className=""><Icon icon="zi-close-circle-solid" size={16} /></button>}
-                              </div>
-                          </div>
-                          <div className="filter-member">
-                              <SimpleBar style={{ height: 70 }}>
-                                  <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                  <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                  <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                  <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                  <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                              </SimpleBar>
-                          </div>
-  
-                      </div>
+                        <div ref={divRef} className="menu-sender" >
+                            <div className="sendre">
+                                <div className="col-11 d-flex align-items-center input-sender" style={{ paddingLeft: 5 }}>
+                                    <Icon icon="zi-search" size={20} />
+                                    <input ref={inputRef} className="input-search-message col-10" type="text"
+                                        onChange={handleSearch1}
+                                        value={valueSearch1}
+                                        style={{ backgroundColor: "transparent", border: "none", outline: "none" }} placeholder="Tìm tin nhắn" />
+                                    {showButtonDelete1 && <button onClick={() => { setValueSearch1(""); setShowButtonDelete1(false) }} className=""><Icon icon="zi-close-circle-solid" size={16} /></button>}
+                                </div>
+                            </div>
+                            <div className="filter-member">
+                                <SimpleBar style={{ height: 70 }}>
+                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                </SimpleBar>
+                            </div>
+
+                        </div>
                     )}
-                    <div className="m-2">
+                    <div className="m-2" onClick={hanldeShowMenuSentDate} >
                         <small className="filter-search" >Ngày gửi <Icon style={{ marginLeft: 5 }} icon="zi-chevron-down" /></small>
                     </div>
+                    {showMenuSentDate && (
+                        <div ref={divRef} className="menu-sent-date" >
+                            <div>
+                                <span>Chọn khoảnh thời gian: </span>
+                            </div>
+                            <div className="isDate" >
+                                <div className="selectDate" onClick={() => startDatePickerRef.current.setOpen(true)}>
+                                    <DatePicker
+                                        ref={startDatePickerRef}
+                                        selected={startDate}
+                                        onChange={date => {
+                                            setStartDate(date);
+                                        }}
+                                        onClickOutside={() => startDatePickerRef.current.setOpen(false)}
+                                        dropdownMode="select"
+                                        customInput={<CustomInput label="Ngày gửi" />}
+                                    />
+                                    
+                                    <i className="bi bi-calendar"></i>
+                                </div>
+                                <div className="selectDate" onClick={() => endDatePickerRef.current.setOpen(true)}>
+                                    <DatePicker
+                                        ref={endDatePickerRef}
+                                        selected={endDate}
+                                        onChange={date => {
+                                            setEndDate(date);
+                                        }}
+                                        onClickOutside={() => endDatePickerRef.current.setOpen(false)}
+                                        dropdownMode="select"
+                                        customInput={<CustomInput label="Đến ngày" />} 
+                                    />
+                                    <i className="bi bi-calendar"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
