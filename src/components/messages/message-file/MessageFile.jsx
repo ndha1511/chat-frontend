@@ -8,8 +8,6 @@ import { Dropdown } from 'react-bootstrap';
 import { emojis } from "../../../configs/button_group_icon_config";
 import { formatFileSize } from "../../../utils/FormatFileSize";
 
-
-
 function MessageFile(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const fileInfo = props.message.content;
@@ -18,6 +16,8 @@ function MessageFile(props) {
     const [selectedEmojis, setSelectedEmojis] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
     const [emojiCount, setEmojiCount] = useState(0);
+    const [hoveredEmoji, setHoveredEmoji] = useState(null);
+    const [showMenu, setShowMenu] = useState(false);
     const [progress, setProgress] = useState({
         bytesUpload: 0,
         percentUpload: ""
@@ -39,6 +39,20 @@ function MessageFile(props) {
         }
     }, [bytesUpload]);
 
+    const hanldeHoverLike = () => {
+        setShowContent(true);
+        setShowMenu(true);
+    }
+    const handleDisplayLike = () => {
+        if (emojiCount > 0) {
+            setIsHovered(true);
+            setShowMenu(false)
+        } else {
+            setIsHovered(false);
+            setShowMenu(false)
+        }
+
+    }
     const handleSelectEmoji = (emoji) => {
         setEmojiCount(prevCount => prevCount + 1);
         setSelectedEmojis(prevEmojis => {
@@ -47,11 +61,11 @@ function MessageFile(props) {
             }
             return prevEmojis;
         });
-        setShowContent(false); // Automatically close the menu after selection
+        setShowContent(false); // Tự động đóng menu sau khi chọn emoji
+        setShowMenu(false)
     };
 
     const downloadFile = async () => {
-
         try {
             console.log("click here");
             const response = await downFile(fileInfo.fileKey);
@@ -67,34 +81,25 @@ function MessageFile(props) {
             console.log(error);
         }
     }
+
     const handleClearEmojis = () => {
         setSelectedEmojis([]);
         setEmojiCount(0);
         setShowContent(false); // Tự động đóng menu sau khi xóa
     };
 
-    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-        <a
-            href="/"
-            ref={ref}
-            onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
-            }}
-            className="" // Thêm class cho avatar dropdown
-        >
-            {children}
-        </a>
-    ));
+
+
+
     return (
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId}
             showAvatar={props.showAvatar}
             lastMessage={props.lastMessage ? true : false}>
             {props.message.messageStatus === "SENDING" ?
-                <div className="mess-file" style={{ backgroundColor: "#fff" }} >
-                    <div className="mess-ct">
+                <div className="mess-file-s" style={{ backgroundColor: "#fff" }} >
+                    <div className="mess-ct-file">
                         <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
-                        <div className="mess-text">
+                        <div className="mess-text-file">
                             <div><h6>{originalName}</h6></div>
                             <div className="d-flex flex-column">
                                 <div>
@@ -110,10 +115,10 @@ function MessageFile(props) {
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                 </div>
                 :
-                <div className="mess-file " onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={downloadFile}>
-                    <div className="mess-ct">
+                <div className="mess-file-s" onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike}>
+                    <div className="mess-ct-file">
                         <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
-                        <div className="mess-text">
+                        <div className="mess-text-file">
                             <div><h6>{originalName}</h6></div>
                             <div> <span>{formatFileSize(fileInfo.size)}</span></div>
                         </div>
@@ -121,29 +126,40 @@ function MessageFile(props) {
                             <button ><i className="bi bi-box-arrow-in-down"></i></button>
                         </div>
                         {selectedEmojis.length > 0 && (
-                            <div className='btn-icon-custom-s'>
+                            <div className='btn-icon-custom-file-s'>
                                 {selectedEmojis.slice(0, 3).map(emoji => (
-                                    <span key={emoji}>{emoji}</span>
+                                    <span style={{ fontSize: 19 }} key={emoji}>{emoji}</span>
                                 ))}
-                                {emojiCount > 0 && <span> {emojiCount}</span>}
+                                {emojiCount > 0 && <span style={{ fontSize: 13 }}> {emojiCount}</span>}
                             </div>
                         )}
-                        {isHovered && (
-                            <div onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
-                                <Dropdown show={showContent}>
-                                    <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
-                                        <div className='btn-icon-custom-file'>
-                                            <img style={{ width: 14, height: 14, }} src='./assets/icons/like.png' />
-                                        </div>
+                    </div>
+                    {isHovered && (
+                        <div onMouseEnter={hanldeHoverLike} onMouseLeave={() => setShowContent(false)}>
 
-                                    </Dropdown.Toggle>
-
-                                    <Dropdown.Menu className='dropd-menu'>
+                            <Dropdown show={showContent} className='drop-message_text'   >
+                                <Dropdown.Toggle as={CustomToggle}>
+                                    <div className='btn-icon-custom-file'>
+                                        {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : <img style={{ width: 14, height: 14, }} src='./assets/icons/like.png' />}
+                                    </div>
+                                </Dropdown.Toggle>
+                                {showMenu && (
+                                    <Dropdown.Menu className='dropd-menu-file'>
                                         <div className="btn-emoji">
                                             {emojis.map((emoji, index) => (
-                                                <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
-                                                    {emoji.icon}
-                                                </Dropdown.Item>
+                                                <div
+                                                    className={`emoji-wrapper ${hoveredEmoji === emoji.icon ? 'hovered' : ''}`}
+                                                    key={index}
+                                                    onMouseEnter={() => setHoveredEmoji(emoji.icon)}
+                                                    onMouseLeave={() => setHoveredEmoji(null)}
+                                                >
+                                                    <Dropdown.Item
+                                                        className="emoji-item"
+                                                        onClick={() => handleSelectEmoji(emoji.icon)}
+                                                    >
+                                                        {emoji.icon}
+                                                    </Dropdown.Item>
+                                                </div>
                                             ))}
                                             {selectedEmojis.length > 0 && (
                                                 <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
@@ -152,21 +168,29 @@ function MessageFile(props) {
                                             )}
                                         </div>
                                     </Dropdown.Menu>
-                                </Dropdown>
+                                )}
+                            </Dropdown>
 
-                            </div>
-                        )}
-                    </div>
-
+                        </div>
+                    )}
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
-
-
                 </div>
             }
         </BaseMessage>
     );
-
-    console.log(isHovered)
 }
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href="/"
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+        className="" // Thêm class cho avatar dropdown
+    >
+        {children}
+    </a>
+));
 
 export default MessageFile;

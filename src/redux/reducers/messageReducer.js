@@ -14,7 +14,9 @@ const initialState = {
     totalPage: 0,
   },
   bytesUpload: [],
-  messageReply: {}
+  messageReply: {},
+  currentPageMessageSearch: 0,
+  messageSearchCurrent: {}
 }
 
 // cấu trúc khi dispatch 
@@ -111,6 +113,12 @@ export const messageReducer = createSlice({
     },
     setMessageReply: (state, action) => {
       state.messageReply = action.payload;
+    },
+    setCurrentPageMessageSearch: (state, action) => {
+      state.currentPageMessageSearch = action.payload;
+    },
+    setMessageSearchCurrent: (state, action) => {
+      state.messageSearchCurrent = action.payload;
     }
   },
 })
@@ -129,7 +137,9 @@ export const {
   updateMessageSearch,
   pushBytesUpload,
   deleteBytesUpload,
-  setMessageReply
+  setMessageReply,
+  setCurrentPageMessageSearch,
+  setMessageSearchCurrent
 } = messageReducer.actions
 
 export default messageReducer.reducer

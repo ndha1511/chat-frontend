@@ -74,9 +74,9 @@ export const closeCall = async (data) => {
     }
 }
 
-export const findMessage = async (roomId, content, currentId, senderId = "", startDate = "", endDate = "", page = 0, limit = 40) => {
+export const findMessage = async (roomId, content, currentId, senderId = "", startDate = "", endDate = "", page = 0, limit = 10) => {
     try {
-        const response = await requestApi(`/messages/query?roomId=${roomId}&senderId=${senderId}&content=${content}&currentId=${currentId}&startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`, "GET", [], true);
+        const response = await requestApi(`/messages/query?roomId=${roomId}&senderId=${senderId}&content=${content}&currentId=${currentId}&startDate=${startDate}&endDate=${endDate}&page=${page}&size=${limit}`, "GET", [], true);
         return response.data;
     } catch (error) {
         return Promise.reject(error);

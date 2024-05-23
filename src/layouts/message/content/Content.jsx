@@ -10,7 +10,7 @@ import MessageError from "../../../components/messages/message-error/MessageErro
 import MessageVideo from "../../../components/messages/message-video/MessageVideo";
 import MessageRevoked from "../../../components/messages/message-revoked/MessageRevoked";
 import ImageGroup from "../../../components/messages/image-group/ImageGroup";
-import { setMessages, updateMessage } from "../../../redux/reducers/messageReducer";
+import { setMessageSearchCurrent, setMessages, updateMessage } from "../../../redux/reducers/messageReducer";
 import MessageSystem from "../../../components/messages/message-system/MessageSystem";
 import { getColorForName } from "../../../utils/ExtractUsername";
 import { Spinner } from "react-bootstrap";
@@ -33,6 +33,7 @@ function Content(props) {
     const scrollEnd = useSelector(state => state.message.scrollEnd);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const messageSearch = useSelector((state) => state.message.messageSearch);
+    const messageSearchCurrent = useSelector((state) => state.message.messageSearchCurrent);
     const [loadMore, setLoadMore] = useState(true);
     const showSearchMessage = useSelector((state) => state.renderView.showSearchMessage);
     const dispatch = useDispatch();
@@ -55,6 +56,8 @@ function Content(props) {
             setFirstDivHeight(height);
         }
     }, [showSearchMessage]);
+
+   
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -209,6 +212,13 @@ function Content(props) {
             }
         }
     }
+
+    useEffect(() => {
+        if(Object.keys(messageSearchCurrent).length > 0) {
+            scrollToMessage(messageSearchCurrent, currentPage + 1);
+            dispatch(setMessageSearchCurrent({}))
+        }
+    }, [messageSearchCurrent]);
 
 
     useEffect(() => {

@@ -20,6 +20,7 @@ function MessageImage(props) {
     const [emojiCount, setEmojiCount] = useState(0);
     const [showMenu, setShowMenu] = useState(true);
     const windowSize = useSelector(state => state.render.windowSize);
+    const [hoveredEmoji, setHoveredEmoji] = useState(null);
 
 
     const handleSelectEmoji = (emoji) => {
@@ -72,47 +73,63 @@ function MessageImage(props) {
     return (
         <BaseMessage message={props.message} isSender={userCurrent.email === props.message.senderId} lastMessage={props.lastMessage ? true : false}>
             {messageStatus === "SENDING" ? (
-                <div style={{ position: "relative", padding: 10 }}>
+                <div style={{  padding: 10 }}>
                     <div className="image-sending">
                         <div className="spiner-custom"></div>
                     </div>
                 </div>
             ) : (
-                <div className={`d-flex justify-content-end ${windowSize.width <= 768 ? "col-6" : ""}`} style={{ position: "relative", padding: 10, cursor: "pointer" }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-                    <img src={fileInfo.filePath} style={{ maxWidth: "100%", maxHeight: "400px",borderRadius: "10px" }} />
+                <div className={`d-flex justify-content-end ${windowSize.width <= 768 ? "col-6" : ""}`} style={{position:'relative',
+                    marginBottom: emojiCount>0 && userCurrent.email === props.message.senderId ? 10:'',
+                  padding: 10, cursor: "pointer" }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                    <img src={fileInfo.filePath} style={{ maxWidth: "100%", maxHeight: "400px",borderRadius: "10px",  }} />
                     {selectedEmojis.length > 0 && (
-                        <div className='btn-icon-custom-s'>
+                        <div className='btn-icon-custom-img-s'>
                             {selectedEmojis.slice(0, 3).map(emoji => (
                                 <span key={emoji}>{emoji}</span>
                             ))}
                             {emojiCount > 0 && <span>{emojiCount}</span>}
                         </div>
                     )}
-                    {/* {isHovered && (
-                    <div className="" onMouseEnter={() => setShowContent(true)} onMouseLeave={() => setShowContent(false)}>
-                        <Dropdown show={showContent}>
-                            <Dropdown.Toggle id="dropdown-basic" as={CustomToggle}>
-                                <div className='btn-icon-custom-img'>
-                                    {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : '👍'}
-                                </div>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className='dropd-menu'>
-                                <div className="btn-emoji">
-                                    {emojis.map((emoji, index) => (
-                                        <Dropdown.Item className='emoji-item' key={index} onClick={() => handleSelectEmoji(emoji.icon)}>
-                                            {emoji.icon}
-                                        </Dropdown.Item>
-                                    ))}
-                                    {selectedEmojis.length > 0 && (
-                                        <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
-                                            <i className="bi bi-x-lg"></i>
-                                        </Dropdown.Item>
-                                    )}
-                                </div>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                )} */}
+                   {isHovered && (
+                        <div onMouseEnter={hanldeHoverLike} onMouseLeave={() => setShowContent(false)}>
+
+                            <Dropdown show={showContent} className='drop-message-img'>
+                                <Dropdown.Toggle as={CustomToggle}>
+                                    <div className='btn-icon-custom-img'>
+                                        {selectedEmojis.length > 0 ? selectedEmojis[selectedEmojis.length - 1] : <img style={{ width: 14, height: 14, }} src='./assets/icons/like.png' />}
+                                    </div>
+                                </Dropdown.Toggle>
+                                {showMenu && (
+                                    <Dropdown.Menu className='dropd-menu'>
+                                        <div className="btn-emoji">
+                                            {emojis.map((emoji, index) => (
+                                                <div
+                                                    className={`emoji-wrapper ${hoveredEmoji === emoji.icon ? 'hovered' : ''}`}
+                                                    key={index}
+                                                    onMouseEnter={() => setHoveredEmoji(emoji.icon)}
+                                                    onMouseLeave={() => setHoveredEmoji(null)}
+                                                >
+                                                    <Dropdown.Item
+                                                        className="emoji-item"
+                                                        onClick={() => handleSelectEmoji(emoji.icon)}
+                                                    >
+                                                        {emoji.icon}
+                                                    </Dropdown.Item>
+                                                </div>
+                                            ))}
+                                            {selectedEmojis.length > 0 && (
+                                                <Dropdown.Item className='emoji-item' onClick={handleClearEmojis}>
+                                                    <i className="bi bi-x-lg"></i>
+                                                </Dropdown.Item>
+                                            )}
+                                        </div>
+                                    </Dropdown.Menu>
+                                )}
+                            </Dropdown>
+
+                        </div>
+                    )}
 
 
                 </div>
