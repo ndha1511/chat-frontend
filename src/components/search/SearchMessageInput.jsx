@@ -11,6 +11,7 @@ import Avatar from "../avatar/Avatar";
 import SimpleBar from "simplebar-react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { getUserGroupById } from "../../services/GroupService";
 
 function SearchMessageInput() {
     const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function SearchMessageInput() {
     const startDatePickerRef = useRef(null);
     const endDatePickerRef = useRef(null);
     const inputRef = useRef(null);
+    const [listMember, setListMember] = useState([])
 
     const clearSearch = () => {
         dispatch(setMessageSearch({
@@ -38,6 +40,17 @@ function SearchMessageInput() {
             totalPage: 0,
         }));
     }
+
+    const memberList = async () => {
+        if(chatInfo.room.roomType === "GROUP_CHAT"){
+            const rep = await getUserGroupById(chatInfo.user.id);
+            setListMember(rep);
+        }
+       
+    }
+    useEffect(() => {
+        memberList();
+    }, [])
 
     useEffect(() => {
         inputRef.current.focus();
@@ -123,11 +136,11 @@ function SearchMessageInput() {
     const hanldeShowMenuSentDate = () => {
         setShowMenuSentDate(!showMenuSentDate)
     }
-const CustomInput = ({ value, onClick, label }) => (
-    <div onClick={onClick} className="custom-datepicker-input">
-        {value ? <span>{value}</span> : <span>{label}</span>}
-    </div>
-);
+    const CustomInput = ({ value, onClick, label }) => (
+        <div onClick={onClick} className="custom-datepicker-input">
+            {value ? <span>{value}</span> : <span>{label}</span>}
+        </div>
+    );
     return (
         <div className="p-1">
             <div className="d-flex flex-column" style={{ paddingLeft: 25 }}>
@@ -170,11 +183,20 @@ const CustomInput = ({ value, onClick, label }) => (
                             </div>
                             <div className="filter-member">
                                 <SimpleBar style={{ height: 70 }}>
-                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                    <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                    {chatInfo.room.roomType === "GROUP_CHAT" ? (
+                                        <>
+                                            {listMember.map((item) => (
+                                                <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={item} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{item.name}</span></div>
+
+                                            ))}
+                                        </>
+                                    )
+                                        : <>
+                                            <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                            <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={chatInfo.user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{chatInfo.user.name}</span></div>
+                                        </>
+                                    }
+
                                 </SimpleBar>
                             </div>
 
@@ -200,7 +222,7 @@ const CustomInput = ({ value, onClick, label }) => (
                                         dropdownMode="select"
                                         customInput={<CustomInput label="Ngày gửi" />}
                                     />
-                                    
+
                                     <i className="bi bi-calendar"></i>
                                 </div>
                                 <div className="selectDate" onClick={() => endDatePickerRef.current.setOpen(true)}>
@@ -212,7 +234,7 @@ const CustomInput = ({ value, onClick, label }) => (
                                         }}
                                         onClickOutside={() => endDatePickerRef.current.setOpen(false)}
                                         dropdownMode="select"
-                                        customInput={<CustomInput label="Đến ngày" />} 
+                                        customInput={<CustomInput label="Đến ngày" />}
                                     />
                                     <i className="bi bi-calendar"></i>
                                 </div>

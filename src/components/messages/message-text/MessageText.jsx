@@ -103,8 +103,6 @@ function MessageText(props) {
                 return "";
         }
     }
-  console.log(userCurrent.email)
-  console.log(userCurrent.email)
     return (
 
         <BaseMessage

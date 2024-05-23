@@ -72,6 +72,7 @@ function Header(props) {
         const rep = await getUserGroupById(chatInfo.user.id);
         setListMember(rep);
     }
+    console.log(listMember)
     const hanldeUserGroup = async () => {
 
         if (chatInfo.room?.roomType === "GROUP_CHAT") {
