@@ -1,14 +1,19 @@
 // MessageText.js
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BaseMessage from '../BaseMessage';
 import './MessageAudioVideoCall.scss';
-import Icons from '../../icons/Icons';
-import { Icon } from 'zmp-ui';
+import { setLocalPeer, setLocalStream } from '../../../configs/WebRTCConfig';
+import { callRequest } from '../../../services/MessageService';
+import { setMessageCall } from '../../../redux/reducers/messageReducer';
+import { setDragableCallRequest } from '../../../redux/reducers/dragableReducer';
+
 
 function MessageAudioCall(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const windowSize = useSelector(state => state.render.windowSize);
+    const chatInfo = useSelector(state => state.message.chatInfo);
+    const dispatch = useDispatch();
     const callStatus = props.message.content.callStatus;
     const handleCallStatus = () => {
         const audioCallStatus = callStatus;
@@ -101,6 +106,40 @@ function MessageAudioCall(props) {
         }
     };
 
+    const reCall = () => {
+        console.log("heheh")
+        let data = {}
+        if (chatInfo.room.roomType !== "GROUP_CHAT") {
+            data = {
+                senderId: userCurrent?.email,
+                receiverId: chatInfo?.user?.email,
+                messageType: "AUDIO_CALL"
+            }
+        } else {
+            data = {
+                senderId: userCurrent?.email,
+                receiverId: chatInfo?.user?.id,
+                messageType: "AUDIO_CALL"
+            }
+        }
+        dispatch(setDragableCallRequest(true));
+        // call api
+        const media = { video: false, audio: true };
+        handleCallRequest(data, media);
+    }
+
+    const handleCallRequest = async (data, media) => {
+        setLocalPeer();
+        await setLocalStream(media);
+        try {
+            const response = await callRequest(data);
+            dispatch(setMessageCall(response));
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const time = props.message.content.duration;
     // Tính số giờ, phút và giây từ biến đếm
     const hours = Math.floor(time / 3600);
@@ -127,7 +166,7 @@ function MessageAudioCall(props) {
                             <span> {handleCallStatus().text}</span>
                         </div>
                     </div>
-                    <div className='btn-call'><button style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >GỌI LẠI</button></div>
+                    <div className='btn-call'><button onClick={() => reCall()} style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >GỌI LẠI</button></div>
 
                 </div>
 
