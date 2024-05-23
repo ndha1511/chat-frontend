@@ -10,7 +10,7 @@ function SearchMessage() {
     const [messageConvert, setMessageConvert] = useState([]);
     useEffect(() => {
         const convert = messageSearch.messages.map((msg) => {
-            return {item:<SearchResult />}
+            return {item:<SearchResult message={msg} />}
         });
         setMessageConvert(convert);
     }, [messageSearch])

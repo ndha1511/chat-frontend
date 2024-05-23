@@ -57,11 +57,11 @@ function Content(props) {
     }, [showSearchMessage]);
 
     useEffect(() => {
-        const handler = setTimeout(() => dispatch(setTypingChat(
-            {user: {},
-            showTyping: false}
-        )), 1000);
-
+        const handler = setTimeout(() => {
+            if (Object.keys(typingChat.user).length > 0 || typingChat.showTyping !== false) {
+                dispatch(setTypingChat({user: {}, showTyping: false}));
+            }
+        }, 1000);
         return () => {
             clearTimeout(handler);
         }
