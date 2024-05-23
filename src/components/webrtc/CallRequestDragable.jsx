@@ -5,13 +5,16 @@ import { useEffect, useState } from "react";
 import "zmp-ui/icon/styles/icon.css";
 import { Icon } from "zmp-ui";
 import { getColorForName } from "../../utils/ExtractUsername";
-import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
+import { setDragableAudioCall, setDragableCallRequest } from "../../redux/reducers/dragableReducer";
+import { cancelCall } from "../../services/MessageService";
+import { closePeer, closeStream } from "../../configs/WebRTCConfig";
 
 function CallRequestDragable(props) {
-    const [receiver, setReceiver] = useState(props.receiver);
+
     const windowSize = useSelector(state => state.render.windowSize);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+    const messageCall = useSelector((state) => state.message.messageCall);
     const dispatch = useDispatch();
     useEffect(() => {
         const dialogWidth = 300; // Chiều rộng cố định của hộp thoại
@@ -32,6 +35,17 @@ function CallRequestDragable(props) {
         hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b);
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+    }
+
+    const stopCall = async () => {
+        try {
+            await cancelCall(messageCall.id);
+            closeStream();
+            closePeer();
+            dispatch(setDragableCallRequest(false));
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
@@ -56,7 +70,7 @@ function CallRequestDragable(props) {
                     <div className="header-audio-call">
                         <div>
                             <img src="/assets/icons/iconCall.png" style={{ width: 28, height: 28, marginRight: 10, marginTop: -7 }} alt="" />
-                            <span>Zalo Call - name</span>
+                            <span>Zalo Call - {chatInfo.user.name}</span>
                         </div>
                         <div onClick={() => dispatch(setDragableAudioCall(false))}>
                             <Icon icon="zi-close" />
@@ -71,8 +85,8 @@ function CallRequestDragable(props) {
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat'
                     }}>
-                        <Avatar user={receiver.user} width={80} height={80} />
-                        <h5>{receiver.name}</h5>
+                        <Avatar user={chatInfo.user} width={80} height={80} />
+                        <h5>{chatInfo.user.name}</h5>
                         <span>Đang đổ chuông</span>
                     </div>
                     <div className="footer-audio-call">
@@ -81,7 +95,7 @@ function CallRequestDragable(props) {
                                 <Icon style={{ color: '#4f4f4f' }} icon='zi-video-solid' />
                                 <Icon style={{ color: '#4f4f4f' }} icon='zi-chevron-up' />
                             </button>
-                            <button onClick={props.hiddenDragable}
+                            <button onClick={stopCall}
                                 className="btn-audio-call1 btn-reject">
                                 <i className="bi bi-telephone-fill"></i>
                             </button>

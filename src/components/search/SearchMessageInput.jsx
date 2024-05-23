@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setShowSearchMessage } from "../../redux/reducers/renderLayoutReducer";
 import { useEffect, useRef, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
-import { setMessageSearch } from "../../redux/reducers/messageReducer";
+import { setCurrentPageMessageSearch, setMessageSearch, updateMessageSearch } from "../../redux/reducers/messageReducer";
 import { findMessage } from "../../services/MessageService";
 import "zmp-ui/icon/styles/icon.css";
 import Avatar from "../avatar/Avatar";
@@ -20,17 +20,29 @@ function SearchMessageInput() {
     const [showMenuSender, setShowMenuSender] = useState(false);
     const [showMenuSentDate, setShowMenuSentDate] = useState(false);
     const chatInfo = useSelector(state => state.message.chatInfo);
+    const currentPage = useSelector(state => state.message.currentPageMessageSearch);
     const [valueSearch, setValueSearch] = useState("");
     const [valueSearch1, setValueSearch1] = useState("");
     const user = useSelector((state) => state.userInfo.user);
     const divRef = useRef(null);
     const debounce = useDebounce(valueSearch, 500);
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const startDatePickerRef = useRef(null);
     const endDatePickerRef = useRef(null);
     const inputRef = useRef(null);
-    const [listMember, setListMember] = useState([])
+    const [listMember, setListMember] = useState([]);
+    const [userSend, setUserSend] = useState({
+        email: "",
+        name: "",
+        avatar: ""
+    });
+    const [dateApi, setDateApi] = useState({
+        startDate: "",
+        endDate: ""
+    });
+
+    const [viewDate, setViewDate] = useState("");
 
     const clearSearch = () => {
         dispatch(setMessageSearch({
@@ -42,18 +54,46 @@ function SearchMessageInput() {
     }
 
     const memberList = async () => {
-        if(chatInfo.room.roomType === "GROUP_CHAT"){
+        if (chatInfo.room.roomType === "GROUP_CHAT") {
             const rep = await getUserGroupById(chatInfo.user.id);
             setListMember(rep);
         }
-       
+
     }
-    useEffect(() => {
-        memberList();
-    }, [])
 
     useEffect(() => {
-        inputRef.current.focus();
+        if (dateApi.startDate !== "" && dateApi.endDate !== "") {
+            if (dateApi.startDate === dateApi.endDate) {
+                const startDateView = new Date(startDate);
+                const startDay = startDateView.getDate();
+                const startMonth = startDateView.getMonth() + 1;
+                const startYear = startDateView.getFullYear();
+                setViewDate(`${startDay}/${startMonth}/${startYear}`);
+            } else {
+                const startDateView = new Date(startDate);
+                const endDateView = new Date(endDate);
+
+
+                const startDay = startDateView.getDate();
+                const startMonth = startDateView.getMonth() + 1;
+                const startYear = startDateView.getFullYear();
+
+                const endDay = endDateView.getDate();
+                const endMonth = endDateView.getMonth() + 1;
+                const endYear = endDateView.getFullYear();
+
+                setViewDate(`${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`);
+            }
+        } else {
+            setViewDate("");
+        }
+    }, [dateApi])
+
+    useEffect(() => {
+        memberList();
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
     }, []);
 
     useEffect(() => {
@@ -76,8 +116,6 @@ function SearchMessageInput() {
                 // Click ra ngoài div, đóng div
                 setShowMenuSender(false);
                 setShowMenuSentDate(false);
-                setStartDate(null);
-                setEndDate(null);
             }
         }
 
@@ -90,9 +128,14 @@ function SearchMessageInput() {
     }, []);
     useEffect(() => {
         const search = async () => {
-            if (debounce.trim() === "") {
+            const emailQuery = userSend.email;
+            const startDate = dateApi.startDate.trim();
+            const endDate = dateApi.endDate.trim();
+            if (debounce.trim() === "" && emailQuery.trim() === "" &&
+                startDate === "" && endDate === "") {
                 clearSearch();
             } else {
+                dispatch(setCurrentPageMessageSearch(0));
                 const messageSearch = {
                     messages: [],
                     show: true,
@@ -101,7 +144,7 @@ function SearchMessageInput() {
                 }
                 dispatch(setMessageSearch(messageSearch));
                 try {
-                    const response = await findMessage(chatInfo.roomId, debounce, user.email);
+                    const response = await findMessage(chatInfo.roomId, debounce, user.email, emailQuery, startDate, endDate);
                     const messageSearch = {
                         messages: response.messages,
                         show: true,
@@ -116,7 +159,42 @@ function SearchMessageInput() {
             }
         }
         search();
-    }, [debounce]);
+    }, [debounce, userSend, dateApi]);
+
+    const setUserSendQuery = (user) => {
+        setUserSend({
+            email: user.email,
+            name: user.name,
+            avatar: user.avatar,
+        });
+    }
+
+    useEffect(() => {
+        const searchMore = async () => {
+            const emailQuery = userSend.email;
+            const startDate = dateApi.startDate.trim();
+            const endDate = dateApi.endDate.trim();
+            try {
+                const response = await findMessage(chatInfo.roomId, debounce, user.email, emailQuery, startDate, endDate, currentPage);
+                dispatch(updateMessageSearch(response.messages));
+            } catch (error) {
+                console.log(error);
+                clearSearch();
+            }
+
+        }
+        if (currentPage > 0) {
+            searchMore();
+        }
+    }, [currentPage]);
+    const clearUserSend = (e) => {
+        e.stopPropagation();
+        setUserSend({
+            avatar: "",
+            email: "",
+            name: "",
+        })
+    }
 
     const handleSearch = (e) => {
         setValueSearch(e.target.value);
@@ -136,6 +214,27 @@ function SearchMessageInput() {
     const hanldeShowMenuSentDate = () => {
         setShowMenuSentDate(!showMenuSentDate)
     }
+    const submitDate = () => {
+        setDateApi({
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+        })
+    }
+    const cancelDate = () => {
+        setShowMenuSentDate(false);
+    }
+
+    const clearDate = (e) => {
+        e.stopPropagation();
+        setStartDate(new Date());
+        setEndDate(new Date());
+        setDateApi({
+            startDate: "",
+            endDate: "",
+        })
+    }
+
+
     const CustomInput = ({ value, onClick, label }) => (
         <div onClick={onClick} className="custom-datepicker-input">
             {value ? <span>{value}</span> : <span>{label}</span>}
@@ -166,9 +265,16 @@ function SearchMessageInput() {
                 </div>
                 <div className="d-inline-flex align-items-center filter-message ">
                     <strong style={{ fontSize: 14 }}>Lọc theo: </strong>
-                    <div onClick={hanldeShowMenu} className="m-3">
-                        <small className="filter-search"  >Người gửi <Icon style={{ marginLeft: 5, }} icon="zi-chevron-down" /></small>
-                    </div>
+                    {userSend.email !== "" ?
+                        <div onClick={hanldeShowMenu} className="m-3">
+                            <small className="filter-search filter-search-active"  >{userSend.name}
+                                <span onClick={clearUserSend}><Icon style={{ marginLeft: 5, }} icon="zi-close-circle-solid" size={18} /></span>
+                            </small>
+                        </div>
+                        :
+                        <div onClick={hanldeShowMenu} className="m-3">
+                            <small className="filter-search"  >Người gửi <Icon style={{ marginLeft: 5, }} icon="zi-chevron-down" size={18} /></small>
+                        </div>}
                     {showMenuSender && (
                         <div ref={divRef} className="menu-sender" >
                             <div className="sendre">
@@ -177,7 +283,7 @@ function SearchMessageInput() {
                                     <input ref={inputRef} className="input-search-message col-10" type="text"
                                         onChange={handleSearch1}
                                         value={valueSearch1}
-                                        style={{ backgroundColor: "transparent", border: "none", outline: "none" }} placeholder="Tìm tin nhắn" />
+                                        style={{ backgroundColor: "transparent", border: "none", outline: "none" }} placeholder="Tìm kiếm" />
                                     {showButtonDelete1 && <button onClick={() => { setValueSearch1(""); setShowButtonDelete1(false) }} className=""><Icon icon="zi-close-circle-solid" size={16} /></button>}
                                 </div>
                             </div>
@@ -186,14 +292,16 @@ function SearchMessageInput() {
                                     {chatInfo.room.roomType === "GROUP_CHAT" ? (
                                         <>
                                             {listMember.map((item) => (
-                                                <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={item} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{item.name}</span></div>
+                                                <div onClick={() => setUserSendQuery(item)} className="d-flex align-items-center p-1 btn-mb">
+                                                    <Avatar user={item} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{item.name}</span>
+                                                </div>
 
                                             ))}
                                         </>
                                     )
                                         : <>
-                                            <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
-                                            <div className="d-flex align-items-center p-1 btn-mb"><Avatar user={chatInfo.user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{chatInfo.user.name}</span></div>
+                                            <div className="d-flex align-items-center p-1 btn-mb" onClick={() => setUserSendQuery(user)}><Avatar user={user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{user.name}</span></div>
+                                            <div className="d-flex align-items-center p-1 btn-mb" onClick={() => setUserSendQuery(chatInfo.user)} ><Avatar user={chatInfo.user} width={27} height={27} /><span style={{ marginLeft: 6, fontSize: 12 }}>{chatInfo.user.name}</span></div>
                                         </>
                                     }
 
@@ -202,42 +310,64 @@ function SearchMessageInput() {
 
                         </div>
                     )}
-                    <div className="m-2" onClick={hanldeShowMenuSentDate} >
-                        <small className="filter-search" >Ngày gửi <Icon style={{ marginLeft: 5 }} icon="zi-chevron-down" /></small>
-                    </div>
+                    {viewDate === "" ?
+                        <div className="m-2" onClick={hanldeShowMenuSentDate} >
+                            <small className="filter-search" >Ngày gửi <Icon style={{ marginLeft: 5 }} icon="zi-chevron-down" size={18} /></small>
+                        </div> :
+                        <div className="m-2" onClick={hanldeShowMenuSentDate} >
+                            <small className="filter-search filter-search-active"  >{viewDate}
+                                <span onClick={clearDate}><Icon style={{ marginLeft: 5, }} icon="zi-close-circle-solid" size={18} /></span>
+                            </small>
+                        </div>}
                     {showMenuSentDate && (
-                        <div ref={divRef} className="menu-sent-date" >
+                        <div ref={divRef} className="menu-sent-date">
                             <div>
-                                <span>Chọn khoảnh thời gian: </span>
+                                <span>Chọn khoảng thời gian: </span>
                             </div>
                             <div className="isDate" >
-                                <div className="selectDate" onClick={() => startDatePickerRef.current.setOpen(true)}>
-                                    <DatePicker
-                                        ref={startDatePickerRef}
-                                        selected={startDate}
-                                        onChange={date => {
-                                            setStartDate(date);
-                                        }}
-                                        onClickOutside={() => startDatePickerRef.current.setOpen(false)}
-                                        dropdownMode="select"
-                                        customInput={<CustomInput label="Ngày gửi" />}
-                                    />
+                                <div>
+                                    <span>Từ ngày</span>
+                                    <div className="selectDate" onClick={() => startDatePickerRef.current.setOpen(true)}>
+                                        <DatePicker
+                                            ref={startDatePickerRef}
+                                            selected={startDate}
+                                            value={startDate}
+                                            onChange={date => {
+                                                setStartDate(date);
+                                            }}
+                                            onClickOutside={() => startDatePickerRef.current.setOpen(false)}
+                                            dropdownMode="select"
+                                            customInput={<CustomInput label="Ngày gửi" />}
+                                            maxDate={endDate}
+                                        />
 
-                                    <i className="bi bi-calendar"></i>
+                                        <i className="bi bi-calendar"></i>
+                                    </div>
                                 </div>
-                                <div className="selectDate" onClick={() => endDatePickerRef.current.setOpen(true)}>
-                                    <DatePicker
-                                        ref={endDatePickerRef}
-                                        selected={endDate}
-                                        onChange={date => {
-                                            setEndDate(date);
-                                        }}
-                                        onClickOutside={() => endDatePickerRef.current.setOpen(false)}
-                                        dropdownMode="select"
-                                        customInput={<CustomInput label="Đến ngày" />}
-                                    />
-                                    <i className="bi bi-calendar"></i>
+                                <div>
+                                    <span>Đến ngày</span>
+                                    <div className="selectDate" onClick={() => endDatePickerRef.current.setOpen(true)}>
+                                        <DatePicker
+                                            ref={endDatePickerRef}
+                                            selected={endDate}
+                                            value={endDate}
+                                            onChange={date => {
+                                                setEndDate(date);
+                                            }}
+                                            onClickOutside={() => endDatePickerRef.current.setOpen(false)}
+                                            dropdownMode="select"
+                                            customInput={<CustomInput label="Đến ngày" />}
+                                            maxDate={new Date()}
+                                            minDate={startDate}
+
+                                        />
+                                        <i className="bi bi-calendar"></i>
+                                    </div>
                                 </div>
+                            </div>
+                            <div className="d-flex justify-content-end mt-3">
+                                <button onClick={cancelDate}>Hủy</button>
+                                <button onClick={submitDate}>Xác nhận</button>
                             </div>
 
                         </div>

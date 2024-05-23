@@ -96,13 +96,30 @@ function MessageFile(props) {
             showAvatar={props.showAvatar}
             lastMessage={props.lastMessage ? true : false}>
             {props.message.messageStatus === "SENDING" ?
-                <div className="mess-file-s" style={{ backgroundColor: "#fff" }}    >
+                <div className="mess-file-s" style={{ backgroundColor: "#fff" }} >
+                    <div className="mess-ct-file">
+                        <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
+                        <div className="mess-text-file">
+                            <div><h6>{originalName}</h6></div>
+                            <div className="d-flex flex-column">
+                                <div>
+                                    <span>{formatFileSize(progress.bytesUpload)} / </span>
+                                    <span>{formatFileSize(fileInfo.size)}</span>
+                                </div>
+                                <div className="progress-custom">
+                                    <div className="progress-bar" style={{ width: progress.percentUpload }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                 </div>
                 :
                 <div className="mess-file-s" onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike}>
-                    <div className="mess-ct-file">
-                        <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>
+
+                    <a href={props.message.content.filePath} download={props.message.content.filename} className="mess-ct-file a-file-download">
+                        {fileInfo.fileExtension === "rar" ? <i className="bi bi-file-earmark-zip" style={{ fontSize: 30 }}></i> :
+                        <i className={`bi bi-filetype-${fileInfo.fileExtension}`} style={{ fontSize: 30 }}></i>}
                         <div className="mess-text-file">
                             <div><h6>{originalName}</h6></div>
                             <div> <span>{formatFileSize(fileInfo.size)}</span></div>
@@ -118,7 +135,8 @@ function MessageFile(props) {
                                 {emojiCount > 0 && <span style={{ fontSize: 13 }}> {emojiCount}</span>}
                             </div>
                         )}
-                    </div>
+                    </a>
+
                     {isHovered && (
                         <div onMouseEnter={hanldeHoverLike} onMouseLeave={() => setShowContent(false)}>
 
@@ -129,7 +147,7 @@ function MessageFile(props) {
                                     </div>
                                 </Dropdown.Toggle>
                                 {showMenu && (
-                                    <Dropdown.Menu  className='dropd-menu-file'>
+                                    <Dropdown.Menu className='dropd-menu-file'>
                                         <div className="btn-emoji">
                                             {emojis.map((emoji, index) => (
                                                 <div

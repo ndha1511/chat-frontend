@@ -1,20 +1,36 @@
 import { Spinner } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "./Search";
 import SearchResult from "../messages/search-result/SearchResult";
 import ButtonGroup from "../buttons/button-group/ButtonGroup";
 import { useEffect, useState } from "react";
 import SimpleBar from "simplebar-react";
+import { setCurrentPageMessageSearch } from "../../redux/reducers/messageReducer";
 
 function SearchMessage() {
     const messageSearch = useSelector((state) => state.message.messageSearch);
     const [messageConvert, setMessageConvert] = useState([]);
+    const currentPage = useSelector(state => state.message.currentPageMessageSearch);
+    const dispatch = useDispatch();
+    const [showBtnSearchMore, setShowBtnSearchMore] = useState(false);
     useEffect(() => {
         const convert = messageSearch.messages.map((msg) => {
-            return { item: <SearchResult /> }
+            return {item:<SearchResult message={msg} />}
+
         });
         setMessageConvert(convert);
+        if(messageSearch.totalPage - 1 === currentPage) {
+            setShowBtnSearchMore(false);
+        } else {
+            setShowBtnSearchMore(true);
+        }
     }, [messageSearch])
+
+    const searchMore = () => {
+        console.log("đã click")
+        const newPage = currentPage + 1;
+        dispatch(setCurrentPageMessageSearch(newPage));
+    }
     return (
         <div className="p-2 d-flex flex-column">
             <div>
@@ -30,7 +46,7 @@ function SearchMessage() {
                             <span>Đang tìm kiếm...</span>
                         </div> :
                             messageSearch.messages.length > 0 ?
-                                <div className="d-flex w-100" style={{ overflow: "auto" }}>
+                                <div className="d-flex w-100 flex-column" style={{ overflow: "auto", paddingBottom: 16 }}>
                                     <ButtonGroup buttons={messageConvert}
                                         widthBtnGroup="100%"
                                         vertical width="100%"
@@ -39,6 +55,12 @@ function SearchMessage() {
                                         textColor="black"
                                         backgroundActive="#eeeeee"
                                     />
+                                    {showBtnSearchMore && <button style={{
+                                        border: "none",
+                                        height: 30,
+                                        fontWeight: "bold",
+                                    }} onClick={searchMore}>Xem thêm</button>}
+                                    
                                 </div>
                                 :
                                 <div className="d-flex flex-column w-100 align-items-center">
@@ -46,7 +68,9 @@ function SearchMessage() {
                                     <span>Không tìm thấy kết quả phù hợp</span>
                                 </div>
                         :
-                        <img src="assets/images/search-empty.png" alt="icon-search" width={180} height={160} />}
+                        <div className="d-flex flex-column w-100 align-items-center">
+                            <img src="assets/images/search-empty.png" alt="icon-search" width={180} height={160} />
+                        </div>}
                 </SimpleBar>
             </div>
         </div>

@@ -10,7 +10,7 @@ import MessageError from "../../../components/messages/message-error/MessageErro
 import MessageVideo from "../../../components/messages/message-video/MessageVideo";
 import MessageRevoked from "../../../components/messages/message-revoked/MessageRevoked";
 import ImageGroup from "../../../components/messages/image-group/ImageGroup";
-import { setMessages, updateMessage } from "../../../redux/reducers/messageReducer";
+import { setMessageSearchCurrent, setMessages, updateMessage } from "../../../redux/reducers/messageReducer";
 import MessageSystem from "../../../components/messages/message-system/MessageSystem";
 import { getColorForName } from "../../../utils/ExtractUsername";
 import { Spinner } from "react-bootstrap";
@@ -33,6 +33,7 @@ function Content(props) {
     const scrollEnd = useSelector(state => state.message.scrollEnd);
     const userCurrent = useSelector((state) => state.userInfo.user);
     const messageSearch = useSelector((state) => state.message.messageSearch);
+    const messageSearchCurrent = useSelector((state) => state.message.messageSearchCurrent);
     const [loadMore, setLoadMore] = useState(true);
     const showSearchMessage = useSelector((state) => state.renderView.showSearchMessage);
     const dispatch = useDispatch();
@@ -56,12 +57,14 @@ function Content(props) {
         }
     }, [showSearchMessage]);
 
-    useEffect(() => {
-        const handler = setTimeout(() => dispatch(setTypingChat(
-            {user: {},
-            showTyping: false}
-        )), 1000);
+   
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            if (Object.keys(typingChat.user).length > 0 || typingChat.showTyping !== false) {
+                dispatch(setTypingChat({user: {}, showTyping: false}));
+            }
+        }, 1000);
         return () => {
             clearTimeout(handler);
         }
@@ -209,6 +212,13 @@ function Content(props) {
             }
         }
     }
+
+    useEffect(() => {
+        if(Object.keys(messageSearchCurrent).length > 0) {
+            scrollToMessage(messageSearchCurrent, currentPage + 1);
+            dispatch(setMessageSearchCurrent({}))
+        }
+    }, [messageSearchCurrent]);
 
 
     useEffect(() => {
@@ -408,7 +418,7 @@ function Content(props) {
             {messageSearch.show && windowSize.width <= 768 ?
                 <div className="search-result col-12"
                     style={{ top: firstDivHeight }}>
-                    <div ref={scrollableSearch} id="scrollableSearch" className="d-flex align-items-center justify-content-center">
+                    <div ref={scrollableSearch} id="scrollableSearch" className="d-flex align-items-center justify-content-center" style={{zIndex: 900}}>
                         {messageSearch.loading ? <Spinner animation="border" role="status" variant="primary"><span className="visually-hidden">Loading...</span></Spinner> :
                             messageSearch.messages.length > 0 ?
                                 <InfiniteScroll
@@ -435,7 +445,7 @@ function Content(props) {
                 </div>
                 : <></>}
             {Object.keys(typingChat.user).length > 0 && <div className="d-flex" style={{ position: "fixed", bottom: props.heightFooter }}>
-                <div style={{bottom: -100}}><Avatar width={30} height={30} user={typingChat.user}/></div>
+                <div style={{bottom: -80}}><Avatar width={30} height={30} user={typingChat.user}/></div>
                 <div className="message incoming">
                     <div className="message-bubble">
                         <div className="message-content" id="typingAnimation">

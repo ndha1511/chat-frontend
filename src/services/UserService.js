@@ -48,3 +48,12 @@ export const unblockUser = async (data) => {
         return Promise.reject(error);
     }
 }
+
+export const getBlocksUser = async (userId) => {
+    try {
+        const response = await requestApi(`/users/blocks/${userId}`, "GET", [], true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

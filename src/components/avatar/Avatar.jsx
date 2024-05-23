@@ -18,7 +18,7 @@ function Avatar(props) {
             }}
             onClick={props.clickAvatar ? props.clickAvatar : () => { }}
         >
-            {user && user.avatar ?
+            {user && user.avatar && user.avatar !== "" && user.avatar !== "null"?
                 <img src={user.avatar} alt="avatar" width="100%" height="100%"
                     style={{ borderRadius: "50%" }}
                 /> :

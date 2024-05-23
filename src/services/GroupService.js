@@ -98,3 +98,16 @@ export const findGroupBySenderId = async (id) => {
         return Promise.reject(error);
     }
 }
+
+//  data {
+//     "avatar": "path",
+//     "groupName": String
+//  }
+export const updateGroup = async (id, data) => {
+    try {
+        const response = await requestApi("/groups/" + id, "PATCH", data, true);
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
