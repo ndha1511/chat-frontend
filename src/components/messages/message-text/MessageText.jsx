@@ -1,5 +1,5 @@
 // MessageText.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BaseMessage from '../BaseMessage';
 import { Dropdown } from 'react-bootstrap';
@@ -7,6 +7,7 @@ import './MessageText.scss';
 import { emojis } from '../../../configs/button_group_icon_config';
 import { arrayToDateTime } from '../../../utils/DateTimeHandle';
 import confetti from 'canvas-confetti';
+import { getUserGroupById } from '../../../services/GroupService';
 
 function MessageText(props) {
     const [isHovered, setIsHovered] = useState(false);
@@ -16,6 +17,7 @@ function MessageText(props) {
     const [emojiCount, setEmojiCount] = useState(0);
     const [hoveredEmoji, setHoveredEmoji] = useState(null);
     const [showMenu, setShowMenu] = useState(true);
+    const chatInfo = useSelector(state => state.message.chatInfo);
 
     const handleSelectEmoji = (emoji) => {
         setHoveredEmoji(null);
@@ -101,6 +103,8 @@ function MessageText(props) {
                 return "";
         }
     }
+  console.log(userCurrent.email)
+  console.log(userCurrent.email)
     return (
 
         <BaseMessage
@@ -115,15 +119,17 @@ function MessageText(props) {
                 marginBottom: emojiCount > 0 ? 16 : 3
 
             }}
+            
                 onMouseEnter={() => setIsHovered(true)} onMouseLeave={handleDisplayLike} >
                 <div className="d-flex  mess-text" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >
-                    {props.message.messagesParent ? <div onClick={() => scrollToMessage(props.message.messagesParent)} style={{cursor: "pointer"}}>
+                    {props.message.messagesParent ? <div onClick={() => scrollToMessage(props.message.messagesParent)} style={{ cursor: "pointer" }}>
                         <div className="d-flex p-2" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#c7e0ff' : '#f0f0f0', margin: 5, width: "100%", borderRadius: 5 }}>
                             <div className="d-flex flex-column w-100" style={{
                                 borderLeft: "2px solid blue",
                                 paddingLeft: 5
                             }}>
                                 <div>
+
                                     <div><span>{props.message.messagesParent.senderName}</span></div>
                                     {displayMsgParent()}
                                 </div>
@@ -132,7 +138,9 @@ function MessageText(props) {
                         <div className='text'> <pre >{props.message.content}</pre></div>
                         <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                     </div> :
-                        <div><div className='text'> <pre >{props.message.content}</pre></div>
+                        <div>
+                            {chatInfo.room?.roomType === "GROUP_CHAT"   && userCurrent.email !== props.message.senderId ? <span>{props.message.senderName}</span> : <></>}
+                            <div className='text'> <pre >{props.message.content}</pre></div>
                             <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span></div>}
                     {selectedEmojis.length > 0 && (
                         <div className='btn-icon-custom-s'>

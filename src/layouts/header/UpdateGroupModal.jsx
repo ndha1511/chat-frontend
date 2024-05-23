@@ -124,7 +124,7 @@ function UpdateGroupModal({ show, handleClose, groupName, }) {
     );
 
 
-    console.log(memberList)
+    // console.log(memberList)
     useEffect(() => {
         if (memberList && memberList.length > 0) {
             // Chuyển đổi danh sách selectedMembers thành mảng các email
