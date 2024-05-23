@@ -34,13 +34,13 @@ function ChatLayout() {
             return room.numberOfUnreadMessage > 0;
         });
         setRoomUnreadRender(() => listRoomUnread);
-        
+
     }, [rooms]);
 
     return (
 
         <div className="d-flex" style={{ flexDirection: "column", }}>
-            <Header clickAllButton={clickAllButton} clickUnreadButton={clickUnreadButton}/>
+            <Header clickAllButton={clickAllButton} clickUnreadButton={clickUnreadButton} />
 
             <SimpleBar style={{ maxHeight: '83vh' }}>
 
@@ -51,27 +51,27 @@ function ChatLayout() {
                     </div>
                     :
                     showAllRoom ?
-                    <div className="w-100 d-flex" style={{ flex: 1, }}>
-                        <ButtonGroup buttons={roomRender}
-                            widthBtnGroup="100%"
-                            vertical width="100%"
-                            className="btn-hover"
-                            hoverColor="#eeeeee"
-                            textColor="black"
-                            backgroundActive="#eeeeee"
-                        />
-                    </div>
-                    :
-                    <div className="w-100 d-flex" style={{ flex: 1, }}>
-                        <ButtonGroup buttons={roomUnread}
-                            widthBtnGroup="100%"
-                            vertical width="100%"
-                            className="btn-hover"
-                            hoverColor="#eeeeee"
-                            textColor="black"
-                            backgroundActive="#eeeeee"
-                        />
-                    </div>
+                        <div className="w-100 d-flex" style={{ flex: 1, }}>
+                            <ButtonGroup buttons={roomRender}
+                                widthBtnGroup="100%"
+                                vertical width="100%"
+                                className="btn-hover"
+                                hoverColor="#eeeeee"
+                                textColor="black"
+                                backgroundActive="#eeeeee"
+                            />
+                        </div>
+                        :
+                        <div className="w-100 d-flex" style={{ flex: 1, }}>
+                            <ButtonGroup buttons={roomUnread}
+                                widthBtnGroup="100%"
+                                vertical width="100%"
+                                className="btn-hover"
+                                hoverColor="#eeeeee"
+                                textColor="black"
+                                backgroundActive="#eeeeee"
+                            />
+                        </div>
                 }
 
             </SimpleBar>
