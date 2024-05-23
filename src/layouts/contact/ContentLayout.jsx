@@ -17,8 +17,7 @@ import { Icon } from "zmp-ui";
 
 
 function ContentLayout(props) {
-    const friends = useSelector((state) => state.friend.friends); 
-    const sendFriend = useSelector((state) => state.friend.friends);  // người gửi lời mời kết bạn
+    const friends = useSelector((state) => state.friend.friends);  
     const user = useSelector((state) => state.userInfo.user);
     const renderFriendReques = useSelector((state) => state.render.renderFriendReques)
     const dispatch = useDispatch();
@@ -27,7 +26,6 @@ function ContentLayout(props) {
     const [showSenderFriendLayout,setShowSenderFriendLayout]=useState(true)
     const [showMessageLayout, setShowMessageLayout] = useState(false);
     console.log(friends)
-    console.log(user.email)
     useEffect(() => {
         setNumOfInvite(friends.length);
     }, [friends,contactIndex])

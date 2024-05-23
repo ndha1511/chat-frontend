@@ -63,7 +63,7 @@ const ProfileModal = ({ show, onClose, friend, onOpenChangePassword, onOpenUpdat
                                         <input id='image-avatar' type='file' accept="image/*" style={{ display: "none" }}
                                             onChange={(e) => setImage(e.target.files[0])}
                                         />
-                                        <Icon icon='zi-camera' size={30} />
+                                        <Icon icon='zi-camera' size={25} />
                                     </label>
                                 </div>
                             </div>

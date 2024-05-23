@@ -75,10 +75,9 @@
         border-radius: 50%;
         background-color: red;
         color: #fff;
-        // border: none;
-        // padding: 3px;
         border: none;
-
+        margin-left: 10px;
+        margin-right: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -169,7 +168,7 @@
 
 .group-btn-video-call {
     display: flex;
-    width: 25%;
+    width: 60%;
     justify-content: space-between;
     align-items: center;
     border: none;

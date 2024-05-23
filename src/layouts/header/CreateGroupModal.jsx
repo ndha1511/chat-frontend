@@ -7,20 +7,21 @@ import { addGroup, addMember } from '../../services/GroupService';
 
 // Your other code...
 
-function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
+function CreateGroupModal({ show, handleClose, groupName, selectedMembers }) {
     const [friendName, setFriendName] = useState('');
     const [friendId, setFriendId] = useState([]);
-    const[updateMemberId,setUpdateMemberId] = useState([]);
-    const[updateState,setUpdateState] = useState(false);
+    const [updateMemberId, setUpdateMemberId] = useState([]);
+    const [updateState, setUpdateState] = useState(false);
 
     const [isUpdateMode, setIsUpdateMode] = useState(false);
-    const[title,setTitle] = useState('Tạo nhóm');
+    const [title, setTitle] = useState('Tạo nhóm');
     const [isValid, setIsValid] = useState(true); // State to manage input validity
     const friends = useSelector((state) => state.friend.friendsAccepted);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const user = useSelector((state) => state.userInfo.user);
+    const [image, setImage] = useState(null);
     const dispatch = useDispatch();
-    
+
     const handleAddGroup = async () => {
         if (!friendName.trim()) {
             setIsValid(false);
@@ -28,6 +29,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
         }
 
         const groupData = {
+            avatar:image,
             groupName: friendName,
             ownerId: user.email,
             ownerName: user.name,
@@ -46,7 +48,7 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
     };
 
     const handleAddMemberToGroup = async () => {
-        if(updateMemberId.length > 0) {
+        if (updateMemberId.length > 0) {
             const request = {
                 adderId: user.email,
                 membersId: updateMemberId,
@@ -61,12 +63,13 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             }
 
         }
-        
-        
+
+
     }
 
     function createGroupFormData(groupData) {
         const formData = new FormData();
+        formData.append('avatar',groupData.avatar);
         formData.append('groupName', groupData.groupName);
         formData.append('ownerId', groupData.ownerId);
         formData.append('ownerName', groupData.ownerName);
@@ -108,8 +111,8 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
         </Tooltip>
     );
 
-    
-    
+
+
     useEffect(() => {
         if (selectedMembers && selectedMembers.length > 0) {
             // Chuyển đổi danh sách selectedMembers thành mảng các email
@@ -119,8 +122,8 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             setIsUpdateMode(true)
             setTitle('Thêm thành viên')
         }
-    }, [selectedMembers,updateState]);
-  
+    }, [selectedMembers, updateState]);
+
     useEffect(() => {
         if (groupName) {
             setFriendName(groupName);
@@ -134,7 +137,16 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
             <Modal.Body className="md-bd" style={{ maxHeight: 500 }}>
                 <div className="body-top">
                     <div className="name">
-                        <i className="bi bi-camera"></i>
+                        <div className='cameras' style={{ position: "relative" }}>
+                            <div >
+                                <label htmlFor='image-avatar' style={{ cursor: "pointer" }}>
+                                    <input id='image-avatar' type='file' accept="image/*" style={{ display: "none" }}
+                                        onChange={(e) => setImage(e.target.files[0])}
+                                    />
+                                    <i className="bi bi-camera"></i>
+                                </label>
+                            </div>
+                        </div>
                         <OverlayTrigger
                             placement="bottom"
                             overlay={renderTooltip}
@@ -168,15 +180,15 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
                                             type="checkbox"
                                             onChange={(e) => {
                                                 handleChange(e, friend.email)
-                                                handleUpdate(e,friend.email)
+                                                handleUpdate(e, friend.email)
                                             }}
                                             value={friend.email}
                                             checked={friendId.includes(friend.email)}
-                                
+
                                             id={`checkbox-${index}`} // Thêm ID cho mỗi checkbox
                                         />
                                     </td>
-                                    <td><Avatar user={friend}  /></td>
+                                    <td><Avatar user={friend} /></td>
                                     <td>{friend.name}</td>
                                 </tr>
                             ))}
@@ -185,10 +197,10 @@ function CreateGroupModal({ show, handleClose,groupName, selectedMembers }) {
                 </div>
             </Modal.Body>
             <Modal.Footer className="md-f">
-                <Button variant="secondary" onClick={()=>{
+                <Button variant="secondary" onClick={() => {
                     handleClose()
                     setUpdateMemberId([])
-                    setUpdateState(prev=> !prev)
+                    setUpdateState(prev => !prev)
                 }} className="modal-button-custom">
                     Hủy
                 </Button>

@@ -8,18 +8,17 @@ import { useDispatch } from 'react-redux';
 import { getRoomBySenderIdAndReceiverId } from '../../services/RoomService';
 import { setChatInfo } from '../../redux/reducers/messageReducer';
 import { Icon } from 'zmp-ui';
-import { unFriendRequest } from '../../services/FriendService';
-import Swal from 'sweetalert2';
-import { reRenderGroup } from '../../redux/reducers/groupReducer';
 import SimpleBar from 'simplebar-react';
-import { getUserGroupById } from '../../services/GroupService';
+import { uploadImage } from '../../services/UploadService';
+import { updateUser } from '../../services/UserService';
+import { setUserInfo } from '../../redux/reducers/userReducer';
 
 
 const GroupInfor = ({ show, onClose, user, listMember }) => {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const friends = useSelector((state) => state.friend.friendsAccepted);
     const [isFriend, setIsFriend] = useState(false)
- 
+    const [image, setImage] = useState(null);
     const chatInfo = useSelector(state => state.message.chatInfo);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -59,7 +58,28 @@ const GroupInfor = ({ show, onClose, user, listMember }) => {
         }
     }
 
+    useEffect(() => {
+        const updateAvatar = async () => {
+            if (image) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', image);
+                    const response = await uploadImage(formData);
+                    const newUser = {
+                        ...chatInfo.user,
+                        avatar: response
+                    }
+                    const userUpdated = await updateUser(newUser);
+                    localStorage.setItem('user', JSON.stringify(userUpdated));
+                    dispatch(setUserInfo(userUpdated));
+                    setImage(null);
+                } catch (error) {
 
+                }
+            }
+        }
+        updateAvatar();
+    }, [image])
 
     return (
         <Modal className='container-account-infor' show={show} onHide={onClose} size="md" centered>
@@ -70,7 +90,17 @@ const GroupInfor = ({ show, onClose, user, listMember }) => {
                 <SimpleBar style={{ maxHeight: '85vh', }}>
                     <div className="profile-modal">
                         <div className="profile-avatar-group">
-                            <Avatar user={user} width={80} height={80} />
+                            <div style={{ position: "relative" }}>
+                                <Avatar user={user} width={80} height={80} />
+                                <div className='camera1'>
+                                    <label htmlFor='image-avatar' style={{ cursor: "pointer" }}>
+                                        <input id='image-avatar' type='file' accept="image/*" style={{ display: "none" }}
+                                            onChange={(e) => setImage(e.target.files[0])}
+                                        />
+                                        <Icon icon='zi-camera' size={25} />
+                                    </label>
+                                </div>
+                            </div>
                             <h5 className="text-center mt-2">{user && user.name ? user.name : ""}</h5>
                             <button><Icon icon='zi-edit-text' size={20} /></button>
                         </div>

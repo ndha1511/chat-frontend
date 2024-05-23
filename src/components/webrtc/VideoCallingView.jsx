@@ -29,7 +29,7 @@ function VideoCallingView(props) {
     }, [windowSize]);
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setCounter(pre =>pre +1);
+            setCounter(pre => pre + 1);
         }, 1000);
 
         return () => {
@@ -37,7 +37,7 @@ function VideoCallingView(props) {
         };
     }, [])
 
-    
+
     // Tính số giờ, phút và giây từ biến đếm
     const hours = Math.floor(counter / 3600);
     const minutes = Math.floor((counter % 3600) / 60);
@@ -77,7 +77,7 @@ function VideoCallingView(props) {
                 cursor: "pointer"
             }}>
                 <div className="video-call" style={{
-                    width: 1000,
+                    width: windowSize.width > 768 ? 1000 : 400,
                     height: 650,
                     backgroundColor: "#fff",
                     border: "1px solid rgb(210, 203, 203)",
@@ -96,7 +96,7 @@ function VideoCallingView(props) {
                     </div>
                     <div className="center-video-call">
                         <div className="time-call-video">
-                            <span>{formattedHours>0 ?formattedHours:''}{formattedMinutes}:{formattedSeconds}</span>
+                            <span>{formattedHours > 0 ? formattedHours : ''}{formattedMinutes}:{formattedSeconds}</span>
                         </div>
                         <div className="remote-video">
                             {props.remoteStreams.map((stream, index) => {
@@ -106,7 +106,7 @@ function VideoCallingView(props) {
                                     }
                                 }} autoPlay muted></video>
                             })}
-                             <div className="name-video-call">
+                            <div className="name-video-call">
                                 <span>{userCurrent.name}</span>
                             </div>
                         </div>
@@ -127,8 +127,8 @@ function VideoCallingView(props) {
                             <button className="btn-audio-call-footer">
                                 <div onClick={toggleCamera}>
                                     {/* <Icons type='video'  /> */}
-                                    {showCamera ?  <div style={{marginTop:-8,marginLeft:2}}><Icons type='video' size={21} fillColor='white'/></div> :
-                                     <div style={{marginTop:-5}}><Icons type='videoMute' size={25} fillColor='white'/></div>}
+                                    {showCamera ? <div style={{ marginTop: -8, marginLeft: 2 }}><Icons type='video' size={21} fillColor='white' /></div> :
+                                        <div style={{ marginTop: -5 }}><Icons type='videoMute' size={25} fillColor='white' /></div>}
                                 </div>
                                 <Icon style={{ color: 'white' }} icon='zi-chevron-up' />
                             </button>
@@ -146,7 +146,7 @@ function VideoCallingView(props) {
                         </div>
                         <div >
                             <button className="btn-setting" >
-                                <Icon style={{marginRight:10}} icon='zi-more-grid'/>
+                                <Icon style={{ marginRight: 10 }} icon='zi-more-grid' />
                                 <Icon style={{ color: 'white' }} icon='zi-setting' />
                             </button>
                         </div>

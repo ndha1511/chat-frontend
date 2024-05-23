@@ -212,4 +212,19 @@
        
     }
 }
+.announce-contact-cs{
+    position: absolute;
+    top:112px;
+    z-index:999;
+    color: white;
+    right: 14px;
+    background-color: red;
+    width: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
 

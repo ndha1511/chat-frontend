@@ -1,17 +1,18 @@
-import BaseMessage from "../BaseMessage";
+
 
 function MessageSystem(props) {
     return (
-        <BaseMessage
-            message={props.message}
-            lastMessage={props.lastMessage ? true : false}
-            showAvatar={props.showAvatar}
-        // showHidden={isHovered}
+        <div
+            className="d-flex w-100 justify-content-center"
+
         >
-            <div>
-                <p className="" style={{ width: 200, textAlign: "center", color: "gray"}}>{props.message.content}</p>
+            <div style={{
+                backgroundColor: 'rgba(0,0,0,0.3)', display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'auto',
+                padding: "2px 14px 3px 20px", borderRadius: 15, margin: 3
+            }}>
+                <span className="" style={{ color: "white", fontSize: 13 }}>{props.message.content}</span>
             </div>
-        </BaseMessage>
+        </div>
     );
 }
 

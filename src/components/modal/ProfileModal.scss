@@ -370,13 +370,27 @@
 }
 
 .camera {
-  width: 40px;
-  height: 30px;
+  width: 30px;
+  height: 25px;
   border-radius: 5px;
-  background-color: #f0f0f0;
+  background-color: rgba(240, 240, 240, 0.7);
   cursor: pointer;
   position: absolute;
-  bottom: -10px;
+  bottom: -2px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.camera1 {
+  width: 30px;
+  height: 25px;
+  border-radius: 5px;
+  background-color: rgba(240, 240, 240, 0.7);
+  cursor: pointer;
+  position: absolute;
+  bottom: 2px;
   right: -5px;
   display: flex;
   align-items: center;

@@ -12,7 +12,7 @@ function ChatLayout() {
     const [roomUnread, setRoomUnread] = useState([]);
     const [roomUnreadRender, setRoomUnreadRender] = useState([]);
     const [showAllRoom, setShowAllRoom] = useState(true);
-
+    console.log(rooms)
     const clickAllButton = () => {
         setShowAllRoom(true);
     }

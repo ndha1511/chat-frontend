@@ -23,6 +23,8 @@ function Navbar() {
     const buttons = navbarIcon;
     const navigate = useNavigate();
     const user = useSelector((state) => state.userInfo.user);
+    const friends = useSelector((state) => state.friend.friends); 
+    const rooms = useSelector((state) => state.room.rooms);
     const viewIndex = useSelector((state) => state.renderView.viewIndex);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
@@ -30,6 +32,7 @@ function Navbar() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const handleCloseProfileModal = () => setShowProfileModal(false);
     const [showBlockedMenu, setShowBlockedMenu] = useState(false);
+    const [announce, setAnnounce] = useState(0);
     const [icon, setIcon] = useState(false);
     const dispatch = useDispatch();
     const handleShowChangePasswordModal = () => {
@@ -102,12 +105,25 @@ function Navbar() {
         { name: "Nguyễn Đình Hoàng Anh" },
         { name: "Nguyễn Đình Hoàng Anh" },
     ]
-
+    useEffect(()=>{
+        setAnnounce(0);
+        const tong =()=>{
+            var sum =0;
+            const totalUnreadMessages = rooms.map((room) => {
+                if (room.numberOfUnreadMessage > 0) {
+                     sum += room.numberOfUnreadMessage;
+                     setAnnounce(sum);
+                }
+            });
+            
+        }
+        tong() 
+    },[rooms,])
     return (
-        <nav className="bg-info navbar-vertical">
+        <nav className="bg-info navbar-vertical" >
             <div className="d-flex flex-column justify-content-between navbar-backgroup-color h-100">
                 <div>
-                    <div className="d-flex justify-content-center align-items-center m-2  mb-4 mt-4">
+                    <div className="d-flex justify-content-center align-items-center m-2  mb-4 mt-4 ">
                         <Dropdown>
                             <Dropdown.Toggle as={CustomToggle}>
                                 <Avatar user={user} title={user && user.name ? user.name : ""} />
@@ -127,7 +143,9 @@ function Navbar() {
                     {showProfileModal && <ProfileModal show={showProfileModal} onClose={handleCloseProfileModal} onOpenChangePassword={handleShowChangePasswordModal} onOpenUpdateModal={changeUpdateModal} />}
                     {showChangePasswordModal && <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />}
                     {showUpdateModal && <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal} />}
-                    <div>
+                    <div  style={{ position:'relative'}}>
+                       <div className="announce-message" > <span >{announce !=0 ? announce:''}{announce>=5?(<span style={{fontWeight:500}}>+</span>):''}</span></div>
+                       <div className="announce-contact" > <span >{friends.length !=0 ? friends.length :''}{friends.length>=5?(<span style={{fontWeight:500}}>+</span>):''}</span></div>
                         <ButtonGroup buttons={buttons} vertical
                             handle={clickButton}
                             className="btn-hover"

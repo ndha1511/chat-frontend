@@ -239,7 +239,7 @@ function BaseMessage(props) {
 
                     </div>
 
-                    : <div className="m-2 status-message1" style={{ paddingLeft: 60 }}  >
+                    : <div className="m-2 status-message1" style={{ paddingLeft: 37 }}  >
                         {handleTime() === true ? <div className="m-2 status-time">
                             <span>{`${arrayToDateTime(props.message.sendDate).getHours()}:${arrayToDateTime(props.message.sendDate).getMinutes()}`}</span>
                         </div> : <></>}

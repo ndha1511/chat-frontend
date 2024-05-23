@@ -8,7 +8,7 @@ import { Icon } from 'zmp-ui';
 
 function MessageVideoCall(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
-
+    const windowSize = useSelector(state => state.render.windowSize);
     const time = props.message.content.duration;
     // Tính số giờ, phút và giây từ biến đếm
     const hours = Math.floor(time / 3600);
@@ -91,7 +91,7 @@ function MessageVideoCall(props) {
             showAvatar={props.showAvatar}
 
         >
-            <div className='d-flex mess-hover-call'  >
+                 <div className='d-flex mess-hover-call ' style={{ width: windowSize.width > 768 ? 180 : 160 }}  >
                 <div className="d-flex  mess-text-call" style={{ backgroundColor: userCurrent.email === props.message.senderId ? '#e5efff' : 'white' }} >
                     <div className='text'>
                         <h5 >{handleCallStatus().title}</h5>

@@ -366,8 +366,8 @@ function SearchMessageInput() {
                                 </div>
                             </div>
                             <div className="d-flex justify-content-end mt-3">
-                                <button onClick={cancelDate}>Hủy</button>
-                                <button onClick={submitDate}>Xác nhận</button>
+                                <button style={{marginRight:10}} className="btn-dates" onClick={cancelDate}>Hủy</button>
+                                <button  className="btn-dates" onClick={submitDate}>Xác nhận</button>
                             </div>
 
                         </div>

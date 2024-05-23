@@ -92,7 +92,7 @@
     width: 275px;
     height: auto;
     background-color: white;
-    bottom: -98px;
+    bottom: -169px;
     left: 65px;
     border-radius: 5px;
     border: none;
@@ -142,4 +142,16 @@
   .filter-search-active {
     background-color: #e5efff;
     color: #0b61e1;
+  }
+  .btn-dates{
+    border: none;
+    font-weight: 500;
+    background-color: rgb(237, 234, 234);
+    padding: 5px;
+    &:hover{
+        background-color: rgb(206, 202, 202);
+    }
+    &:active{
+        background-color: rgb(149, 139, 139);
+    }
   }
