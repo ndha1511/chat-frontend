@@ -17,6 +17,8 @@ import { reRenderMessageLayout } from "../../redux/reducers/renderReducer";
 import { disconnect } from "../../configs/SocketConfig";
 import SimpleBar from "simplebar-react";
 import { Icon } from "zmp-ui";
+import { getUserByEmail, unblockUser, updateUser } from "../../services/UserService";
+import { setChatInfo } from "../../redux/reducers/messageReducer";
 
 
 function Navbar() {
@@ -26,12 +28,14 @@ function Navbar() {
     const viewIndex = useSelector((state) => state.renderView.viewIndex);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-    const [isBlocked, setIsBlocked] = useState(false); // Quản lý trạng thái của công tắc
+    const [isBlocked, setIsBlocked] = useState(user?.notReceiveMessageToStranger ? user.notReceiveMessageToStranger : false); // Quản lý trạng thái của công tắc
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const handleCloseProfileModal = () => setShowProfileModal(false);
     const [showBlockedMenu, setShowBlockedMenu] = useState(false);
     const [icon, setIcon] = useState(false);
     const dispatch = useDispatch();
+    const blockUsers = useSelector((state) => state.userInfo.blockUsers);
+
     const handleShowChangePasswordModal = () => {
         setShowChangePasswordModal(true);
         handleCloseProfileModal();
@@ -43,8 +47,14 @@ function Navbar() {
         setShowBlockedMenu(!showBlockedMenu);
         setIcon(!icon)
     };
-    const handleToggleChange = (event) => {
+    const handleToggleChange = async (event) => {
         event.stopPropagation();
+        const newUser = await updateUser({
+            ...user,
+            notReceiveMessageToStranger: !isBlocked
+        });
+        dispatch(setUserInfo(newUser));
+        localStorage.setItem("user", JSON.stringify(newUser));
         setIsBlocked(!isBlocked);
     };
     const changeUpdateModal = () => {
@@ -70,6 +80,7 @@ function Navbar() {
         localStorage.clear();
         dispatch(setUserInfo(null));
         disconnect();
+        dispatch(setChatInfo({}));
         navigate('/auth/login');
 
     }
@@ -86,9 +97,7 @@ function Navbar() {
                 dispatch(setShowSearchMessage(false));
                 break;
             default:
-                dispatch(setViewIndedx(2));
-                dispatch(setShowSearchMessage(false));
-
+                alert("Tính năng sẽ sớm ra mắt");
                 break;
 
         }
@@ -97,11 +106,23 @@ function Navbar() {
         if (!user) navigate("/auth/login");
     })
 
-    const listBlock = [
-        { name: "Trần Công Minh" },
-        { name: "Nguyễn Đình Hoàng Anh" },
-        { name: "Nguyễn Đình Hoàng Anh" },
-    ]
+    const unblock = async (item) => {
+        try {
+            const data = {
+                senderId: user.email,
+                blockId: item.email
+            }
+            const response = await unblockUser(data);
+            const userUpdate = await getUserByEmail(user.email);
+            localStorage.setItem("user", JSON.stringify(userUpdate));
+            dispatch(setUserInfo(userUpdate));
+            alert(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+   
 
     return (
         <nav className="bg-info navbar-vertical">
@@ -158,20 +179,20 @@ function Navbar() {
 
                             <Dropdown.Menu>
 
-                                <Dropdown.Item onClick={(e) => handleBlockedMenuClick(e)}>Danh sách chặn <Icon style={{marginLeft:85, transform: icon ? 'rotate(90deg)':''}} icon='zi-chevron-right' size={25} /></Dropdown.Item>
+                                <Dropdown.Item onClick={(e) => handleBlockedMenuClick(e)}>Danh sách chặn <Icon style={{ marginLeft: 85, transform: icon ? 'rotate(90deg)' : '' }} icon='zi-chevron-right' size={25} /></Dropdown.Item>
                                 {showBlockedMenu && (
-                                    <SimpleBar style={{ height: 100,marginBottom:10 }}>
+                                    <SimpleBar style={{ height: 100, marginBottom: 10 }}>
                                         <span style={{ fontSize: 11, fontWeight: 500, marginLeft: 12, }}>* Những người không thể nhắn tin cho bạn</span>
-                                        {listBlock.map((item) => (
-                                            <div style={{
+                                        {blockUsers.map((item) => (
+                                            <div key={item.email} style={{
                                                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                                 padding: "2px 5px 2px 12px", marginTop: 5, backgroundColor: "rgb(247, 247, 247)"
                                             }}>
                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                                                    <Avatar user ={user} width={20} height={20} />
-                                                    <span style={{ marginLeft: 10, marginTop: -4,fontSize:13 }}>{item.name}</span>
+                                                    <Avatar user={item} width={20} height={20} />
+                                                    <span style={{ marginLeft: 10, marginTop: -4, fontSize: 13 }}>{item.name}</span>
                                                 </div>
-                                                <button className="btn-chan">Bỏ chặn</button>
+                                                <button onClick={() => unblock(item)} className="btn-chan">Bỏ chặn</button>
                                             </div>
                                         ))}
 
@@ -190,7 +211,7 @@ function Navbar() {
                                         />
                                     </div>
                                 </Dropdown.Item>
-                                <Dropdown.Item ><i className="bi bi-gear pe-3"></i>Cài đặt</Dropdown.Item>
+                                <Dropdown.Item >Cài đặt</Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item style={{ color: 'red' }}  >Đăng xuất</Dropdown.Item>
                                 <Dropdown.Item  >Thoát</Dropdown.Item>

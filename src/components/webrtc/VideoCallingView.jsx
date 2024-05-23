@@ -74,10 +74,10 @@ function VideoCallingView(props) {
             <div style={{
                 position: "fixed",
                 zIndex: 999,
-                cursor: "pointer"
+                cursor: "col-resize"
             }}>
                 <div className="video-call" style={{
-                    width: 1000,
+                    width: windowSize.width > 768 ? 1000 : 400,
                     height: 650,
                     backgroundColor: "#fff",
                     border: "1px solid rgb(210, 203, 203)",

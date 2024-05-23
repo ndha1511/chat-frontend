@@ -80,7 +80,7 @@ function AudioCallingView(props) {
             <div style={{
                 position: "fixed",
                 zIndex: 999,
-                cursor: "pointer"
+                cursor: "col-resize"
             }}>
                 <div className="draggable-window">
                     <div className="header-audio-call">

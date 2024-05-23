@@ -13,7 +13,7 @@ import { findGroupBySenderId, getGroupById } from "../../services/GroupService";
 import { reRenderGroup, setGroup } from "../../redux/reducers/groupReducer";
 import AudioCallDragable from "../../components/webrtc/AudioCallDragable";
 import CallRequestDragable from "../../components/webrtc/CallRequestDragable";
-import { getUserByEmail } from "../../services/UserService";
+import { getBlocksUser, getUserByEmail } from "../../services/UserService";
 import AudioCallingView from "../../components/webrtc/AudioCallingView";
 import { setDragableAudioCall, setDragableCallQuestion, setDragableCallRequest } from "../../redux/reducers/dragableReducer";
 import { reRenderMember } from "../../redux/reducers/renderOffcanvas";
@@ -27,6 +27,7 @@ import { setShowSearchMessage } from "../../redux/reducers/renderLayoutReducer";
 import { setWindowSize } from "../../redux/reducers/renderReducer";
 import { receiveMessage } from "../../services/MessageService";
 import { setTypingChat } from "../../redux/reducers/renderMessage";
+import { setBlockUsers } from "../../redux/reducers/userReducer";
 
 
 let chatInfo = {};
@@ -50,7 +51,6 @@ function FullLayout(props) {
   const [connection, setConnection] = useState(false);
   const [callerInfo, setCallerInfo] = useState({});
   const [remoteStreams, setRemoteStreams] = useState([]);
-  const [remoteStream, setRemoteStream] = useState([]);
   const [remoteStreamsUnique, setRemoteStreamsUnique] = useState([]);
   const [groupInfo, setGroupInfo] = useState({});
 
@@ -104,6 +104,18 @@ function FullLayout(props) {
 
 
   }, [renderGroup]);
+
+  useEffect(() => {
+    const getBlocks = async () => {
+      try {
+        const response = await getBlocksUser(user.email);
+        dispatch(setBlockUsers(response));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getBlocks();
+  }, [user])
 
 
   const state = props.state;
@@ -275,7 +287,7 @@ function FullLayout(props) {
     dispatch(pushBytesUpload(messageProgress));
 
   }
-  
+
 
 
   const onEventReceived = async (payload) => {
@@ -359,13 +371,20 @@ function FullLayout(props) {
             }
           }
           break;
+        case "CANCEL_CALL":
+          dispatch(setDragableCallQuestion(false));
+          dispatch(reRenderRoom());
+          if (Object.keys(chatInfo).length > 0) {
+            dispatch(reRenderMessge());
+          }
+          break;
         case "SUCCESS":
           const roomTemp = {
             ...room,
             avatar: chatInfo.user.avatar,
             name: chatInfo.user.name,
           }
-          if(dataReceived.message.roomId === chatInfo?.roomId) {
+          if (dataReceived.message.roomId === chatInfo?.roomId) {
             dispatch(pushMessage(dataReceived.message));
           }
           dispatch(updateRoom(roomTemp));
@@ -374,7 +393,7 @@ function FullLayout(props) {
         case "SENT":
           dispatch(reRenderRoom());
           if (Object.keys(chatInfo).length > 0) {
-            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user?.email === dataReceived.receiverId) { 
+            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user?.email === dataReceived.receiverId) {
               let message = dataReceived.message;
               let newMessage = {
                 ...message,
@@ -386,20 +405,22 @@ function FullLayout(props) {
           }
           break;
         case "TYPING":
-          if(chatInfo?.roomId === dataReceived.roomId) {
-            dispatch(setTypingChat({
-              user: {
-                email: dataReceived.senderId,
-                name: dataReceived.senderName,
-                avatar: dataReceived.senderAvatar,
-              },
-              showTyping: !typingChat.showTyping
-            }))
+          if (chatInfo?.roomId === dataReceived.roomId) {
+            if (user.email !== dataReceived.senderId) {
+              dispatch(setTypingChat({
+                user: {
+                  email: dataReceived.senderId,
+                  name: dataReceived.senderName,
+                  avatar: dataReceived.senderAvatar,
+                },
+                showTyping: !typingChat.showTyping
+              }))
+            }
           }
           break;
         case "RECEIVED_MESSAGE":
           if (Object.keys(chatInfo).length > 0) {
-            if (chatInfo?.user?.email === dataReceived.message.senderId || chatInfo?.user?.email === dataReceived.message.receiverId) { 
+            if (chatInfo?.user?.email === dataReceived.message.senderId || chatInfo?.user?.email === dataReceived.message.receiverId) {
               dispatch(pushMessage(dataReceived.message));
             }
           }
@@ -521,7 +542,7 @@ function FullLayout(props) {
           callerInfo={callerInfo}
           groupInfo={groupInfo}
         /> : <></>}
-      {dragableCallRequest && <CallRequestDragable receiver={chatInfo} />}
+      {dragableCallRequest && <CallRequestDragable />}
       {dragableAudioCall ? messageCall.messageType === "AUDIO_CALL" ? <AudioCallingView callerInfo={callerInfo}
 
       /> : <VideoCallingView

@@ -320,7 +320,7 @@ function SearchMessageInput() {
                             </small>
                         </div>}
                     {showMenuSentDate && (
-                        <div ref={divRef} className="menu-sent-date" >
+                        <div ref={divRef} className="menu-sent-date">
                             <div>
                                 <span>Chọn khoảng thời gian: </span>
                             </div>

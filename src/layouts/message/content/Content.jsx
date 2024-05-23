@@ -418,7 +418,7 @@ function Content(props) {
             {messageSearch.show && windowSize.width <= 768 ?
                 <div className="search-result col-12"
                     style={{ top: firstDivHeight }}>
-                    <div ref={scrollableSearch} id="scrollableSearch" className="d-flex align-items-center justify-content-center">
+                    <div ref={scrollableSearch} id="scrollableSearch" className="d-flex align-items-center justify-content-center" style={{zIndex: 900}}>
                         {messageSearch.loading ? <Spinner animation="border" role="status" variant="primary"><span className="visually-hidden">Loading...</span></Spinner> :
                             messageSearch.messages.length > 0 ?
                                 <InfiniteScroll
@@ -445,7 +445,7 @@ function Content(props) {
                 </div>
                 : <></>}
             {Object.keys(typingChat.user).length > 0 && <div className="d-flex" style={{ position: "fixed", bottom: props.heightFooter }}>
-                <div style={{bottom: -100}}><Avatar width={30} height={30} user={typingChat.user}/></div>
+                <div style={{bottom: -80}}><Avatar width={30} height={30} user={typingChat.user}/></div>
                 <div className="message incoming">
                     <div className="message-bubble">
                         <div className="message-content" id="typingAnimation">
