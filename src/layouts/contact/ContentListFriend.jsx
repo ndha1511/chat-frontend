@@ -12,6 +12,7 @@ import { setUserInfo } from "../../redux/reducers/userReducer";
 import Swal from "sweetalert2";
 import { reRenderGroup } from "../../redux/reducers/groupReducer";
 import { unFriendRequest } from "../../services/FriendService";
+import AccountInfor from "../../components/modal/AccountInfor";
 
 
 function ContentListFriend(props) {
@@ -22,6 +23,7 @@ function ContentListFriend(props) {
     const [showListFriend, setShowListFriend] = useState(true)
     const [showMessageLayout, setShowMessageLayout] = useState(false);
     const rederMessageLayout = useSelector(state => state.render.renderMessageLayout);
+    const chatInfo = useSelector(state => state.message.chatInfo);
     const userBlocks = userCurrent.blockUsers;
 
     const handleShowMessageLayout = () => {
@@ -234,7 +236,7 @@ function ContentListFriend(props) {
                             </div>
                         </div>
 
-                        <ProfileModal show={show} onClose={() => setshow(false)} friend={friend} />
+                        {show && <AccountInfor show={show} onClose={() => setshow(false)} user={friend} closeBack={2} />}
 
 
 

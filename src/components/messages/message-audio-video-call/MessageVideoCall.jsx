@@ -43,7 +43,7 @@ function MessageVideoCall(props) {
                     return {
                         title: 'Bạn đã hủy',
                         text: 'Cuộc gọi thoại',
-                        icon: './assets/iconCall/iconVideoCall/cancel-audio-call.svg'
+                        icon: './assets/iconCall/iconVideoCall/call-cancel.svg'
                     };
                 case 'CALLING':
                 case 'MISSED':
