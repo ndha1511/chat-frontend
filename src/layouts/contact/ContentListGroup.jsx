@@ -139,17 +139,13 @@ function ContentListGroup(props) {
                                                 <h6>{item.groupName}</h6>
                                             </div>
                                             <div>
-                                                <Dropdown className="">
+                                                <Dropdown className="" onClick={(e)=>{ e.stopPropagation() }}>
                                                     <Dropdown.Toggle variant="success" id="dropdown-basic" as={CustomToggle}>
-                                                        <button><i className="bi bi-three-dots"></i></button>
+                                                        <button  ><i className="bi bi-three-dots"></i></button>
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu className="list-item" >
-                                                        <Dropdown.Item >Xem thông tin</Dropdown.Item>
-                                                        <Dropdown.Item >Phân loại </Dropdown.Item>
-                                                        <Dropdown.Item >Đặt tên gợi nhớ</Dropdown.Item>
-                                                        <Dropdown.Item >Chặn người này</Dropdown.Item>
-                                                        <Dropdown.Item >Xóa bạn</Dropdown.Item>
+                                                        <Dropdown.Item >Rời nhóm</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>

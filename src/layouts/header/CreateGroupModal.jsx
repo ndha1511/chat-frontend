@@ -29,7 +29,7 @@ function CreateGroupModal({ show, handleClose, groupName, selectedMembers }) {
         }
 
         const groupData = {
-            avatar:image,
+            avatar: image,
             groupName: friendName,
             ownerId: user.email,
             ownerName: user.name,
@@ -69,7 +69,9 @@ function CreateGroupModal({ show, handleClose, groupName, selectedMembers }) {
 
     function createGroupFormData(groupData) {
         const formData = new FormData();
-        formData.append('avatar',groupData.avatar);
+        if (groupData.avatar !== null) {
+            formData.append('avatar', groupData.avatar);
+        }
         formData.append('groupName', groupData.groupName);
         formData.append('ownerId', groupData.ownerId);
         formData.append('ownerName', groupData.ownerName);

@@ -80,7 +80,6 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
         }
         try {
             const response = await unFriendRequest(request);
-            // dispatch(reRenderFriendReques())
             dispatch(reRenderGroup())
             onClose();
             Swal.fire({
