@@ -89,7 +89,9 @@ const AccountInfor = ({ show, onClose, handleBack, user, addFriend, closeBack })
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html' ,
-                }     
+                }     ,
+                width: '250px',
+                padding: 0,
             });
         } catch (error) {
             console.error("Error sending friend request:", error);

@@ -120,7 +120,9 @@ function HoverDots({ member, handleClose }) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '250px',
+                padding: 0,
             });
         } catch (error) {
             console.log(error);
@@ -144,6 +146,9 @@ function HoverDots({ member, handleClose }) {
                 customClass: {
                     htmlContainer: 'my-custom-html',
                 }
+                ,
+                width: '250px',
+                padding: 0,
             });
         } catch (error) {
             console.log(error);
@@ -164,7 +169,9 @@ function HoverDots({ member, handleClose }) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '250px',
+                padding: 0, 
             });
             dispatch(deleteMember(member.email));
             console.log(member.email)

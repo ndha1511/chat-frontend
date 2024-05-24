@@ -72,7 +72,9 @@ function ContentLayout(props) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html' ,
-                }     
+                }     ,
+                width: '250px',
+                padding: 0, 
             });
             dispatch(deleteFriend(friend));
         } catch (error) {
@@ -96,7 +98,9 @@ function ContentLayout(props) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html' ,
-                }     
+                }    ,
+                width: '250px',
+                padding: 0,  
             });
             dispatch(deleteFriend(friend));
         } catch (error) {

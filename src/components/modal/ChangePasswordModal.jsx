@@ -26,7 +26,9 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '250px',
+                padding: 0,
             });
             return;
         }
@@ -38,7 +40,9 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '250px',
+                padding: 0,
             });
             return;
         }
@@ -63,7 +67,9 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '250px',
+                padding: 0,
             });
             navigate("/auth/login");
             
@@ -77,7 +83,9 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '250px',
+                padding: 0,
             });
             setShowSpinner(false);
         }

@@ -37,7 +37,9 @@ const HelloMessage = ({ show, onClose, user, handleBack }) => {  //user là nguo
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html' ,
-                }     
+                },
+                width: '250px',
+                padding: 0,     
             });
         } catch (error) {
             console.error("Error sending friend request:", error);
@@ -48,7 +50,9 @@ const HelloMessage = ({ show, onClose, user, handleBack }) => {  //user là nguo
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html' ,
-                }     
+                },
+                width: '250px',
+                padding: 0,     
             });
         }
     }

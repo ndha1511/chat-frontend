@@ -13,6 +13,7 @@ import { setViewIndedx } from "../../../redux/reducers/renderLayoutReducer";
 import ReplyMessageFooter from "./ReplyMessageFooter";
 
 import { stompClient } from "../../../configs/SocketConfig";
+import Swal from "sweetalert2";
 
 
 function Footer(props) {
@@ -204,10 +205,30 @@ function Footer(props) {
                 const status = error.response.status;
                 switch(status) {
                     case 410:
-                        alert("Người nhận hiện không muốn nhận tin nhắn");
+                        Swal.fire({
+                            html: `Người nhận hiện không muốn nhận tin nhắn.`,
+                            timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            customClass: {
+                                htmlContainer: 'my-custom-html',
+                            },
+                            width: '200px',
+                            padding: 0, 
+                        });
                         break;
                     case 411:
-                        alert("Người nhận không nhận tin nhắn từ người lạ");
+                        Swal.fire({
+                            html: `Người nhận không nhận tin nhắn từ người lạ.`,
+                            timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            customClass: {
+                                htmlContainer: 'my-custom-html',
+                            },
+                            width: '200px',
+                            padding: 0, 
+                        });
                         break;
                     default: break;
                 }
