@@ -9,6 +9,7 @@ import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
 import MessageLayout from "../message/MessageLayout";
 import { blockUser, getUserByEmail, unblockUser } from "../../services/UserService";
 import { setUserInfo } from "../../redux/reducers/userReducer";
+import Swal from "sweetalert2";
 
 
 function ContentListFriend(props) {
@@ -70,7 +71,15 @@ function ContentListFriend(props) {
             const userUpdate = await getUserByEmail(userCurrent.email);
             localStorage.setItem("user", JSON.stringify(userUpdate));
             dispatch(setUserInfo(userUpdate));
-            alert(response);
+            Swal.fire({
+                html: `Chặn thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
         } catch (error) {
             console.log(error);
         }
@@ -85,7 +94,15 @@ function ContentListFriend(props) {
             const userUpdate = await getUserByEmail(userCurrent.email);
             localStorage.setItem("user", JSON.stringify(userUpdate));
             dispatch(setUserInfo(userUpdate));
-            alert(response);
+            Swal.fire({
+                html: `Bỏ chặn thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
         } catch (error) {
             console.log(error);
         }

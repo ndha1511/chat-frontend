@@ -9,7 +9,7 @@ export default function requestApi(endpoint, method, body, isInterceptors, conte
         "Access-Control-Allow-Origin": "*"
     }
 
-    const instance = axios.create({ headers, baseURL: `http://localhost:8080/api/v1` });
+    const instance = axios.create({ headers, baseURL: `http://54.169.9.168/api/v1` });
 
 
 

@@ -8,6 +8,7 @@ import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getColorForName } from "../../utils/ExtractUsername";
 import { Icon } from "zmp-ui";
+import TimeAudioVideoCall from "./TimeAudioVideoCall";
 
 function AudioCallingView(props) {
 
@@ -26,26 +27,6 @@ function AudioCallingView(props) {
             y: windowSize.height / 2 - 100 // Giữ nguyên vị trí của chiều cao
         });
     }, [windowSize]);
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setCounter(pre =>pre +1);
-        }, 1000);
-
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, [])
-
-    
-    // Tính số giờ, phút và giây từ biến đếm
-    const hours = Math.floor(counter / 3600);
-    const minutes = Math.floor((counter % 3600) / 60);
-    const seconds = counter % 60;
-
-    // Format giờ, phút và giây để luôn hiển thị hai chữ số
-    const formattedHours = hours < 10 ? `0${hours}` : hours;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
     
     function adjustColor(color, amount) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
@@ -103,7 +84,7 @@ function AudioCallingView(props) {
                     }}>
                         {/* time call */}
                         <div className="time-call">
-                            <span>{formattedHours>0 ?formattedHours:''}{formattedMinutes}:{formattedSeconds}</span>
+                           <TimeAudioVideoCall/>
                         </div>
                         <Avatar user={props.callerInfo}  width={80} height={80} />
                         <h6>{props.callerInfo.name}</h6>
