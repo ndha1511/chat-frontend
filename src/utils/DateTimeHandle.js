@@ -1,3 +1,4 @@
+const GMT = 7;
 export function arrayToDateTime(arr) {
     if (arr.length < 6) {
         console.error("Mảng phải chứa ít nhất 6 phần tử (năm, tháng, ngày, giờ, phút, giây)");
@@ -12,6 +13,8 @@ export function arrayToDateTime(arr) {
     var seconds = arr[5];
 
     var dateTime = new Date(year, month - 1, day, hours, minutes, seconds);
+
+    dateTime.setHours(dateTime.getHours() + GMT);
 
     return dateTime;
 }

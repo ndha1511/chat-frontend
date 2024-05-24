@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  web_app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: web_app
+    image: web_app
+    restart: always
+    ports:
+      - "3000:80"
+    

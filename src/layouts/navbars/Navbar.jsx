@@ -52,8 +52,13 @@ function Navbar() {
     };
     const handleToggleChange = async (event) => {
         event.stopPropagation();
+        let dob = user.dob;
+        if(dob === "null" || dob === "") {
+            dob = null;
+        }
         const newUser = await updateUser({
             ...user,
+            dob,
             notReceiveMessageToStranger: !isBlocked
         });
         dispatch(setUserInfo(newUser));
@@ -112,18 +117,23 @@ function Navbar() {
 
     useEffect(()=>{
         setAnnounce(0);
-        const tong =()=>{
-            var sum =0;
-            const totalUnreadMessages = rooms.map((room) => {
+        const tong = () =>{
+            var sum = 0;
+            rooms.forEach((room) => {
                 if (room.numberOfUnreadMessage > 0) {
                      sum += room.numberOfUnreadMessage;
-                     setAnnounce(sum);
                 }
             });
+            if(sum > 5) {
+                setAnnounce(5);
+            } else {
+                setAnnounce(sum);
+            }
+            
             
         }
         tong() 
-    },[rooms,])
+    },[rooms])
 
     const unblock = async (item) => {
         try {
@@ -169,8 +179,8 @@ function Navbar() {
                     {showChangePasswordModal && <ChangePasswordModal show={showChangePasswordModal} onClose={handleCloseChangePasswordModal} handleBack={handleShowChangeProfileModal} />}
                     {showUpdateModal && <UpdateInfoModal show={showUpdateModal} onClose={closeUpdateModal} handleBack={handleShowChangeProfileModal} />}
                     <div  style={{ position:'relative'}}>
-                       <div className="announce-message" > <span >{announce !=0 ? announce:''}{announce>=5?(<span style={{fontWeight:500}}>+</span>):''}</span></div>
-                       <div className="announce-contact" > <span >{friends.length !=0 ? friends.length :''}{friends.length>=5?(<span style={{fontWeight:500}}>+</span>):''}</span></div>
+                       <div className="announce-message" > <span >{announce !== 0 ? announce:''}{announce>=5?(<span style={{fontWeight:500}}>+</span>):''}</span></div>
+                       <div className="announce-contact" > <span >{friends.length !== 0 ? friends.length :''}{friends.length>=5?(<span style={{fontWeight:500}}>+</span>):''}</span></div>
                         <ButtonGroup buttons={buttons} vertical
                             handle={clickButton}
                             className="btn-hover"

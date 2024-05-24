@@ -175,6 +175,7 @@ function FullLayout(props) {
         var candidate = {
           type: "candidate",
           label: event.candidate.sdpMLineIndex,
+          sdpMid: event.candidate.sdpMid,
           id: event.candidate.candidate,
         }
         stompClient.send("/app/candidate", {}, JSON.stringify({
@@ -227,6 +228,7 @@ function FullLayout(props) {
         var candidate = {
           type: "candidate",
           label: event.candidate.sdpMLineIndex,
+          sdpMid: event.candidate.sdpMid,
           id: event.candidate.candidate,
         }
         stompClient.send("/app/candidate", {}, JSON.stringify({
@@ -353,9 +355,7 @@ function FullLayout(props) {
           dispatch(setDragableAudioCall(false));
           dispatch(reRenderRoom());
           if (Object.keys(chatInfo).length > 0) {
-            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
-              dispatch(reRenderMessge());
-            }
+            dispatch(reRenderMessge()); 
           }
           closeStream();
           closePeer();
@@ -366,9 +366,7 @@ function FullLayout(props) {
           dispatch(setDragableAudioCall(true));
           dispatch(reRenderRoom());
           if (Object.keys(chatInfo).length > 0) {
-            if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user.id === dataReceived.receiverId) {
-              dispatch(reRenderMessge());
-            }
+            dispatch(reRenderMessge());
           }
           break;
         case "CANCEL_CALL":

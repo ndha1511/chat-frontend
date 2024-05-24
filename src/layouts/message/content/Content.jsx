@@ -57,12 +57,12 @@ function Content(props) {
         }
     }, [showSearchMessage]);
 
-   
+
 
     useEffect(() => {
         const handler = setTimeout(() => {
             if (Object.keys(typingChat.user).length > 0 || typingChat.showTyping !== false) {
-                dispatch(setTypingChat({user: {}, showTyping: false}));
+                dispatch(setTypingChat({ user: {}, showTyping: false }));
             }
         }, 1000);
         return () => {
@@ -214,7 +214,7 @@ function Content(props) {
     }
 
     useEffect(() => {
-        if(Object.keys(messageSearchCurrent).length > 0) {
+        if (Object.keys(messageSearchCurrent).length > 0) {
             scrollToMessage(messageSearchCurrent, currentPage + 1);
             dispatch(setMessageSearchCurrent({}))
         }
@@ -281,7 +281,10 @@ function Content(props) {
         return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
     }
     const getMessageDate = (message) => {
-        const [year, month, day] = message.sendDate.slice(0, 3);
+        const dateConvert = arrayToDateTime(message.sendDate);
+        const day = dateConvert.getDate(); 
+        const month = dateConvert.getMonth() + 1; 
+        const year = dateConvert.getFullYear();
         return `${day}-${month}-${year}`;
     };
 
@@ -418,7 +421,7 @@ function Content(props) {
             {messageSearch.show && windowSize.width <= 768 ?
                 <div className="search-result col-12"
                     style={{ top: firstDivHeight }}>
-                    <div ref={scrollableSearch} id="scrollableSearch" className="d-flex align-items-center justify-content-center" style={{zIndex: 900}}>
+                    <div ref={scrollableSearch} id="scrollableSearch" className="d-flex align-items-center justify-content-center" style={{ zIndex: 900 }}>
                         {messageSearch.loading ? <Spinner animation="border" role="status" variant="primary"><span className="visually-hidden">Loading...</span></Spinner> :
                             messageSearch.messages.length > 0 ?
                                 <InfiniteScroll
@@ -445,7 +448,7 @@ function Content(props) {
                 </div>
                 : <></>}
             {Object.keys(typingChat.user).length > 0 && <div className="d-flex" style={{ position: "fixed", bottom: props.heightFooter }}>
-                <div style={{bottom: -80}}><Avatar width={30} height={30} user={typingChat.user}/></div>
+                <div style={{ bottom: -80 }}><Avatar width={30} height={30} user={typingChat.user} /></div>
                 <div className="message incoming">
                     <div className="message-bubble">
                         <div className="message-content" id="typingAnimation">
