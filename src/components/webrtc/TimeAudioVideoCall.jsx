@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-function TimeAudioVideoCall(props) {
+function TimeAudioVideoCall() {
     const [counter, setCounter] = useState(0);
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -23,9 +23,9 @@ function TimeAudioVideoCall(props) {
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
     return (
-        <div>
-            <span>{formattedHours > 0 ? formattedHours : ''}{formattedMinutes}:{formattedSeconds}</span>
-        </div>
+
+        <span>{formattedHours > 0 ? formattedHours : ''}{formattedMinutes}:{formattedSeconds}</span>
+
     );
 }
 export default TimeAudioVideoCall;
