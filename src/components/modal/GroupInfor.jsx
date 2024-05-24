@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getRoomBySenderIdAndReceiverId } from '../../services/RoomService';
-import { setChatInfo } from '../../redux/reducers/messageReducer';
+import { reRenderChatInfor, setChatInfo } from '../../redux/reducers/messageReducer';
 import { Icon } from 'zmp-ui';
 import SimpleBar from 'simplebar-react';
 import { uploadImage } from '../../services/UploadService';
 import { updateUser } from '../../services/UserService';
 import { setUserInfo } from '../../redux/reducers/userReducer';
+import { updateGroup } from '../../services/GroupService';
 
 
 const GroupInfor = ({ show, onClose, user, listMember }) => {
@@ -66,12 +67,14 @@ const GroupInfor = ({ show, onClose, user, listMember }) => {
                     formData.append('file', image);
                     const response = await uploadImage(formData);
                     const newUser = {
-                        ...chatInfo.user,
-                        avatar: response
+                        avatar: response,
+                        groupName: chatInfo.user.name
                     }
-                    const userUpdated = await updateUser(newUser);
-                    localStorage.setItem('user', JSON.stringify(userUpdated));
-                    dispatch(setUserInfo(userUpdated));
+                    const userUpdated = await updateGroup(chatInfo.room.roomId, newUser);
+                    dispatch(reRenderChatInfor(true));
+                    setTimeout(() => {
+                        dispatch(reRenderChatInfor(false));
+                    }, 0);
                     setImage(null);
                 } catch (error) {
 
@@ -112,10 +115,10 @@ const GroupInfor = ({ show, onClose, user, listMember }) => {
                             <h6>Thành viên ({chatInfo.user.numberOfMembers})</h6>
                             <div className='member-group'>
                                 {listMember.map(member => (
-                                       <Avatar user={member}  width={40} height={40} />
+                                    <Avatar user={member} width={40} height={40} />
                                 ))}
-                            
-                            
+
+
                             </div>
 
 

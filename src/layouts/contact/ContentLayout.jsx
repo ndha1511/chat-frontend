@@ -24,8 +24,8 @@ function ContentLayout(props) {
     const contactIndex = useSelector(state => state.renderView.contactIndex);
     const [numOfInvite, setNumOfInvite] = useState(0);
     const [showSenderFriendLayout,setShowSenderFriendLayout]=useState(true)
+    const windowSize = useSelector(state => state.render.windowSize);
     const [showMessageLayout, setShowMessageLayout] = useState(false);
-    console.log(friends)
     useEffect(() => {
         setNumOfInvite(friends.length);
     }, [friends,contactIndex])
@@ -120,9 +120,9 @@ function ContentLayout(props) {
                     <div className="txt-top">
                         <h6>Lời mời kết bạn ({numOfInvite})</h6>
                     </div>
-                    <div className="ketBan">
+                    <div className="ketBan" style={{ marginLeft: windowSize.width > 768 ? '' : 30  }}>
                         {friends.map((friend, index) => {
-                            return <div className="thongTin" key={index}>
+                            return <div className="thongTin" key={index} style={{ width: windowSize.width > 768 ? '' : '80%' }}>
                                 <div className="d-flex top-cs">
                                     <Avatar width={50} height={50} user={friend.user} />
                                     <div className="center-cs">

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserByEmail, updateUser } from "../../services/UserService";
 import { setUserInfo } from "../../redux/reducers/userReducer";
+import Swal from "sweetalert2";
 
 
 function UpdateInfoModal({ show, onClose, handleBack }) {
@@ -27,12 +28,14 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
 
     const submitForm = async (event) => {
         event.preventDefault();
+        const avatar =user.avatar;
         const formData = new FormData(event.target);
         const name = formData.get('name');
         const email = user.email;
         const gender = Number(formData.get('gender'));
         const dob = formData.get('dob');
         const request = {
+            avatar,
             name,
             email,
             gender,
@@ -46,13 +49,37 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
             dispatch(setUserInfo(newUser));
             setShowSpinner(false);
             setErr("");
-            alert("cập nhật thành công");
+            Swal.fire({
+                html: `Cập nhật thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
         } catch (error) {
             console.log(error);
-            setErr("cập nhật không thành công")
+            Swal.fire({
+                html: `cập nhật không thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
             setShowSpinner(false);
         }
     }
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
     return (
         <Modal show={show} onHide={onClose} size="md" centered> 
             <Modal.Header closeButton className='modal-header-cs'>
@@ -88,7 +115,7 @@ function UpdateInfoModal({ show, onClose, handleBack }) {
                             </div>
                             <div class="mb-3">
                                 <label for="name" className="form-label">Ngày sinh</label>
-                                <input type="date" className="form-control" id="dob" name="dob" defaultValue={user && user.dob ? user.dob : ""} />
+                                <input type="date" className="form-control" id="dob" name="dob" defaultValue={formatDateForInput(user && user.dob ? user.dob : "")} />
                             </div>
                         </div>
                         {err && <span className="text-danger">{err}</span>}

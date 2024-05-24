@@ -355,7 +355,7 @@ function FullLayout(props) {
           dispatch(setDragableAudioCall(false));
           dispatch(reRenderRoom());
           if (Object.keys(chatInfo).length > 0) {
-            dispatch(reRenderMessge()); 
+            dispatch(reRenderMessge());
           }
           closeStream();
           closePeer();
@@ -393,12 +393,14 @@ function FullLayout(props) {
           if (Object.keys(chatInfo).length > 0) {
             if (chatInfo?.user?.email === dataReceived.senderId || chatInfo?.user?.email === dataReceived.receiverId) {
               let message = dataReceived.message;
-              let newMessage = {
-                ...message,
-                messageStatus: "RECEIVED"
+              if (message.senderId !== user.email) {
+                let newMessage = {
+                  ...message,
+                  messageStatus: "RECEIVED"
+                }
+                dispatch(pushMessage(newMessage));
+                await receiveMessage(newMessage);
               }
-              dispatch(pushMessage(newMessage));
-              await receiveMessage(newMessage);
             }
           }
           break;

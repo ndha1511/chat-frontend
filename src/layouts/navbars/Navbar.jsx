@@ -19,6 +19,7 @@ import SimpleBar from "simplebar-react";
 import { Icon } from "zmp-ui";
 import { getUserByEmail, unblockUser, updateUser } from "../../services/UserService";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
+import Swal from "sweetalert2";
 
 
 function Navbar() {
@@ -64,6 +65,27 @@ function Navbar() {
         dispatch(setUserInfo(newUser));
         localStorage.setItem("user", JSON.stringify(newUser));
         setIsBlocked(!isBlocked);
+        if(!isBlocked){
+            Swal.fire({
+                html: `Chặn tin nhắn từ người lạ thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
+        }else{
+            Swal.fire({
+                html: `Bỏ chặn thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
+        }
     };
     const changeUpdateModal = () => {
         setShowUpdateModal(true);
@@ -105,7 +127,15 @@ function Navbar() {
                 dispatch(setShowSearchMessage(false));
                 break;
             default:
-                alert("Tính năng sẽ sớm ra mắt");
+                Swal.fire({
+                    html: `Tính năng sẽ sớm được ra mắt.`,
+                    timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    customClass: {
+                        htmlContainer: 'my-custom-html',
+                    }
+                });
                 break;
 
         }
@@ -145,7 +175,15 @@ function Navbar() {
             const userUpdate = await getUserByEmail(user.email);
             localStorage.setItem("user", JSON.stringify(userUpdate));
             dispatch(setUserInfo(userUpdate));
-            alert(response);
+            Swal.fire({
+                html: `Bạn đã chặn thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
         } catch (error) {
             console.log(error);
         }

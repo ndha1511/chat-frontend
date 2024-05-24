@@ -9,6 +9,9 @@ import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
 import MessageLayout from "../message/MessageLayout";
 import { blockUser, getUserByEmail, unblockUser } from "../../services/UserService";
 import { setUserInfo } from "../../redux/reducers/userReducer";
+import Swal from "sweetalert2";
+import { reRenderGroup } from "../../redux/reducers/groupReducer";
+import { unFriendRequest } from "../../services/FriendService";
 
 
 function ContentListFriend(props) {
@@ -70,7 +73,15 @@ function ContentListFriend(props) {
             const userUpdate = await getUserByEmail(userCurrent.email);
             localStorage.setItem("user", JSON.stringify(userUpdate));
             dispatch(setUserInfo(userUpdate));
-            alert(response);
+            Swal.fire({
+                html: `Chặn thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
         } catch (error) {
             console.log(error);
         }
@@ -85,12 +96,44 @@ function ContentListFriend(props) {
             const userUpdate = await getUserByEmail(userCurrent.email);
             localStorage.setItem("user", JSON.stringify(userUpdate));
             dispatch(setUserInfo(userUpdate));
-            alert(response);
+            Swal.fire({
+                html: `Bỏ chặn thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
         } catch (error) {
             console.log(error);
         }
     };
+    const unFriend = async (item) => {
 
+        const emailSender = userCurrent.email
+        const emailRe = item.email
+        const request = {
+            senderId: emailSender,
+            receiverId: emailRe
+        }
+        try {
+            const response = await unFriendRequest(request);
+            dispatch(reRenderGroup())
+            Swal.fire({
+                html: `Bạn đã hủy kết bạn với ${item.email}.`,
+                timer: 1500, // Đặt thời gian tự đóng là 2000 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html' ,
+                }     
+            });
+        } catch (error) {
+            console.error("Error sending friend request:", error);
+            alert("Không thể gửi yêu cầu kết bạn.");
+        }
+    }
     return (
         <>
             {showListFriend && (
@@ -169,13 +212,13 @@ function ContentListFriend(props) {
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu className="list-item" >
-                                                        <Dropdown.Item onClick={() => handleShowProfile(item)} >Xem thông tin</Dropdown.Item>
+                                                        <Dropdown.Item onClick={(e) => {handleShowProfile(item); e.stopPropagation()}} >Xem thông tin</Dropdown.Item>
                                                         <Dropdown.Item >Phân loại </Dropdown.Item>
                                                         <Dropdown.Item >Đặt tên gợi nhớ</Dropdown.Item>
                                                         {userBlocks && userBlocks.includes(item.email) ?
                                                             <Dropdown.Item onClick={(e) => { handleUnblock(item); e.stopPropagation() }}>Bỏ chặn</Dropdown.Item> :
                                                             <Dropdown.Item onClick={(e) => { handleBlock(item); e.stopPropagation() }}>Chặn người này</Dropdown.Item>}
-                                                        <Dropdown.Item >Xóa bạn</Dropdown.Item>
+                                                        <Dropdown.Item onClick={(e)=>{unFriend(item);e.stopPropagation()}} >Xóa bạn</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>

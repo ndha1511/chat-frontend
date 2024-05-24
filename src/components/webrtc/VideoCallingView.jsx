@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDragableAudioCall } from "../../redux/reducers/dragableReducer";
 import { Icon } from "zmp-ui";
 import Icons from "../icons/Icons";
+import TimeAudioVideoCall from "./TimeAudioVideoCall";
 
 function VideoCallingView(props) {
     console.log(props.remoteStreams);
@@ -19,6 +20,7 @@ function VideoCallingView(props) {
     const [counter, setCounter] = useState(0);
     const [mute, setMute] = useState(false);
     const [showCamera, setShowCamera] = useState(true);
+    
     useEffect(() => {
         const dialogWidth = 300; // Chiều rộng cố định của hộp thoại
         const windowWidth = windowSize.width;
@@ -27,26 +29,6 @@ function VideoCallingView(props) {
             y: windowSize.height / 2 - 100 // Giữ nguyên vị trí của chiều cao
         });
     }, [windowSize]);
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setCounter(pre => pre + 1);
-        }, 1000);
-
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, [])
-
-
-    // Tính số giờ, phút và giây từ biến đếm
-    const hours = Math.floor(counter / 3600);
-    const minutes = Math.floor((counter % 3600) / 60);
-    const seconds = counter % 60;
-
-    // Format giờ, phút và giây để luôn hiển thị hai chữ số
-    const formattedHours = hours < 10 ? `0${hours}` : hours;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
     const stopCall = async () => {
         closeStream();
         await closeCall(messageCall.id);
@@ -96,7 +78,7 @@ function VideoCallingView(props) {
                     </div>
                     <div className="center-video-call">
                         <div className="time-call-video">
-                            <span>{formattedHours > 0 ? formattedHours : ''}{formattedMinutes}:{formattedSeconds}</span>
+                           {/* <TimeAudioVideoCall/> */}
                         </div>
                         <div className="remote-video">
                             {props.remoteStreams.map((stream, index) => {
@@ -123,7 +105,7 @@ function VideoCallingView(props) {
                         </div>
                     </div>
                     <div className="footer-audio-call">
-                        <div className="group-btn-video-call">
+                        <div className="group-btn-video-call" style={{ width: windowSize.width > 768 ? '25%' : '60%' }}>
                             <button className="btn-audio-call-footer">
                                 <div onClick={toggleCamera}>
                                     {/* <Icons type='video'  /> */}

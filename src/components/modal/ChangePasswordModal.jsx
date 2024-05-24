@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUserInfo } from '../../redux/reducers/userReducer';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from 'zmp-ui';
+import Swal from 'sweetalert2';
 
 const ChangePasswordModal = ({ show, onClose, handleBack }) => {
     const [oldPassword, setOldPassword] = useState("");
@@ -18,11 +19,27 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
     const navigate = useNavigate();
     const updatePassword = async () => {
         if (oldPassword === "" || newPassword === "" || confirmNewPassword === "") {
-            setErr("vui lòng nhập đầy đủ thông tin");
+            Swal.fire({
+                html: `Vui lòng điền thông tin đầy đủ.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
             return;
         }
         if (newPassword !== confirmNewPassword) {
-            setErr("mật khẩu nhập lại không chính xác");
+            Swal.fire({
+                html: `Mật khẩu cũ không chính xác.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
             return;
         }
 
@@ -39,13 +56,29 @@ const ChangePasswordModal = ({ show, onClose, handleBack }) => {
             setShowSpinner(false);
             localStorage.clear();
             dispatch(setUserInfo(null));
-            alert("Đã đổi mật khẩu thành công");
+            Swal.fire({
+                html: `Đổi mật khẩu thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
             navigate("/auth/login");
             
 
         } catch (error) {
             console.log(error);
-            setErr("Mật khẩu cũ không chính xác");
+            Swal.fire({
+                html: `Mật khẩu cũ không chính xác.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
             setShowSpinner(false);
         }
 

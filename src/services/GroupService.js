@@ -105,7 +105,8 @@ export const findGroupBySenderId = async (id) => {
 //  }
 export const updateGroup = async (id, data) => {
     try {
-        const response = await requestApi("/groups/" + id, "PATCH", data, true);
+
+        const response = await requestApi(`/groups/${id}`, "PATCH", data, true);
         return response.data;
     } catch (error) {
         return Promise.reject(error);
