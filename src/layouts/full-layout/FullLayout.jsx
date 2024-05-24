@@ -350,6 +350,7 @@ function FullLayout(props) {
             dispatch(reRenderMessge());
           }
           closeStream();
+          closePeer();
           break;
         case "END_CALL":
           dispatch(setDragableAudioCall(false));
