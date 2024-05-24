@@ -20,7 +20,6 @@ function VideoCallingView(props) {
     const [counter, setCounter] = useState(0);
     const [mute, setMute] = useState(false);
     const [showCamera, setShowCamera] = useState(true);
-    
     useEffect(() => {
         const dialogWidth = 300; // Chiều rộng cố định của hộp thoại
         const windowWidth = windowSize.width;
@@ -56,10 +55,10 @@ function VideoCallingView(props) {
             <div style={{
                 position: "fixed",
                 zIndex: 999,
-                cursor: "grab"
+                cursor: "pointer"
             }}>
                 <div className="video-call" style={{
-                    width: windowSize.width > 768 ? 1000 : 400,
+                    width: 1000,
                     height: 650,
                     backgroundColor: "#fff",
                     border: "1px solid rgb(210, 203, 203)",
@@ -78,7 +77,7 @@ function VideoCallingView(props) {
                     </div>
                     <div className="center-video-call">
                         <div className="time-call-video">
-                           {/* <TimeAudioVideoCall/> */}
+                            <TimeAudioVideoCall/>
                         </div>
                         <div className="remote-video">
                             {props.remoteStreams.map((stream, index) => {
@@ -88,13 +87,14 @@ function VideoCallingView(props) {
                                     }
                                 }} autoPlay muted></video>
                             })}
-                            <div className="name-video-call">
-                                <span>{userCurrent.name}</span>
+                             <div className="name-video-call">
+                   
+                                <span>{props.callerInfo.name}</span>
                             </div>
                         </div>
                         <div className="local-video">
                             <div className="name-video-call-1">
-                                <span>{props.callerInfo.name}</span>
+                            <span>{userCurrent.name}</span>
                             </div>
                             <video ref={(ref) => {
                                 if (ref && localStream) {
@@ -105,12 +105,12 @@ function VideoCallingView(props) {
                         </div>
                     </div>
                     <div className="footer-audio-call">
-                        <div className="group-btn-video-call" style={{ width: windowSize.width > 768 ? '25%' : '60%' }}>
+                        <div className="group-btn-video-call">
                             <button className="btn-audio-call-footer">
                                 <div onClick={toggleCamera}>
                                     {/* <Icons type='video'  /> */}
-                                    {showCamera ? <div style={{ marginTop: -8, marginLeft: 2 }}><Icons type='video' size={21} fillColor='white' /></div> :
-                                        <div style={{ marginTop: -5 }}><Icons type='videoMute' size={25} fillColor='white' /></div>}
+                                    {showCamera ?  <div style={{marginTop:-8,marginLeft:2}}><Icons type='video' size={21} fillColor='white'/></div> :
+                                     <div style={{marginTop:-5}}><Icons type='videoMute' size={25} fillColor='white'/></div>}
                                 </div>
                                 <Icon style={{ color: 'white' }} icon='zi-chevron-up' />
                             </button>
@@ -128,7 +128,7 @@ function VideoCallingView(props) {
                         </div>
                         <div >
                             <button className="btn-setting" >
-                                <Icon style={{ marginRight: 10 }} icon='zi-more-grid' />
+                                <Icon style={{marginRight:10}} icon='zi-more-grid'/>
                                 <Icon style={{ color: 'white' }} icon='zi-setting' />
                             </button>
                         </div>
