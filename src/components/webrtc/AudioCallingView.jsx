@@ -17,9 +17,8 @@ function AudioCallingView(props) {
     const dispatch = useDispatch();
     const messageCall = useSelector((state) => state.message.messageCall);
     const windowSize = useSelector(state => state.render.windowSize);
-    const chatInfo = useSelector(state => state.message.chatInfo);
+    // const chatInfo = useSelector(state => state.message.chatInfo);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [counter, setCounter] = useState(0);
     useEffect(() => {
         const dialogWidth = 300; // Chiều rộng cố định của hộp thoại
         const windowWidth = windowSize.width;
@@ -32,7 +31,7 @@ function AudioCallingView(props) {
     function adjustColor(color, amount) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
     }
-    const baseColor = chatInfo.user ? getColorForName(chatInfo.user?.name) : '#FFFFFF'; // Màu trắng là màu mặc định
+    const baseColor = props.callerInfo ? getColorForName(props.callerInfo?.name) : '#FFFFFF'; // Màu trắng là màu mặc định
     const lighterColor = adjustColor(baseColor, 40); // Làm sáng màu lên một chút
     const darkerColor = adjustColor(baseColor, -40); // Làm tối màu đi một chút
     function hexToRgb(hex) {
@@ -62,7 +61,7 @@ function AudioCallingView(props) {
                 <div style={{
                     position: "fixed",
                     zIndex: 999,
-                    cursor: "col-resize"
+                    cursor: "grab"
                 }}>
 
                     <div className="draggable-window">
@@ -77,8 +76,8 @@ function AudioCallingView(props) {
                         </div>
                         <div className="content-audio-call" style={{
                             height: "100%",
-                            backgroundImage: chatInfo.user?.avatar ?
-                                `linear-gradient(-45deg,rgba(199, 194, 194, 0.6), rgba(226, 218, 218, 0.7),rgba(169, 149, 149, 0.6)), url(${chatInfo.user.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 1) 0%, rgba(${hexToRgb(baseColor)}, 1) 50%, rgba(${hexToRgb(darkerColor)}, 1) 100%)` :
+                            backgroundImage: props.callerInfo?.avatar ?
+                                `linear-gradient(-45deg,rgba(199, 194, 194, 0.6), rgba(226, 218, 218, 0.7),rgba(169, 149, 149, 0.6)), url(${props.callerInfo.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 1) 0%, rgba(${hexToRgb(baseColor)}, 1) 50%, rgba(${hexToRgb(darkerColor)}, 1) 100%)` :
                                 `linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.6) 0%, rgba(${hexToRgb(baseColor)}, 0.6) 50%, rgba(${hexToRgb(darkerColor)}, 0.6) 100%)`,
                             backgroundSize: 'cover', // Set the size for each background
                             backgroundPosition: 'center',
@@ -128,8 +127,8 @@ function AudioCallingView(props) {
                 <Modal.Body style={{ padding: 0, height: 500 }}>
                     <div className="content-audio-call" style={{
                         height: "100%",
-                        backgroundImage: chatInfo.user?.avatar ?
-                            `linear-gradient(-45deg,rgba(199, 194, 194, 0.6), rgba(226, 218, 218, 0.7),rgba(169, 149, 149, 0.6)), url(${chatInfo.user.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 1) 0%, rgba(${hexToRgb(baseColor)}, 1) 50%, rgba(${hexToRgb(darkerColor)}, 1) 100%)` :
+                        backgroundImage: props.callerInfo?.avatar ?
+                            `linear-gradient(-45deg,rgba(199, 194, 194, 0.6), rgba(226, 218, 218, 0.7),rgba(169, 149, 149, 0.6)), url(${props.callerInfo.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 1) 0%, rgba(${hexToRgb(baseColor)}, 1) 50%, rgba(${hexToRgb(darkerColor)}, 1) 100%)` :
                             `linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.6) 0%, rgba(${hexToRgb(baseColor)}, 0.6) 50%, rgba(${hexToRgb(darkerColor)}, 0.6) 100%)`,
                         backgroundSize: 'cover', // Set the size for each background
                         backgroundPosition: 'center',
