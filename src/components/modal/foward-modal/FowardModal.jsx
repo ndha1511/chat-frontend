@@ -40,7 +40,9 @@ function FowardModal(props) {
       showConfirmButton: false,
       customClass: {
           htmlContainer: 'my-custom-html',
-      }
+      },
+      width: '250px',
+      padding: 0, 
   });
     props.handleClose()
     } catch (error) {

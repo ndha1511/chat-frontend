@@ -98,7 +98,9 @@ function ContentListGroup(props) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '130px',
+                padding: 0, 
             });
             dispatch(reRenderGroup())
         } catch (error) {

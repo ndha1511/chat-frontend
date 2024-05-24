@@ -4,6 +4,7 @@ import { reRender } from '../../redux/reducers/renderReducer';
 import Avatar from '../../components/avatar/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { addGroup, addMember } from '../../services/GroupService';
+import Swal from 'sweetalert2';
 
 // Your other code...
 
@@ -39,6 +40,17 @@ function CreateGroupModal({ show, handleClose, groupName, selectedMembers }) {
             const formData = createGroupFormData(groupData);
             const res = await addGroup(formData);
             setFriendId([]);
+            Swal.fire({
+                html: `Tạo nhóm thành công.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                },
+                width: '200px',
+                padding: 0, 
+            });
             dispatch(reRender());
             handleClose(); // Close modal on successful group creation
             setFriendName('');

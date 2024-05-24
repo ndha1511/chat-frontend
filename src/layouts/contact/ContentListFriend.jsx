@@ -80,7 +80,9 @@ function ContentListFriend(props) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '130px',
+                padding: 0,
             });
         } catch (error) {
             console.log(error);
@@ -103,7 +105,9 @@ function ContentListFriend(props) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '130px',
+                padding: 0,
             });
         } catch (error) {
             console.log(error);
@@ -127,7 +131,9 @@ function ContentListFriend(props) {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html' ,
-                }     
+                } ,
+                width: '200px',
+                padding: 0,    
             });
         } catch (error) {
             console.error("Error sending friend request:", error);

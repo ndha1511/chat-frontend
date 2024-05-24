@@ -73,8 +73,12 @@ function Navbar() {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                    // popup: 'my-custom-popup', 
+                },
+                width: '230px',
+                padding: 0, 
             });
+
         }else{
             Swal.fire({
                 html: `Bỏ chặn thành công.`,
@@ -83,7 +87,10 @@ function Navbar() {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '150px', // Đặt chiều rộng của Swal
+                padding: 0,
+                margin:0 // Đặt khoảng cách padding bên trong Swals
             });
         }
     };
@@ -134,7 +141,9 @@ function Navbar() {
                     showConfirmButton: false,
                     customClass: {
                         htmlContainer: 'my-custom-html',
-                    }
+                    },
+                    width: '200px',
+                    padding: 0, 
                 });
                 break;
 
@@ -182,7 +191,9 @@ function Navbar() {
                 showConfirmButton: false,
                 customClass: {
                     htmlContainer: 'my-custom-html',
-                }
+                },
+                width: '200px',
+                padding: 0, 
             });
         } catch (error) {
             console.log(error);

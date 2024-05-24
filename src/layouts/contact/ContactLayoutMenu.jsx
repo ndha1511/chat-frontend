@@ -40,7 +40,7 @@ function ContacLayoutMenu() {
     }
     return (
         <div className="d-flex" style={{ flexDirection: "column", marginTop: 10, position: 'relative' }}>
-            <div className="announce-contact-cs" > <span >{friends.length}{friends.length >= 5 ? (<span style={{ fontWeight: 500 }}>+</span>) : ''}</span></div>
+            <div className="announce-contact-cs" > <span >{friends.length !== 0 ?friends.length:''}{friends.length >= 5 ? (<span style={{ fontWeight: 500 }}>+</span>) : ''}</span></div>
             <ButtonGroup buttons={arrMenu}
                 vertical
                 width='100%'
