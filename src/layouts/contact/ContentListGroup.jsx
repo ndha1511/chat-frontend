@@ -6,7 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setChatInfo } from "../../redux/reducers/messageReducer";
 import { getRoomBySenderIdAndReceiverId } from "../../services/RoomService";
 import MessageLayout from "../message/MessageLayout";
-import { getGroupById } from "../../services/GroupService";
+import { getGroupById, leaveGroup, removeGroup } from "../../services/GroupService";
+import VerifyModal from "../../components/dialogs/verify-dialog/VerifyModal";
+import { reRenderGroup } from "../../redux/reducers/groupReducer";
+import Swal from "sweetalert2";
 
 function ContentListGroup(props) {
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -26,7 +29,15 @@ function ContentListGroup(props) {
     const userCurrent = useSelector((state) => state.userInfo.user);
     const [showListGroup, setShowListGroup] = useState(true)
     const [showMessageLayout, setShowMessageLayout] = useState(false);
+    const [showVerifyModal, setShowVerifyModal] = useState(false);
     const rederMessageLayout = useSelector(state => state.render.renderMessageLayout)
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
+    const chatInfor = useSelector(state => state.message.chatInfo);
+    const handleCloseRemoveModal = () => setShowRemoveModal(false);
+    const handleCloseModal = () => setShowVerifyModal(false);
+    const [itemGroup,setItemGroup] = useState();
+    
+    const [chatInfo, setChatInfo] = useState(chatInfor);
     const handleShowMessageLayout = () => {
         setShowMessageLayout(true);
         setShowListGroup(false);
@@ -65,6 +76,46 @@ function ContentListGroup(props) {
         finally {
             // onClose()
         }
+    }
+    const handleLeaveGroup = (item) => {
+        setItemGroup(item);
+        handleShow();   
+        
+
+    }
+    const handleShow = () => setShowVerifyModal(true);
+    const leaveAction = async () => {
+        const request = {
+            memberId: userCurrent.email,
+            groupId: itemGroup.id
+        }
+        try {
+            await leaveGroup(request);
+            Swal.fire({
+                html: `Bạn đã rời khỏi nhóm.`,
+                timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: {
+                    htmlContainer: 'my-custom-html',
+                }
+            });
+            dispatch(reRenderGroup())
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const removeAction = async () => {
+        const request = {
+            ownerId: userCurrent.email,
+            groupId: itemGroup.id
+        }
+        try {
+            await removeGroup(request);
+        } catch (error) {
+            console.log(error);
+        }
+
     }
     return (
         <>
@@ -139,13 +190,13 @@ function ContentListGroup(props) {
                                                 <h6>{item.groupName}</h6>
                                             </div>
                                             <div>
-                                                <Dropdown className="" onClick={(e)=>{ e.stopPropagation() }}>
+                                                <Dropdown className="" onClick={(e) => { e.stopPropagation() }}>
                                                     <Dropdown.Toggle variant="success" id="dropdown-basic" as={CustomToggle}>
                                                         <button  ><i className="bi bi-three-dots"></i></button>
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu className="list-item" >
-                                                        <Dropdown.Item >Rời nhóm</Dropdown.Item>
+                                                        <Dropdown.Item onClick={()=>{handleLeaveGroup(item)}}  >Rời nhóm</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
@@ -158,6 +209,10 @@ function ContentListGroup(props) {
                 </>
             )}
             {showMessageLayout && <MessageLayout backButton={props.backButton} />}
+            <VerifyModal content="Bạn có chắc chắn muốn rời nhóm" show={showVerifyModal}
+                    handleClose={handleCloseModal}
+                    action={leaveAction}
+                />
         </>
     );
 }

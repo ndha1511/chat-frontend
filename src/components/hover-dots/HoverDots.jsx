@@ -221,9 +221,6 @@ function HoverDots({ member, handleClose }) {
                 )
                     ? <Dropdown style={{ width: '100%' }}>
                         <Dropdown.Toggle className="btn-dots" as={CustomToggle}>
-                            {/* {(chatInfo.user.owner !== user.email && chatInfo.user.owner === member.email)?<></>:
-                            (!admins.includes(user.email) && (chatInfo.user.owner !== user.email && (chatInfo.user.admins.includes(member.email) ||  user.email !== member.email))) ?<></>:
-                            <button className="btn-dooot "><i className="bi bi-three-dots"></i></button>} */}
                             {checkDot(member)}
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="item-menu" >
@@ -247,7 +244,10 @@ function HoverDots({ member, handleClose }) {
                                 user.email === member.email
                                     ?
                                     chatInfo.user.owner === user.email ?
+                                    <>
                                      <Dropdown.Item onClick={handleRemoveGroup} >Giải thán nhóm</Dropdown.Item>
+                                     <Dropdown.Item onClick={handleLeaveGroup} >Rời nhóm</Dropdown.Item><></>
+                                    </>
                                     : <Dropdown.Item onClick={handleLeaveGroup} >Rời nhóm</Dropdown.Item>:<></>
                             }
                         </Dropdown.Menu>
