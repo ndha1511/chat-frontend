@@ -7,11 +7,14 @@ import { setDragableAudioCall, setDragableCallQuestion } from "../../redux/reduc
 import { reRenderRoom } from "../../redux/reducers/renderRoom";
 import { reRenderMessge } from "../../redux/reducers/messageReducer";
 import { sendCall, setLocalPeer, setLocalStream } from "../../configs/WebRTCConfig";
+import { Icon } from "zmp-ui";
+import { Modal } from "react-bootstrap";
 
 
 function AudioCallDragable(props) {
     const user = useSelector((state) => state.userInfo.user);
     const messageCall = useSelector((state) => state.message.messageCall);
+    const windowSize = useSelector(state => state.render.windowSize);
 
     const dispatch = useDispatch();
 
@@ -43,7 +46,7 @@ function AudioCallDragable(props) {
 
     return (
 
-        <Draggable defaultPosition={{
+        windowSize.width > 768 ? <Draggable defaultPosition={{
             x: 0,
             y: 0
         }}
@@ -65,7 +68,7 @@ function AudioCallDragable(props) {
                         border: "none",
                         fontSize: 24
                     }} onClick={() => dispatch(setDragableCallQuestion(false))}><i className="bi bi-x-lg"></i></button>
-                    <Avatar user={props.callerInfo}  />
+                    <Avatar user={props.callerInfo} />
                     <h6>{props.callerInfo.name}</h6>
                     <span>Cuộc gọi đến</span>
                     <div className="group-btn-audio-call-receive">
@@ -77,6 +80,25 @@ function AudioCallDragable(props) {
                 </div>
             </div>
         </Draggable>
+            :
+            <Modal show={true} size="md" centered>
+                <Modal.Body style={{ padding: 0, height: 'auto', }} >
+                <audio controls autoPlay loop style={{ display: "none" }}>
+                        <source src="assets/mp3/nhac_cho.mp3" type="audio/mpeg" />
+                    </audio>
+                <div className="draggable-window-receive" style={{width:'100%' }}>
+                    <Avatar user={props.callerInfo} />
+                    <h6>{props.callerInfo.name}</h6>
+                    <span>Cuộc gọi đến</span>
+                    <div className="group-btn-audio-call-receive">
+                        <button onClick={reject}
+                            className="btn-audio-call-receive btn-reject-receive"><i className="bi bi-telephone-fill"></i></button>
+                        <button onClick={accept}
+                            className="btn-audio-call-receive btn-accept-receive"><i className="bi bi-telephone-fill"></i></button>
+                    </div>
+                </div>
+                </Modal.Body>
+            </Modal>
 
     );
 }

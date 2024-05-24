@@ -8,6 +8,7 @@ import { getColorForName } from "../../utils/ExtractUsername";
 import { setDragableAudioCall, setDragableCallRequest } from "../../redux/reducers/dragableReducer";
 import { cancelCall } from "../../services/MessageService";
 import { closePeer, closeStream } from "../../configs/WebRTCConfig";
+import { Modal } from "react-bootstrap";
 
 function CallRequestDragable(props) {
 
@@ -51,8 +52,7 @@ function CallRequestDragable(props) {
 
     return (
 
-
-        <Draggable
+        windowSize.width > 768 ? (<Draggable
             defaultPosition={position}
         >
 
@@ -114,7 +114,55 @@ function CallRequestDragable(props) {
 
                 </div>
             </div>
-        </Draggable>
+        </Draggable>) : (<Modal show={true} size="md" centered>
+            <Modal.Header closeButton>
+                <audio controls autoPlay loop style={{ display: "none" }}>
+                    <source src="assets/mp3/nhac_cho.mp3" type="audio/mpeg" />
+                </audio>
+                <Modal.Title>
+                    <img src="/assets/icons/iconCall.png" style={{ width: 28, height: 28, marginRight: 10, marginTop: -7 }} alt="" />
+                    <span style={{ fontSize: 14 }}>Zalo Call - {chatInfo.user.name}</span>
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{ padding: 0, height: 500 }}>
+                <div className="content-audio-call" style={{
+                    height: "100%",
+                    backgroundImage: chatInfo.user.avatar ?
+                        `linear-gradient(-45deg,rgba(199, 194, 194, 0.6), rgba(226, 218, 218, 0.7),rgba(169, 149, 149, 0.6)), url(${chatInfo.user.avatar}), linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 1) 0%, rgba(${hexToRgb(baseColor)}, 1) 50%, rgba(${hexToRgb(darkerColor)}, 1) 100%)` :
+                        `linear-gradient(90deg, rgba(${hexToRgb(lighterColor)}, 0.6) 0%, rgba(${hexToRgb(baseColor)}, 0.6) 50%, rgba(${hexToRgb(darkerColor)}, 0.6) 100%)`,
+                    backgroundSize: 'cover', // Set the size for each background
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                }}>
+                    <Avatar user={chatInfo.user} width={80} height={80} />
+                    <h5>{chatInfo.user.name}</h5>
+                    <span>Đang đổ chuông</span>
+                </div>
+            </Modal.Body>
+            <Modal.Footer style={{ padding: 0, margin:0 }}>
+                <div className="footer-audio-call">
+                    <div className="group-btn-audio-call">
+                        <button className="btn-audio-call-footer">
+                            <Icon style={{ color: '#4f4f4f' }} icon='zi-video-solid' />
+                            <Icon style={{ color: '#4f4f4f' }} icon='zi-chevron-up' />
+                        </button>
+                        <button onClick={stopCall} className="btn-audio-call1 btn-reject">
+                            <i className="bi bi-telephone-fill"></i>
+                        </button>
+                        <button className="btn-audio-call-footer">
+                            <Icon style={{ color: '#4f4f4f' }} icon='zi-mic' />
+                            <Icon style={{ color: '#4f4f4f' }} icon='zi-chevron-up' />
+                        </button>
+                    </div>
+                    <div>
+                        <button className="btn-setting">
+                            <Icon style={{ color: 'white' }} icon='zi-setting' />
+                        </button>
+                    </div>
+                </div>
+            </Modal.Footer>
+        </Modal>)
+
 
     );
 }

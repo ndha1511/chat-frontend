@@ -185,7 +185,7 @@ function Navbar() {
             localStorage.setItem("user", JSON.stringify(userUpdate));
             dispatch(setUserInfo(userUpdate));
             Swal.fire({
-                html: `Bạn đã chặn thành công.`,
+                html: `Bạn đã bỏ chặn thành công.`,
                 timer: 1500, // Đặt thời gian tự đóng là 1500 mili giây
                 timerProgressBar: true,
                 showConfirmButton: false,
