@@ -12,17 +12,18 @@ import { setMessageCall, setMessageSearch } from "../../../redux/reducers/messag
 
 import { Icon } from "zmp-ui"
 import Icons from "../../../components/icons/Icons";
-import { getGroupById, getUserGroupById } from "../../../services/GroupService";
+import { getUserGroupById } from "../../../services/GroupService";
 
 import AccountInfor from "../../../components/modal/AccountInfor";
 import ChatInfoOffcanvasFriend from "./ChatInfoOffcanvasFriend";
 
-import { setLocalPeer, setLocalStream } from "../../../configs/WebRTCConfig";
+import { closePeer, closeStream, setLocalPeer, setLocalStream } from "../../../configs/WebRTCConfig";
 import { setDragableCallRequest } from "../../../redux/reducers/dragableReducer";
 import HelloMessage from "../../../components/modal/HelloMessage";
 import GroupInfor from "../../../components/modal/GroupInfor";
 import UpdateGroupModal from "../../header/UpdateGroupModal";
 import { setShowSearchMessage } from "../../../redux/reducers/renderLayoutReducer";
+import Swal from "sweetalert2";
 
 
 
@@ -45,7 +46,7 @@ function Header(props) {
     const [showInfor, setshowInfor] = useState(false)
     const [listMember, setListMember] = useState([])
     const dispatch = useDispatch();
-    
+
     const clearSearch = () => {
         dispatch(setMessageSearch({
             messages: [],
@@ -64,9 +65,9 @@ function Header(props) {
         setShowHelloMessageModal(false)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setShow(false);
-    },[reRenderOffcanvas])
+    }, [reRenderOffcanvas])
 
     const memberList = async () => {
         const rep = await getUserGroupById(chatInfo.user.id);
@@ -118,7 +119,7 @@ function Header(props) {
     ]
     const chatIconGroup = [
         {
-            item: <Icon onClick={()=>{setShowCreateModal(true)}} icon='zi-add-member' size={25} />,
+            item: <Icon onClick={() => { setShowCreateModal(true) }} icon='zi-add-member' size={25} />,
             title: "Thêm thành viên"
         },
         {
@@ -138,11 +139,11 @@ function Header(props) {
     ]
     const buttons = chatIcon;
 
-    const clickButtonRightGroup = (index) => {
+    const clickButtonRightGroup = async (index) => {
         switch (index) {
             case 0: break;
             case 1:
-                if(showSearchMessage) {
+                if (showSearchMessage) {
                     clearSearch();
                 }
                 dispatch(setShowSearchMessage(!showSearchMessage));
@@ -153,10 +154,10 @@ function Header(props) {
                     receiverId: chatInfo?.user?.id,
                     messageType: "VIDEO_CALL"
                 }
-                dispatch(setDragableCallRequest(true));
+
                 // call api
                 const mediaVideo = { video: true, audio: true };
-                handleCallRequest(dataVideo, mediaVideo);
+                await handleCallRequest(dataVideo, mediaVideo);
                 break;
             case 3:
                 handleShow();
@@ -166,10 +167,10 @@ function Header(props) {
         }
     }
 
-    const clickButtonRight = (index) => {
+    const clickButtonRight = async (index) => {
         switch (index) {
             case 0:
-                if(showSearchMessage) {
+                if (showSearchMessage) {
                     clearSearch();
                 }
                 dispatch(setShowSearchMessage(!showSearchMessage));
@@ -180,11 +181,10 @@ function Header(props) {
                     receiverId: chatInfo?.user?.email,
                     messageType: "AUDIO_CALL"
                 }
-                dispatch(setDragableCallRequest(true));
 
                 // call api
                 const media = { video: false, audio: true };
-                handleCallRequest(data, media);
+                await handleCallRequest(data, media);
                 break;
             case 2:
                 const dataVideo = {
@@ -192,10 +192,9 @@ function Header(props) {
                     receiverId: chatInfo?.user?.email,
                     messageType: "VIDEO_CALL"
                 }
-                dispatch(setDragableCallRequest(true));
                 // call api
                 const mediaVideo = { video: true, audio: true };
-                handleCallRequest(dataVideo, mediaVideo);
+                await handleCallRequest(dataVideo, mediaVideo);
                 break;
             case 3:
                 // open offcanvas for user info 
@@ -207,14 +206,50 @@ function Header(props) {
     }
 
     const handleCallRequest = async (data, media) => {
-        setLocalPeer();
-        await setLocalStream(media);
         try {
+            setLocalPeer();
+            await setLocalStream(media);
+            dispatch(setDragableCallRequest(true));
             const response = await callRequest(data);
             dispatch(setMessageCall(response));
+            
 
         } catch (error) {
-            console.log(error);
+            closePeer();
+            closeStream();
+            dispatch(setDragableCallRequest(false));
+            const status = error.response.status;
+            switch(status) {
+                case 410:
+                    Swal.fire({
+                        html: `Người nhận hiện không muốn nhận cuộc gọi.`,
+                        timer: 1500, // Đặt thời gian tự đóng là 2000 mili giây
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        customClass: {
+                            htmlContainer: 'my-custom-html' ,
+                        }     ,
+                        width: '250px',
+                        padding: 0,
+                    });
+                    break;
+                case 411:
+                    Swal.fire({
+                        html: `Người nhận không muốn nhận cuộc gọi từ người lạ.`,
+                        timer: 1500, // Đặt thời gian tự đóng là 2000 mili giây
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        customClass: {
+                            htmlContainer: 'my-custom-html' ,
+                        }     ,
+                        width: '250px',
+                        padding: 0,
+                    });
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 
@@ -236,7 +271,7 @@ function Header(props) {
         }
     }
 
-  
+
     return (
         <div className="d-flex w-100 p-3 pb-5 pt-4" style={{
             height: "100%",

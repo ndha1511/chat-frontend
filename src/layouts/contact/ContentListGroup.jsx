@@ -31,13 +31,8 @@ function ContentListGroup(props) {
     const [showMessageLayout, setShowMessageLayout] = useState(false);
     const [showVerifyModal, setShowVerifyModal] = useState(false);
     const rederMessageLayout = useSelector(state => state.render.renderMessageLayout)
-    const [showRemoveModal, setShowRemoveModal] = useState(false);
-    const chatInfor = useSelector(state => state.message.chatInfo);
-    const handleCloseRemoveModal = () => setShowRemoveModal(false);
     const handleCloseModal = () => setShowVerifyModal(false);
     const [itemGroup,setItemGroup] = useState();
-    
-    const [chatInfo, setChatInfo] = useState(chatInfor);
     const handleShowMessageLayout = () => {
         setShowMessageLayout(true);
         setShowListGroup(false);
@@ -54,24 +49,26 @@ function ContentListGroup(props) {
             const response = await getGroupById(id);
             const res = await getRoomBySenderIdAndReceiverId(userCurrent.email, id);
             console.log(response)
+            console.log(res)
             const userData = {
                 name: response.groupName,
                 email: response.id,
                 ...response
             }
-            const chatInfo = {
+            const chatInfo2 = {
                 user: userData,
-                roomId: response.id,
+                roomId: response.id, 
                 room: res
             };
-            dispatch(setChatInfo(chatInfo));
+            console.log(chatInfo2);
+            dispatch(setChatInfo(chatInfo2));
             handleShowMessageLayout();
             return response;
 
         } catch (error) {
-            const chatInfo = {
+            const chatInfo2 = {
             };
-            dispatch(setChatInfo(chatInfo));
+            dispatch(setChatInfo(chatInfo2));
         }
         finally {
             // onClose()
@@ -107,18 +104,7 @@ function ContentListGroup(props) {
             console.log(error);
         }
     }
-    const removeAction = async () => {
-        const request = {
-            ownerId: userCurrent.email,
-            groupId: itemGroup.id
-        }
-        try {
-            await removeGroup(request);
-        } catch (error) {
-            console.log(error);
-        }
-
-    }
+   
     return (
         <>
             {showListGroup && (

@@ -12,6 +12,7 @@ import { setUserInfo } from "../../redux/reducers/userReducer";
 import Swal from "sweetalert2";
 import { reRenderGroup } from "../../redux/reducers/groupReducer";
 import { unFriendRequest } from "../../services/FriendService";
+import AccountInfor from "../../components/modal/AccountInfor";
 
 
 function ContentListFriend(props) {
@@ -53,9 +54,14 @@ function ContentListFriend(props) {
             return response;
 
         } catch (error) {
-            const chatInfo = {
+            console.log(error)
+            const chatInfo2 = {
+                user,
+                roomId:'',
+
             };
-            dispatch(setChatInfo(chatInfo));
+            handleShowMessageLayout();
+            dispatch(setChatInfo(chatInfo2));
         }
         finally {
             // onClose()
@@ -130,10 +136,10 @@ function ContentListFriend(props) {
                 timerProgressBar: true,
                 showConfirmButton: false,
                 customClass: {
-                    htmlContainer: 'my-custom-html' ,
-                } ,
+                    htmlContainer: 'my-custom-html',
+                },
                 width: '200px',
-                padding: 0,    
+                padding: 0,
             });
         } catch (error) {
             console.error("Error sending friend request:", error);
@@ -218,13 +224,13 @@ function ContentListFriend(props) {
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu className="list-item" >
-                                                        <Dropdown.Item onClick={(e) => {handleShowProfile(item); e.stopPropagation()}} >Xem thông tin</Dropdown.Item>
+                                                        <Dropdown.Item onClick={(e) => { handleShowProfile(item); e.stopPropagation() }} >Xem thông tin</Dropdown.Item>
                                                         <Dropdown.Item >Phân loại </Dropdown.Item>
                                                         <Dropdown.Item >Đặt tên gợi nhớ</Dropdown.Item>
                                                         {userBlocks && userBlocks.includes(item.email) ?
                                                             <Dropdown.Item onClick={(e) => { handleUnblock(item); e.stopPropagation() }}>Bỏ chặn</Dropdown.Item> :
                                                             <Dropdown.Item onClick={(e) => { handleBlock(item); e.stopPropagation() }}>Chặn người này</Dropdown.Item>}
-                                                        <Dropdown.Item onClick={(e)=>{unFriend(item);e.stopPropagation()}} >Xóa bạn</Dropdown.Item>
+                                                        <Dropdown.Item onClick={(e) => { unFriend(item); e.stopPropagation() }} >Xóa bạn</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
@@ -234,7 +240,7 @@ function ContentListFriend(props) {
                             </div>
                         </div>
 
-                        <ProfileModal show={show} onClose={() => setshow(false)} friend={friend} />
+                        {show && <AccountInfor show={show} onClose={() => setshow(false)} user={friend} closeBack={2} />}
 
 
 

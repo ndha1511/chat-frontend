@@ -7,7 +7,7 @@ export var stompClient = null;
 
 
 export const connect = (onConnected, onError) => {
-  let sock = new SockJS('https://spring-chat-app-1-2.onrender.com/ws');
+  let sock = new SockJS('http://localhost:8080/ws');
   stompClient = over(sock);
   stompClient.connect({}, onConnected, onError);
 
